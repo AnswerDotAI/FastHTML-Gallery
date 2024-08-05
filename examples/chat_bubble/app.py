@@ -1,10 +1,14 @@
 from fasthtml.common import *
+links = [
+    Link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css", type="text/css"),
+    HighlightJS(langs=['python', 'javascript', 'html', 'css']),
+]
 
-app, rt = fast_app()
+app, rt = fast_app(hdrs=links)
 
-@rt('/')
-def get():
+def application():
     return Div(*[create_chat_message(**msg, msg_num=i) for i, msg in enumerate(example_messages)])
+    
 
 
 def create_chat_message(role, content, msg_num):
@@ -67,3 +71,33 @@ example_messages = [
             "content": "42 is the meaning of life.  It is the answer to the question of life, the universe, and everything.",
         }
     ]
+
+
+
+@rt('/')
+def get():
+    return Div(
+        Div(
+            A(
+                "Back to Gallery",
+                href="/",
+                cls="btn btn-primary",
+                style="margin-bottom: 20px;"
+            ),
+            cls="d-flex align-items-center justify-content-between"
+        ),
+        Div(
+            Div(
+                H2("Source Code"),
+                Pre(Code(Path('examples/chat_bubble/app.py').read_text())),
+                cls="col-xs-12 col-md-6 px-1"
+            ),
+            Div(
+                H2("Live Demo"),
+                application(),
+                cls="col-xs-12 col-md-6 px-1"
+            ),
+            cls="row mx-n1"
+        ),
+        cls="container-fluid"
+    )

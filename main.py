@@ -10,7 +10,16 @@ links = [
     Link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css", type="text/css"),
     HighlightJS(langs=['python', 'javascript', 'html', 'css']),
 ]
-app, rt = fast_app(hdrs=links)
+
+from examples.chat_bubble.app import app as chat_bubble_app
+from examples.cascading_dropdowns.app import app as cascading_dropdowns_app
+
+
+app, rt = fast_app(hdrs=links, 
+                   routes=[
+                       Mount('/chat_bubble', chat_bubble_app),
+                       Mount('/cascading_dropdowns', cascading_dropdowns_app),
+                   ])
 
 @rt("/")
 def get():
@@ -50,77 +59,5 @@ def image_card(dir_path):
         cls="col-xs-12 col-sm-6 col-md-4",
         style="margin-bottom: 20px;"
     )
-@rt('/{dir_name}')
-def get(dir_name: str):
-    dir_path = Path(f'examples/{dir_name}')
-
-    
-    metadata = configparser.ConfigParser()
-    metadata.read(dir_path/'metadata.ini')
-
-    code_content = (dir_path/'app.py').read_text()
-   
-    return Div(
-        Div(
-            A(
-                "Back to Gallery",
-                href="/",
-                cls="btn btn-primary",
-                style="margin-bottom: 20px;"
-            ),
-            H1(metadata['REQUIRED']['ComponentName'][1:-1]),
-            cls="d-flex align-items-center justify-content-between"
-        ),
-        Div(
-            Div(
-                H2("Source Code"),
-                Pre(Code(code_content)),
-                cls="col-xs-12 col-md-6 px-1"
-            ),
-            Div(
-                H2("Live Demo"),
-                Iframe(src=f"/run/{dir_name}", width="100%", height="1200px"),
-                cls="col-xs-12 col-md-6 px-1"
-            ),
-            cls="row mx-n1"
-        ),
-        cls="container-fluid"
-    )
-
-running_servers = {}
-@rt('/run/{dir_name}')
-async def get(dir_name: Path):
-    if dir_name in running_servers:
-        return Iframe(src=running_servers[dir_name], width="100%", height="1200px")
-
-    try:
-        # Configure uvicorn with port 0 for auto-selection
-        config = Config(f"examples.{dir_name}.app:app", port=0, log_level="info") 
-        server = Server(config=config)
-
-        # Start the server in a separate task
-        server_task = asyncio.create_task(server.serve())
-
-        # Wait for the server to start and get the port
-        while not server.started:
-            await asyncio.sleep(0.1)
-
-        for srv in server.servers:
-            for socket in srv.sockets:
-                _, port = socket.getsockname()
-                break
-            break
-
-        running_servers[dir_name] = f"http://localhost:{port}"
-        # Return the iframe with the correct port
-        return Iframe(src=running_servers[dir_name], width="100%", height="1200px")
-
-    except Exception as e:
-        import traceback
-        error_message = f"Error: {str(e)}\n\nTraceback:\n{traceback.format_exc()}"
-        return HTMLResponse(error_message, status_code=500)
-    
-
-
 
 serve()
