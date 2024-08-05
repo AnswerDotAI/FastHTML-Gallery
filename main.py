@@ -122,3 +122,5 @@ async def get(dir_name: Path):
     
 
 
+
+serve()
