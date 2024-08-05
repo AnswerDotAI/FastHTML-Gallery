@@ -66,16 +66,33 @@ for dir_path in Path('examples/').glob('*'):
 
 app, rt = fast_app(hdrs=links, 
                    routes=routes)
-
 @rt("/")
 def get():
-    from pathlib import Path
+
+
     dir_paths = Path('examples/').glob('[!_]*')
+
+    toggle_script = Script("""
+    function toggleAnimations() {
+        const images = document.querySelectorAll('.card-img-top');
+        images.forEach(img => {
+            if (img.src.endsWith('.png')) {
+                img.src = img.getAttribute('data-gif');
+            } else {
+                img.setAttribute('data-gif', img.src);
+                img.src = img.src.replace('gif.gif', 'img.png');
+            }
+        });
+    }
+    """)
+
     return Div(
         H1("FastHTML Gallery"),
+        Button("Toggle Animations", onclick="toggleAnimations()", cls="btn btn-secondary mb-3"),
         Div(*[image_card(i) for i in dir_paths],
             cls="row", 
         ),
+        toggle_script,
         cls="container",
     )
 
@@ -87,7 +104,7 @@ def image_card(dir_path):
         A(
             Card(
                 Div(
-                    Img(src=dir_path/'gif.gif', alt=metadata['REQUIRED']['ImageAltText'], cls="card-img-top"),
+                    Img(src=dir_path/'img.png', alt=metadata['REQUIRED']['ImageAltText'], cls="card-img-top", data_gif=dir_path/'gif.gif'),
                     style="height: 200px; overflow: hidden;"
                 ),
                 Div(
