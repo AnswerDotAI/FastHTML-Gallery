@@ -40,5 +40,3 @@ def update_chart(slider: int):
         generate_chart(slider),
         P(f"Number of data points: {slider}")
     )
-
-serve()
