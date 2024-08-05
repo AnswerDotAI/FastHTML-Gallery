@@ -19,7 +19,7 @@ def home():
     return Title("Altair Demo"), Main(
         H1("Altair Demo"),
         Div(f"You have pressed the button {count} times.", id="chart"),
-        Button("Increment", hx_get="/increment", hx_target="#chart", hx_swap="innerHTML"),
+        Button("Increment", hx_get="/altair_charts/increment", hx_target="#chart", hx_swap="innerHTML"),
         style="margin: 20px"
     )
 
