@@ -11,18 +11,19 @@ from importlib import import_module
 
 links = [
     Link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css", type="text/css"),
-    HighlightJS(langs=['python', 'javascript', 'html', 'css']),
+    *HighlightJS(langs=['python', 'javascript', 'html', 'css']),
 ]
 
 
 def create_display_page(dir_path, module_path):
     _app_module = import_module(module_path)
     app = _app_module.app
+
     homepage = _app_module.homepage
 
     @app.route('/display')
     def get():
-        return Div(
+        return Div(*links,
             Div(
                 A(
                     "Back to Gallery",
