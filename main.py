@@ -130,7 +130,8 @@ def image_card(dir_path):
                 style="height: 350px;"
             ),
             href=f"/{dir_path.name}/display",
-            cls="card-link"
+            cls="card-link",
+            style="text-decoration: none; color: inherit;"
         ),
         cls="col-xs-12 col-sm-6 col-md-4",
         style="margin-bottom: 20px;"
