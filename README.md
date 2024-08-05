@@ -35,9 +35,10 @@ The current top priority for improvement:
   + Connection to a database
   + More stuff from the docs
 
-Things on the list that I'm not actively working on (PRs or discussions are welcome!).
+Things on the list to do someday (PRs or discussions are welcome!).
 
 + Make the site prettier without making it too complicated
++ Hover over image to see gif
 + Add a way to organize gallery by content (headers, search, tags, idk).  PR welcome once 10+ examples exist.
 + Safe way to have users modify in the browser?  I'm unsure I want to do this, so you'd have to convince me.
 + Your idea?
