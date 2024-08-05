@@ -12,27 +12,21 @@ uvicorn main:app
 
 ## Contributing
 
+### Adding an Example
+
 The best way to contribute is by adding examples to the gallery.  
 
-To do this create a new directory in the `examples` directory.  It should include the following files:
-+ **img.png:** A screenshot of the app for the card gallery
-+ **app.py:** A FastHTML app
-    + Note:  This will be submounted, meaning `/blah` route will be `/{dir_name}/blah`.  When using htmx requests (ie `hx-get` attribute) you will need to use the full path to the route after submounting.
-+ **metadata.ini:** A config file with the following keys:
-  + **REQUIRED:**
-    + **ImageAltText:** Alt Text for your image that is displayed on the main gallery page
-    + **ComponentName:** A short but descriptive name of the component that is displayed on the main gallery page
-    + **ComponentDescription:** A short description of the component that is displayed on the main gallery page
++ Copy `examples/_hello_world` and modify contents to create your new example
++ Having a `homepage` function that generated the FastHTML for your app like in this example is required.
++ Submount your app by adding it to the `main.py` routes list following the hello_world example convention does `Mount('/_hello_world', create_display_page('examples/_hello_world/', 'examples._hello_world.app'))`
 
-Once done, add you app as a submount in `main.py`.  Add your new mount to the routes list.
+:::{.callout-info}
+You app will be submounted, meaning `/blah` route will be `/{dir_name}/blah`.  When using htmx attributes (ie `hx-get` attribute) you will need to use the full path to the route after submounting.
 
-```python
-app, rt = fast_app(hdrs=links, 
-                   routes=[
-                       Mount('/chat_bubble', create_display_page('examples/chat_bubble/', 'examples.chat_bubble.app')),
-                       Mount('/cascading_dropdowns', create_display_page('examples/cascading_dropdowns/', 'examples.cascading_dropdowns.app')),
-                   ])
-```
+You can see an example of this in the `examples/cascading_dropdowns` example application.
+:::
+
+### Other Contributions
 
 If you have any suggestions for improving this project, please open an issue, submit a pull request, or contact me in the FastHTML discord server
 

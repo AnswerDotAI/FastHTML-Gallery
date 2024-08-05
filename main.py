@@ -54,12 +54,13 @@ app, rt = fast_app(hdrs=links,
                    routes=[
                        Mount('/chat_bubble', create_display_page('examples/chat_bubble/', 'examples.chat_bubble.app')),
                        Mount('/cascading_dropdowns', create_display_page('examples/cascading_dropdowns/', 'examples.cascading_dropdowns.app')),
+                       Mount('/_hello_world', create_display_page('examples/_hello_world/', 'examples._hello_world.app')),
                    ])
 
 @rt("/")
 def get():
     from pathlib import Path
-    dir_paths = Path('examples/').glob('*')
+    dir_paths = Path('examples/').glob('[!_]*')
     return Div(
         H1("FastHTML Gallery"),
         Div(*[image_card(i) for i in dir_paths],
