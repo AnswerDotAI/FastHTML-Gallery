@@ -16,7 +16,7 @@ The best way to contribute is by adding examples to the gallery.
 
 To do this create a new directory in the `examples` directory.  It should include the following files:
 + **img.png:** A screenshot of the app for the card gallery
-+ **app.py:** A FastHTML app that can be run with `uvicorn app:app`
++ **app.py:** A FastHTML app that creates a detailed page about your component that can be run with `uvicorn app:app`
 + **metadata.ini:** A config file with the following keys:
   + **REQUIRED:**
     + **ImageAltText:** Alt Text for your image that is displayed on the main gallery page
