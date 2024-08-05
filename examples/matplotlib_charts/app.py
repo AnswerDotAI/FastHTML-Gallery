@@ -20,8 +20,9 @@ def generate_chart():
 
 
 def homepage():
-    global count
+    global plotdata, count
     count = 0
+    plotdata = []
     return Div(Div(f"You have pressed the button {count} times.", id="chart"),
         Button("Increment", hx_get="/matplotlib_charts/increment", hx_target="#chart", hx_swap="innerHTML"))
 
