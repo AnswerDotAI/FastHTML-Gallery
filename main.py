@@ -13,6 +13,20 @@ links = [
 
 
 def create_display_page(dir_path, module_path):
+    htmx_route_methods = ['hx_get', 'hx_post', 'hx_delete', 'hx_put', 'hx_patch']
+
+    import re
+
+    def strip_parent_route(text, parent_route):
+        htmx_route_methods = ['hx_get', 'hx_post', 'hx_delete', 'hx_put', 'hx_patch']
+        
+        for method in htmx_route_methods:
+            pattern = f'({method}=[\'\"])/{parent_route}(/[^\'\"]*)[\'\"]'
+            replacement = f'\\1\\2"'
+            text = re.sub(pattern, replacement, text)
+        
+        return text
+
     _app_module = import_module(module_path)
     app = _app_module.app
 
@@ -23,7 +37,7 @@ def create_display_page(dir_path, module_path):
     else:
         md = ''
 
-    code = Pre(Code(Path(f'{dir_path}/app.py').read_text()))
+    code = Pre(Code(strip_parent_route(Path(f'{dir_path}/app.py').read_text(), Path(dir_path).name)))
 
     column1 = Div(
                     md,
