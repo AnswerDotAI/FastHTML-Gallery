@@ -1,5 +1,5 @@
 from fasthtml.common import *
-import configparser
+import configparser, re
 from pathlib import Path
 
 from importlib import import_module
@@ -13,42 +13,37 @@ links = [
 
 
 def create_display_page(dir_path, module_path):
-    import re
+    htmx_route_methods = ['hx_get', 'hx_post', 'hx_delete', 'hx_put', 'hx_patch']
 
     def strip_parent_route(text, parent_route):
         htmx_route_methods = ['hx_get', 'hx_post', 'hx_delete', 'hx_put', 'hx_patch']
-        
         for method in htmx_route_methods:
             pattern = f'({method}=[\'\"])/{parent_route}(/[^\'\"]*)[\'\"]'
             replacement = f'\\1\\2"'
             text = re.sub(pattern, replacement, text)
-        
         return text
 
     _app_module = import_module(module_path)
     app = _app_module.app
 
     homepage = _app_module.homepage
-    
+    md = ''
     if Path(f'{dir_path}/text.md').exists():
         md = Div(Path(f'{dir_path}/text.md').read_text(),cls='marked')
-    else:
-        md = ''
 
     code = Pre(Code(strip_parent_route(Path(f'{dir_path}/app.py').read_text(), Path(dir_path).name)))
 
+    dcls="col-xs-12 col-md-6 px-1"
     column1 = Div(
                     md,
                     H2("Source Code"),
                     code,
-                    cls="col-xs-12 col-md-6 px-1"
-                )
+                    cls=dcls)
 
     column2 = Div(
                     H2("Live Demo"),
                     homepage(),
-                    cls="col-xs-12 col-md-6 px-1"
-                )
+                    cls=dcls)
 
 
     @app.route('/display')
@@ -57,31 +52,24 @@ def create_display_page(dir_path, module_path):
             Div(
                 A(
                     "Back to Gallery",
-                    href="/",
-                    cls="btn btn-primary",
-                    style="margin-bottom: 20px;"
-                ),
-                cls="d-flex align-items-center justify-content-between"
-            ),
+                    href="/", style="margin-bottom: 20px;",
+                    cls="btn btn-primary"),
+                cls="d-flex align-items-center justify-content-between"),
             Div(
                 column1,
                 column2,
-                cls="row mx-n1"
-            ),
-            cls="container-fluid"
-        )
+                cls="row mx-n1"),
+            cls="container-fluid")
     return app
 
 routes = []
 for dir_path in Path('examples/').glob('*'):
     routes.append(Mount(f'/{dir_path.name}', create_display_page(str(dir_path), f'examples.{dir_path.name}.app')))
 
-app, rt = fast_app(hdrs=links, 
+app, rt = fast_app(hdrs=links,
                    routes=routes)
 @rt("/")
 def get():
-
-
     dir_paths = Path('examples/').glob('[!_]*')
     toggle_script = Script("""
     function toggleAnimations() {
