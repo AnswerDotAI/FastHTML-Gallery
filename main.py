@@ -13,8 +13,7 @@ links = [
 
 
 def create_display_page(dir_path, module_path):
-    htmx_route_methods = ['hx_get', 'hx_post', 'hx_delete', 'hx_put', 'hx_patch']
-
+    
     def strip_parent_route(text, parent_route):
         htmx_route_methods = ['hx_get', 'hx_post', 'hx_delete', 'hx_put', 'hx_patch']
         for method in htmx_route_methods:

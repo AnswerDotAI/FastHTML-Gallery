@@ -2,6 +2,7 @@ from fasthtml.common import *
 
 app, rt = fast_app()
 
+@app.get('/')
 def homepage():
     return Titled('HTMX Form Demo', Grid(
         Form(hx_post="/two_column_grid/submit", hx_target="#result", hx_trigger="input delay:200ms")(
@@ -11,11 +12,8 @@ def homepage():
         Div(id="result")
     ))
 
-@rt('/')
-def get():
-    return homepage()
 
-@rt('/submit')
+@app.post('/submit')
 def post(d:dict):
     result = []
     for k,v in d.items():

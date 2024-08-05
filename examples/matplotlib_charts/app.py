@@ -10,6 +10,7 @@ def generate_chart(num_points):
     plotdata = [np.random.exponential(1) for _ in range(num_points)]
     plt.plot(range(len(plotdata)), plotdata)
 
+@app.get("/")
 def homepage():
     return Div(
         Div(id="chart"),
@@ -24,10 +25,6 @@ def homepage():
             name='slider',
         )
     )
-
-@app.get("/")
-def home():
-    return homepage()
 
 @app.get("/update_charts")
 def update_chart(slider: int):

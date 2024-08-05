@@ -2,12 +2,9 @@ from fasthtml.common import *
 
 app, rt = fast_app()
     
+@app.get('/')
 def homepage():
     return Div(*[create_chat_message(**msg, msg_num=i) for i, msg in enumerate(example_messages)])
-
-@rt('/')
-def get():
-    return homepage()
 
 def create_chat_message(role, content, msg_num):
     if role == 'system': color = '#8B5CF6'  
