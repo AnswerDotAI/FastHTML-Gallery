@@ -1,2 +1,3 @@
 python-fasthtml
 fh-matplotlib
+fh-altair
