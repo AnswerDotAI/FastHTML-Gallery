@@ -16,7 +16,7 @@ uvicorn main:app
 
 The best way to contribute is by adding examples to the gallery.  
 
-1. Copy `examples/_hello_world` and modify the contents to create your new example.
+1. Copy `examples/_hello_world` and modify the contents to create your new example.  
   + You must have a `homepage` function that generates the FastHTML for your app, like in the Hello World example.
 1. Optionally add a `text.md` file that will be rendered above the source code.  This is great for adding links to references, docs, etc.
 1. Verify it looks good by running `uvicorn main:app` in the root of this git repo
@@ -29,12 +29,14 @@ If you have any suggestions for improving this project, please open an issue, su
 
 The current top priority for improvement:
 
-+ Add more examples
-+ Look into Gifs instead of pngs for the cards
++ Add more examples.  Ones you've found practically helpful are best.  But also:
+  + Stuff from https://htmx.org/examples/
+  + Login/Signup/Auth stuff
+  + More stuff from the docs
 
 Things on the list that I'm not actively working on (PRs or discussions are welcome!).
 
 + Make the site prettier without making it too complicated
-+ Add a search bar and/or tagging to the gallery, or headers to organize gallery by content (PR welcome once 10+ examples exist)
++ Add a way to organize gallery by content (headers, search, tags, idk).  PR welcome once 10+ examples exist.
 + Safe way to have users modify in the browser?  I'm unsure I want to do this, so you'd have to convince me.
 + Your idea?
