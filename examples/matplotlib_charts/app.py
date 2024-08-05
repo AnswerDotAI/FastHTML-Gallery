@@ -27,7 +27,7 @@ def homepage():
 def home():
     return homepage()
 
-@app.get("/increment/")
+@app.get("/increment")
 def increment():
     global plotdata, count
     count += 1
