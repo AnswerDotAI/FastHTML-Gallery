@@ -8,6 +8,7 @@ links = [
     Link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css", type="text/css"),
     *HighlightJS(langs=['python', 'javascript', 'html', 'css']),
     MarkdownJS(),
+    Script(defer=True, data_domain="fasthtml.gallery", src="https://plausible-analytics-ce-production-9521.up.railway.app/js/script.js")
 ]
 
 
