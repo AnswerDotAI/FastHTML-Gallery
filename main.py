@@ -86,7 +86,7 @@ def image_card(dir_path):
         A(
             Card(
                 Div(
-                    Img(src=dir_path/'img.png', alt=metadata['REQUIRED']['ImageAltText'], cls="card-img-top"),
+                    Img(src=dir_path/'gif.gif', alt=metadata['REQUIRED']['ImageAltText'], cls="card-img-top"),
                     style="height: 200px; overflow: hidden;"
                 ),
                 Div(
