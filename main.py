@@ -13,8 +13,6 @@ links = [
 
 
 def create_display_page(dir_path, module_path):
-    htmx_route_methods = ['hx_get', 'hx_post', 'hx_delete', 'hx_put', 'hx_patch']
-
     import re
 
     def strip_parent_route(text, parent_route):
@@ -85,16 +83,15 @@ def get():
 
 
     dir_paths = Path('examples/').glob('[!_]*')
-
     toggle_script = Script("""
     function toggleAnimations() {
         const images = document.querySelectorAll('.card-img-top');
         images.forEach(img => {
-            if (img.src.endsWith('.png')) {
-                img.src = img.getAttribute('data-gif');
+            if (img.src.endsWith('.gif')) {
+                img.src = img.getAttribute('data-png');
             } else {
-                img.setAttribute('data-gif', img.src);
-                img.src = img.src.replace('gif.gif', 'img.png');
+                img.setAttribute('data-png', img.src);
+                img.src = img.src.replace('img.png', 'gif.gif');
             }
         });
     }
@@ -118,7 +115,7 @@ def image_card(dir_path):
         A(
             Card(
                 Div(
-                    Img(src=dir_path/'img.png', alt=metadata['REQUIRED']['ImageAltText'], cls="card-img-top", data_gif=dir_path/'gif.gif'),
+                    Img(src=dir_path/'gif.gif', alt=metadata['REQUIRED']['ImageAltText'], cls="card-img-top", data_png=dir_path/'img.png'),
                     style="height: 200px; overflow: hidden;"
                 ),
                 Div(
