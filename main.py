@@ -1,9 +1,4 @@
 from fasthtml.common import *
-import os
-import asyncio
-import uvicorn
-from uvicorn.config import Config
-from uvicorn.server import Server
 import configparser
 from pathlib import Path
 
@@ -12,6 +7,7 @@ from importlib import import_module
 links = [
     Link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css", type="text/css"),
     *HighlightJS(langs=['python', 'javascript', 'html', 'css']),
+    MarkdownJS(),
 ]
 
 
@@ -20,6 +16,27 @@ def create_display_page(dir_path, module_path):
     app = _app_module.app
 
     homepage = _app_module.homepage
+    
+    if Path(f'{dir_path}/text.md').exists():
+        md = Div(Path(f'{dir_path}/text.md').read_text(),cls='marked')
+    else:
+        md = ''
+
+    code = Pre(Code(Path(f'{dir_path}/app.py').read_text()))
+
+    column1 = Div(
+                    md,
+                    H2("Source Code"),
+                    code,
+                    cls="col-xs-12 col-md-6 px-1"
+                )
+
+    column2 = Div(
+                    H2("Live Demo"),
+                    homepage(),
+                    cls="col-xs-12 col-md-6 px-1"
+                )
+
 
     @app.route('/display')
     def get():
@@ -34,31 +51,20 @@ def create_display_page(dir_path, module_path):
                 cls="d-flex align-items-center justify-content-between"
             ),
             Div(
-                Div(
-                    H2("Source Code"),
-                    Pre(Code(Path(f'{dir_path}/app.py').read_text())),#
-                    cls="col-xs-12 col-md-6 px-1"
-                ),
-                Div(
-                    H2("Live Demo"),
-                    homepage(),
-                    cls="col-xs-12 col-md-6 px-1"
-                ),
+                column1,
+                column2,
                 cls="row mx-n1"
             ),
             cls="container-fluid"
         )
     return app
 
+routes = []
+for dir_path in Path('examples/').glob('*'):
+    routes.append(Mount(f'/{dir_path.name}', create_display_page(str(dir_path), f'examples.{dir_path.name}.app')))
 
 app, rt = fast_app(hdrs=links, 
-                   routes=[
-                       Mount('/two_column_grid', create_display_page('examples/two_column_grid/', 'examples.two_column_grid.app')),
-                       Mount('/matplotlib_charts', create_display_page('examples/matplotlib_charts/', 'examples.matplotlib_charts.app')),
-                       Mount('/chat_bubble', create_display_page('examples/chat_bubble/', 'examples.chat_bubble.app')),
-                       Mount('/cascading_dropdowns', create_display_page('examples/cascading_dropdowns/', 'examples.cascading_dropdowns.app')),
-                       Mount('/_hello_world', create_display_page('examples/_hello_world/', 'examples._hello_world.app')),
-                   ])
+                   routes=routes)
 
 @rt("/")
 def get():
