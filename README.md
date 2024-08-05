@@ -17,7 +17,8 @@ The best way to contribute is by adding examples to the gallery.
 To do this create a new directory in the `examples` directory.  It should include the following files:
 + **img.png:** A screenshot of the app for the card gallery
 + **app.py:** A FastHTML app
-    + Note:  This will be submounted, meaning `/blah` route will be `/{dir_name}/blah`.  When using htmx requests (ie `hx-get` attribute) you will need to use the full path to the route after submounting.
+    + You must have a non-routed `homepage` function that returns the app you want displayed.  See [the app code here](https://fasthtml.gallery/cascading_dropdowns/display) as an example.
+    + This will be submounted, meaning `/blah` route will be `/{dir_name}/blah`.  When using htmx requests (ie `hx-get` attribute) you will need to use the full path to the route after submounting.
 + **metadata.ini:** A config file with the following keys:
   + **REQUIRED:**
     + **ImageAltText:** Alt Text for your image that is displayed on the main gallery page
