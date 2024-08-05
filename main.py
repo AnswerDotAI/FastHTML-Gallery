@@ -31,7 +31,7 @@ def create_display_page(dir_path, module_path):
     if Path(f'{dir_path}/text.md').exists():
         md = Div(Path(f'{dir_path}/text.md').read_text(),cls='marked')
 
-    code = Pre(Code(strip_parent_route(Path(f'{dir_path}/app.py').read_text(), Path(dir_path).name)))
+    code = Pre(Code(strip_parent_route(Path(f'{dir_path}/app.py').read_text().strip(), Path(dir_path).name)))
 
     dcls="col-xs-12 col-md-6 px-1"
     column1 = Div(
@@ -66,8 +66,8 @@ routes = []
 for dir_path in Path('examples/').glob('*'):
     routes.append(Mount(f'/{dir_path.name}', create_display_page(str(dir_path), f'examples.{dir_path.name}.app')))
 
-app, rt = fast_app(hdrs=links,
-                   routes=routes)
+app, rt = fast_app(hdrs=links, routes=routes)
+
 @rt("/")
 def get():
     dir_paths = Path('examples/').glob('[!_]*')
@@ -82,15 +82,12 @@ def get():
                 img.src = img.src.replace('img.png', 'gif.gif');
             }
         });
-    }
-    """)
+    }""")
 
     return Div(
         H1("FastHTML Gallery"),
         Button("Toggle Animations", onclick="toggleAnimations()", cls="btn btn-secondary mb-3"),
-        Div(*[image_card(i) for i in dir_paths],
-            cls="row", 
-        ),
+        Div(*[image_card(i) for i in dir_paths], cls="row"),
         toggle_script,
         cls="container",
     )
@@ -98,28 +95,26 @@ def get():
 def image_card(dir_path):
     metadata = configparser.ConfigParser()
     metadata.read(dir_path/'metadata.ini')
-    
+    meta = metadata['REQUIRED']
+
     return Div(
         A(
             Card(
                 Div(
-                    Img(src=dir_path/'gif.gif', alt=metadata['REQUIRED']['ImageAltText'], cls="card-img-top", data_png=dir_path/'img.png'),
+                    Img(src=dir_path/'gif.gif', alt=meta['ImageAltText'], cls="card-img-top", data_png=dir_path/'img.png'),
                     style="height: 200px; overflow: hidden;"
                 ),
                 Div(
-                    H3(metadata['REQUIRED']['ComponentName'][1:-1], cls="card-title"),
-                    P(metadata['REQUIRED']['ComponentDescription'][1:-1], cls="card-text"),
+                    H3(meta['ComponentName'][1:-1], cls="card-title"),
+                    P(meta['ComponentDescription'][1:-1], cls="card-text"),
                     cls="card-body",
-                    style="height: 150px; overflow: auto;"
-                ),
-                style="height: 350px;"
-            ),
+                    style="height: 150px; overflow: auto;"),
+                style="height: 350px;"),
             href=f"/{dir_path.name}/display",
             cls="card-link",
-            style="text-decoration: none; color: inherit;"
-        ),
+            style="text-decoration: none; color: inherit;"),
         cls="col-xs-12 col-sm-6 col-md-4",
-        style="margin-bottom: 20px;"
-    )
+        style="margin-bottom: 20px;")
 
 serve()
+

@@ -1,6 +1,4 @@
 from fasthtml.common import *
-from pathlib import Path
-import configparser
 
 app, rt = fast_app()
 
@@ -11,34 +9,28 @@ lessons = {
     'ch3': ['lesson7', 'lesson8', 'lesson9']
 }
 
+def mk_opts(nm, cs):
+    return (
+        Option(f'-- select {nm} --', disabled='', selected='', value=''),
+        *map(Option, cs))
+
 @rt('/lessons')
 def get(chapter: str):
-    return Select(
-        Option('-- select lesson --', disabled='', selected='', value=''),
-        *[Option(lesson) for lesson in lessons[chapter]],
-        name='lesson'
-    )
+    return Select(*mk_opts('lesson', lessons[chapter]), name='lesson')
 
+@app.get('/')
 def homepage():
     chapter_dropdown = Select(
-        Option('-- select chapter --', disabled='', selected='', value=''),
-        *[Option(chapter) for chapter in chapters],
+        *mk_opts('chapter', chapters),
         name='chapter',
-        hx_get='/cascading_dropdowns/lessons',
-        hx_target='#lessons'
-    )
+        hx_get='/cascading_dropdowns/lessons', hx_target='#lessons')
 
     return Div(
         Div(
             Label("Chapter:", for_="chapter"),
-            chapter_dropdown,
-        ),
+            chapter_dropdown),
         Div(
             Label("Lesson:", for_="lesson"),
             Div(Div(id='lessons')),
-        )
-    )
-@rt('/')
-def get():
-    return homepage()
-    
+    ))
+
