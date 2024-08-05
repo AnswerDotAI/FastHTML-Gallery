@@ -52,6 +52,7 @@ def create_display_page(dir_path, module_path):
 
 app, rt = fast_app(hdrs=links, 
                    routes=[
+                       Mount('/matplotlib_charts', create_display_page('examples/matplotlib_charts/', 'examples.matplotlib_charts.app')),
                        Mount('/chat_bubble', create_display_page('examples/chat_bubble/', 'examples.chat_bubble.app')),
                        Mount('/cascading_dropdowns', create_display_page('examples/cascading_dropdowns/', 'examples.cascading_dropdowns.app')),
                        Mount('/_hello_world', create_display_page('examples/_hello_world/', 'examples._hello_world.app')),
