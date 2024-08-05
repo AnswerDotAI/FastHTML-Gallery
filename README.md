@@ -32,6 +32,7 @@ The current top priority for improvement:
 + Add more examples.  Ones you've found practically helpful are best.  But also:
   + Stuff from https://htmx.org/examples/
   + Login/Signup/Auth stuff
+  + Connection to a database
   + More stuff from the docs
 
 Things on the list that I'm not actively working on (PRs or discussions are welcome!).
