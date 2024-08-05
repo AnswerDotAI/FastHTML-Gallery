@@ -10,14 +10,19 @@ count = 0
 plotdata = []
 
 def generate_chart():
-    pltr = pd.DataFrame({'y': plotdata, 'x': range(len(plotdata))})
+    if len(plotdata) > 250:
+        start_of_range = len(plotdata) - 250
+    else:
+        start_of_range = 0
+
+    pltr = pd.DataFrame({'y': plotdata[-250:], 'x': range(start_of_range,start_of_range + min(len(plotdata),250))})
     chart = alt.Chart(pltr).mark_line().encode(x='x', y='y').properties(width=400, height=200)
     return altair2fasthml(chart)
 
 def homepage():
     return Title("Altair Demo"), Main(
         H1("Altair Demo"),
-        Div(f"You have pressed the button {count} times.", id="chart"),
+        Div(id="chart"),
         Button("Increment", hx_get="/altair_charts/increment", hx_target="#chart", hx_swap="innerHTML"),
         style="margin: 20px"
     )
