@@ -26,7 +26,7 @@ def get(chapter: str):
         name='lesson'
     )
 
-def application():
+def homepage():
     chapter_dropdown = Select(
         Option('-- select chapter --', disabled='', selected='', value=''),
         *[Option(chapter) for chapter in chapters],
@@ -36,42 +36,16 @@ def application():
     )
 
     return Div(
-            Div(
-                Label("Chapter:", for_="chapter"),
-                chapter_dropdown,
-            ),
-            Div(
-                Label("Lesson:", for_="lesson"),
-                Div(Div(id='lessons')),
-            )
+        Div(
+            Label("Chapter:", for_="chapter"),
+            chapter_dropdown,
+        ),
+        Div(
+            Label("Lesson:", for_="lesson"),
+            Div(Div(id='lessons')),
         )
-
-
+    )
 @rt('/')
 def get():
+    return homepage()
     
-    return Div(
-        Div(
-            A(
-                "Back to Gallery",
-                href="/",
-                cls="btn btn-primary",
-                style="margin-bottom: 20px;"
-            ),
-            cls="d-flex align-items-center justify-content-between"
-        ),
-        Div(
-            Div(
-                H2("Source Code"),
-                Pre(Code(Path('examples/cascading_dropdowns/app.py').read_text())),
-                cls="col-xs-12 col-md-6 px-1"
-            ),
-            Div(
-                H2("Live Demo"),
-                application(),
-                cls="col-xs-12 col-md-6 px-1"
-            ),
-            cls="row mx-n1"
-        ),
-        cls="container-fluid"
-    )
