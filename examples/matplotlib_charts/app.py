@@ -18,6 +18,7 @@ def generate_chart(num_points):
 def homepage():
     return Div(
         Div(id="chart"),
+        H3("Move the slider to change the graph"),
         Input(
             type="range",
             min="1",
@@ -28,7 +29,6 @@ def homepage():
             name='slider',
         )
     )
-
 
 @app.get("/")
 def home():
