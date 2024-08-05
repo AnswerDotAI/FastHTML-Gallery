@@ -16,15 +16,11 @@ uvicorn main:app
 
 The best way to contribute is by adding examples to the gallery.  
 
-+ Copy `examples/_hello_world` and modify contents to create your new example
-+ Having a `homepage` function that generated the FastHTML for your app like in this example is required.
-+ Submount your app by adding it to the `main.py` routes list following the hello_world example convention does `Mount('/_hello_world', create_display_page('examples/_hello_world/', 'examples._hello_world.app'))`
++ Copy `examples/_hello_world` and modify the contents to create your new example.
++ You must have a `homepage` function that generated the FastHTML for your app like in the Hello World example.
++ Submount your app by adding it to the `main.py` routes list following the hello_world convention `Mount('/_hello_world', create_display_page('examples/_hello_world/', 'examples._hello_world.app'))`
 
-:::{.callout-info}
-You app will be submounted, meaning `/blah` route will be `/{dir_name}/blah`.  When using htmx attributes (ie `hx-get` attribute) you will need to use the full path to the route after submounting.
-
-You can see an example of this in the `examples/cascading_dropdowns` example application.
-:::
+> You app will be submounted, meaning `/blah` route will be `/{dir_name}/blah`.  When using htmx attributes (ie `hx-get` attribute) you will need to use the full path to the route after submounting.  You can see an example of this in the `examples/cascading_dropdowns` example application.
 
 ### Other Contributions
 
@@ -34,9 +30,9 @@ Current top priority for improvement:
 
 + Add more examples
 
-Things that are on the list, but I'm not actively working on (PRs or Isues discussing them welcome!)
+Things that are on the list, but I'm not actively working on (PRs or discussions are welcome!)
 
-+ Make site prettier without making it too complicated
++ Make the site prettier without making it too complicated
 + Add a search bar and/or tagging to the gallery (PR welcome once 10+ examples exist)
-+ Safe way to have users modify in browser?
++ Safe way to have users modify in browser?  Not sure I want to do this so you'd have to convince me.
 + Your idea?
