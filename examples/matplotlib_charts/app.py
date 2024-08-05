@@ -10,34 +10,35 @@ links = [
 
 app, rt = fast_app(hdrs=links)
 
-count = 0
-plotdata = []
-
 @matplotlib2fasthtml
-def generate_chart():
-    global plotdata
+def generate_chart(num_points):
+    plotdata = [np.random.exponential(1) for _ in range(num_points)]
     plt.plot(range(len(plotdata)), plotdata)
 
-
 def homepage():
-    global plotdata, count
-    count = 0
-    plotdata = []
-    return Div(Div(f"You have pressed the button {count} times.", id="chart"),
-        Button("Increment", hx_get="/matplotlib_charts/increment", hx_target="#chart", hx_swap="innerHTML"))
+    return Div(
+        Div(id="chart"),
+        Input(
+            type="range",
+            min="1",
+            max="10",
+            value="1",
+            hx_get="/matplotlib_charts/update_charts",
+            hx_target="#chart",
+            name='slider',
+        )
+    )
+
 
 @app.get("/")
 def home():
     return homepage()
 
-@app.get("/increment")
-def increment():
-    global plotdata, count
-    count += 1
-    plotdata.append(np.random.exponential(1))
+@app.get("/update_charts")
+def update_chart(slider: int):
     return Div(
-        generate_chart(),
-        P(f"You have pressed the button {count} times."),
+        generate_chart(slider),
+        P(f"Number of data points: {slider}")
     )
 
 serve()
