@@ -18,8 +18,8 @@ The best way to contribute is by adding examples to the gallery.
 
 1. Copy `examples/_hello_world` and modify the contents to create your new example.  
   + You must have a `homepage` function that generates the FastHTML for your app, like in the Hello World example.
-1. Optionally add a `text.md` file that will be rendered above the source code.  This is great for adding links to references, docs, etc.
-1. Verify it looks good by running `uvicorn main:app` in the root of this git repo
+2. Optionally add a `text.md` file that will be rendered above the source code.  This is great for adding links to references, docs, etc.
+3. Verify it looks good by running `uvicorn main:app` in the root of this git repo
 
 > Your app will be submounted, meaning the `/blah` route will be `/{dir_name}/blah` in your HTMX get/post/etc attributes.  When using HTMX attributes (i.e., `hx-get` attribute), you will need to use the full path to the route after surmounting.  You can see an example of this in the `examples/cascading_dropdowns` example application.
 
