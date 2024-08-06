@@ -8,12 +8,11 @@ links = [
     Link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css", type="text/css"),
     *HighlightJS(langs=['python', 'javascript', 'html', 'css']),
     MarkdownJS(),
-    Script(defer=True, data_domain="fasthtml.gallery", src="https://plausible-analytics-ce-production-9521.up.railway.app/js/script.js")
+    Script(defer=True, data_domain="fasthtml.gallery", src="https://plausible-analytics-ce-production-9521.up.railway.app/js/script.js"),
 ]
 
 
 def create_display_page(dir_path, module_path):
-    
     def strip_parent_route(text, parent_route):
         htmx_route_methods = ['hx_get', 'hx_post', 'hx_delete', 'hx_put', 'hx_patch']
         for method in htmx_route_methods:
@@ -47,18 +46,18 @@ def create_display_page(dir_path, module_path):
 
     @app.route('/display')
     def get():
-        return Div(*links,
+        return (
+            Title(f"FastHTML Gallery - {str(Path(dir_path).name).replace('_', ' ').title()}"),
             Div(
-                A(
-                    "Back to Gallery",
-                    href="/", style="margin-bottom: 20px;",
-                    cls="btn btn-primary"),
-                cls="d-flex align-items-center justify-content-between"),
-            Div(
-                column1,
-                column2,
-                cls="row mx-n1"),
-            cls="container-fluid")
+                *links,
+                Div(
+                    A("Back to Gallery",  href="/", style="margin-bottom: 20px;", cls="btn btn-primary"),
+                    cls="d-flex align-items-center justify-content-between"
+                ),
+                Div(column1, column2, cls="row mx-n1"),
+                cls="container-fluid"
+            )
+        )
     return app
 
 routes = []
@@ -83,12 +82,14 @@ def get():
         });
     }""")
 
-    return Div(
-        H1("FastHTML Gallery"),
-        Button("Toggle Animations", onclick="toggleAnimations()", cls="btn btn-secondary mb-3"),
-        Div(*[image_card(i) for i in dir_paths], cls="row"),
-        toggle_script,
-        cls="container",
+    return (Title("FastHTML Gallery"),
+        Div(
+            H1("FastHTML Gallery"),
+            Button("Toggle Animations", onclick="toggleAnimations()", cls="btn btn-secondary mb-3"),
+            Div( *[image_card(i) for i in dir_paths], cls="row"),
+            toggle_script,
+            cls="container",
+        )
     )
 
 def image_card(dir_path):
