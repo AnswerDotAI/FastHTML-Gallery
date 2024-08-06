@@ -1,3 +1,4 @@
+*.DS_Store
 *.sesskey
 # Byte-compiled / optimized / DLL files
 __pycache__/
