@@ -1,5 +1,5 @@
 from fh_matplotlib import matplotlib2fasthtml
-from fasthtml.common import * 
+from fasthtml.common import *
 import numpy as np
 import matplotlib.pylab as plt
 
@@ -17,13 +17,9 @@ def homepage():
         H3("Move the slider to change the graph"),
         Input(
             type="range",
-            min="1",
-            max="10",
-            value="1",
-            hx_get="/matplotlib_charts/update_charts",
-            hx_target="#chart",
-            name='slider',
-        )
+            min="1", max="10", value="1",
+            hx_get="/matplotlib_charts/update_charts", hx_target="#chart",
+            name='slider')
     )
 
 @app.get("/update_charts")
