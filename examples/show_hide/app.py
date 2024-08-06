@@ -8,7 +8,7 @@ def mk_button(show):
         hx_get="/show_hide/toggle?show=" + ("False" if show else "True"),
         hx_target="#content", id="toggle", hx_swap_oob="outerHTML")
 
-app.get('/')
+@app.get('/')
 def homepage():
     return Div(mk_button(False), Div(id="content"))
 

@@ -4,12 +4,12 @@ from pathlib import Path
 
 from importlib import import_module
 
-links = [
+links = (
     Link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css", type="text/css"),
     *HighlightJS(langs=['python', 'javascript', 'html', 'css']),
     MarkdownJS(),
     Script(defer=True, data_domain="fasthtml.gallery", src="https://plausible-analytics-ce-production-9521.up.railway.app/js/script.js"),
-]
+)
 
 
 def create_display_page(dir_path, module_path):
@@ -60,9 +60,9 @@ def create_display_page(dir_path, module_path):
         )
     return app
 
-routes = []
-for dir_path in Path('examples/').glob('*'):
-    routes.append(Mount(f'/{dir_path.name}', create_display_page(str(dir_path), f'examples.{dir_path.name}.app')))
+routes = tuple(
+    Mount(f'/{p.name}', create_display_page(str(p), f'examples.{p.name}.app'))
+    for p in Path('examples/').glob('*'))
 
 app, rt = fast_app(hdrs=links, routes=routes)
 
@@ -117,4 +117,3 @@ def image_card(dir_path):
         style="margin-bottom: 20px;")
 
 serve()
-
