@@ -23,7 +23,7 @@ def homepage():
     chapter_dropdown = Select(
         *mk_opts('chapter', chapters),
         name='chapter',
-        hx_get='/cascading_dropdowns/lessons', hx_target='#lessons')
+        hx_get='/dynamic_user_interface/cascading_dropdowns/lessons', hx_target='#lessons')
 
     return Div(
         Div(

@@ -1,5 +1,5 @@
 from fasthtml.common import *
-import configparser, re
+import configparser, re, os
 from pathlib import Path
 
 from importlib import import_module
@@ -10,25 +10,24 @@ links = (
     Script(defer=True, data_domain="fasthtml.gallery", src="https://plausible-analytics-ce-production-9521.up.railway.app/js/script.js"),
 )
 
-
 def create_display_page(dir_path, module_path):
+    dir_path = Path(dir_path)
     def strip_parent_route(text, parent_route):
         htmx_route_methods = ['hx_get', 'hx_post', 'hx_delete', 'hx_put', 'hx_patch']
         for method in htmx_route_methods:
-            pattern = f'({method}=([\'"]))/({parent_route})(/[^\'"]*)\\2'
-            replacement = r'\1\4\2'
+            pattern = f'({method}=(f?[\'"]))/({parent_route})(/[^\'"]*)(\\2|\'|")'
+            replacement = r'\1\4\5'
             text = re.sub(pattern, replacement, text)
         return text
-
     _app_module = import_module(module_path)
     app = _app_module.app
 
     homepage = _app_module.homepage
     md = ''
-    if Path(f'{dir_path}/text.md').exists():
-        md = Div(Path(f'{dir_path}/text.md').read_text(),cls='marked')
+    if (dir_path/'text.md').exists():
+        md = Div((dir_path/'text.md').read_text(),cls='marked')
 
-    code = Pre(Code(strip_parent_route(Path(f'{dir_path}/app.py').read_text().strip(), Path(dir_path).name)))
+    code = Pre(Code(strip_parent_route((dir_path/'app.py').read_text().strip(), f"{dir_path.parts[1]}/{dir_path.parts[2]}")))
 
     dcls="col-xs-12 col-md-6 px-1"
     column1 = Div(
@@ -46,7 +45,7 @@ def create_display_page(dir_path, module_path):
     @app.route('/display')
     def get():
         return (
-            Title(f"FastHTML Gallery - {str(Path(dir_path).name).replace('_', ' ').title()}"),
+            Title(f"{dir_path.name.replace('_', ' ').title()}"),
             Div(
                 *tuple(links if MarkdownJS() in getattr(_app_module,'hdrs',[]) else links + (MarkdownJS(),)),                Div(
                     A("Back to Gallery",  href="/", style="margin-bottom: 20px;", cls="btn btn-primary"),
@@ -58,15 +57,32 @@ def create_display_page(dir_path, module_path):
         )
     return app
 
+def get_module_path(p):
+    return f'examples.{".".join(Path(p).parts[1:])}.app'
+
+def get_route(p):
+    return f"/{'/'.join(Path(p).parts[1:])}"
+
 routes = tuple(
-    Mount(f'/{p.name}', create_display_page(str(p), f'examples.{p.name}.app'))
-    for p in Path('examples/').glob('*'))
+    Mount(get_route(root), create_display_page(root,get_module_path(root)))
+    for root, _, files in os.walk('examples') if 'app.py' in files
+)
 
 app, rt = fast_app(hdrs=links, routes=routes)
 
 @rt("/")
 def get():
-    dir_paths = Path('examples/').glob('[!_]*')
+    dir_paths = tuple(Path(root) for root, _, files in os.walk('examples') if 'app.py' in files)
+    dir_paths = sorted(dir_paths, key=lambda path: path.parts[0])
+    dir_paths = {k: list(vs) for k, vs in groupby(dir_paths, key=lambda path: path.parts[1]).items()}
+    keys = ('widgets','dynamic_user_interface','application_layout')
+
+    def create_image_cards(n, ps):
+        return Div(
+            H2(n, style="color: #333; font-weight: 600; border-bottom: 2px solid #007bff; padding-bottom: 10px; margin-bottom: 20px;"),
+            Div(*[image_card(p) for p in ps], cls="row")
+        )
+
     toggle_script = Script("""
     function toggleAnimations() {
         const images = document.querySelectorAll('.card-img-top');
@@ -82,9 +98,13 @@ def get():
 
     return (Title("FastHTML Gallery"),
         Div(
-            H1("FastHTML Gallery"),
-            Button("Toggle Animations", onclick="toggleAnimations()", cls="btn btn-secondary mb-3"),
-            Div( *[image_card(i) for i in dir_paths], cls="row"),
+            Div(
+                H1("FastHTML Gallery", style="display: inline-block; margin-right: 20px;"),
+                Button("Toggle Animations", onclick="toggleAnimations()", cls="btn btn-secondary", style="vertical-align: middle;"),
+                style="display: flex; justify-content: space-between; align-items: center;"
+            ),
+            Hr(),
+            Div(*[create_image_cards(k.replace('_', ' ').title(), dir_paths.get(k)) for k in keys]),
             toggle_script,
             cls="container",
         )
@@ -108,7 +128,7 @@ def image_card(dir_path):
                     cls="card-body",
                     style="height: 150px; overflow: auto;"),
                 style="height: 350px;"),
-            href=f"/{dir_path.name}/display",
+            href=f"/{dir_path.parts[1]}/{dir_path.parts[2]}/display",
             cls="card-link",
             style="text-decoration: none; color: inherit;"),
         cls="col-xs-12 col-sm-6 col-md-4",

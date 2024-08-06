@@ -5,7 +5,7 @@ content = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit am
 
 def mk_button(show):
     return Button("Hide" if show else "Show",
-        hx_get="/show_hide/toggle?show=" + ("False" if show else "True"),
+        hx_get="/widgets/show_hide/toggle?show=" + ("False" if show else "True"),
         hx_target="#content", id="toggle", hx_swap_oob="outerHTML")
 
 @app.get('/')

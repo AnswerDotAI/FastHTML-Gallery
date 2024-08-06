@@ -5,7 +5,7 @@ app, rt = fast_app()
 @app.get('/')
 def homepage():
     return Titled('Try editing fields:', Grid(
-        Form(hx_post="/two_column_grid/submit", hx_target="#result", hx_trigger="input delay:200ms")(
+        Form(hx_post="/application_layout/two_column_grid/submit", hx_target="#result", hx_trigger="input delay:200ms")(
             Select(Option("One"), Option("Two"), id="select"),
             Input(value='j', id="name", placeholder="Name"),
             Input(value='h', id="email", placeholder="Email")),

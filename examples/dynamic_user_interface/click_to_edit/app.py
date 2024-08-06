@@ -11,7 +11,7 @@ def contact_view(firstName: str, lastName: str, email: str, inputs=False):
         Div(Label(Strong('Last Name: '), lastName)),
         Div(Label(Strong('Email: '), email)),
         Button('Click To Edit', 
-               hx_get=f'/click_to_edit/form?firstName={firstName}&lastName={lastName}&email={email}', 
+               hx_get=f'/dynamic_user_interface/click_to_edit/form?firstName={firstName}&lastName={lastName}&email={email}', 
                cls='btn primary'),
         hx_target='this',
         hx_swap='outerHTML'
@@ -43,8 +43,8 @@ def edit_contact(firstName: str, lastName: str, email: str):
             Input(type='email', name='email', value=email),
         ),
         Button('Submit', cls='btn'),
-        Button('Cancel', hx_get=f'/click_to_edit/contact?firstName={firstName}&lastName={lastName}&email={email}', cls='btn'),
-        hx_put='/click_to_edit/contact',
+        Button('Cancel', hx_get=f'/dynamic_user_interface/click_to_edit/contact?firstName={firstName}&lastName={lastName}&email={email}', cls='btn'),
+        hx_put='/dynamic_user_interface/click_to_edit/contact',
         hx_target='this',
         hx_swap='outerHTML'
     )
