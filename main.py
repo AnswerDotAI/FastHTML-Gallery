@@ -7,7 +7,6 @@ from importlib import import_module
 links = (
     Link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css", type="text/css"),
     *HighlightJS(langs=['python', 'javascript', 'html', 'css']),
-    MarkdownJS(),
     Script(defer=True, data_domain="fasthtml.gallery", src="https://plausible-analytics-ce-production-9521.up.railway.app/js/script.js"),
 )
 
@@ -16,8 +15,8 @@ def create_display_page(dir_path, module_path):
     def strip_parent_route(text, parent_route):
         htmx_route_methods = ['hx_get', 'hx_post', 'hx_delete', 'hx_put', 'hx_patch']
         for method in htmx_route_methods:
-            pattern = f'({method}=[\'\"])/{parent_route}(/[^\'\"]*)[\'\"]'
-            replacement = f'\\1\\2"'
+            pattern = f'({method}=([\'"]))/({parent_route})(/[^\'"]*)\\2'
+            replacement = r'\1\4\2'
             text = re.sub(pattern, replacement, text)
         return text
 
@@ -49,8 +48,7 @@ def create_display_page(dir_path, module_path):
         return (
             Title(f"FastHTML Gallery - {str(Path(dir_path).name).replace('_', ' ').title()}"),
             Div(
-                *links,
-                Div(
+                *tuple(links if MarkdownJS() in getattr(_app_module,'hdrs',[]) else links + (MarkdownJS(),)),                Div(
                     A("Back to Gallery",  href="/", style="margin-bottom: 20px;", cls="btn btn-primary"),
                     cls="d-flex align-items-center justify-content-between"
                 ),
