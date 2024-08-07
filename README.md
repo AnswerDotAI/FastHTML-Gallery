@@ -14,26 +14,27 @@ uvicorn main:app
 
 ### Adding an Example
 
-The best way to contribute is by adding examples to the gallery.  T
+The best way to contribute is by adding examples to the gallery.  There 2 options:
 
-1. Copy a project director and modify the contents to create your new example.  
-  + You must have a `homepage` function that generates the FastHTML for your app
-2. Optionally add a `text.md` file that will be rendered above the source code.  This is great for adding links to references, docs, etc.
-3. Verify it looks good by running `uvicorn main:app` in the root of this git repo
-
-> Your app will be submounted, meaning the `/blah` route will be `/{dir_name}/blah` in your HTMX get/post/etc attributes.  When using HTMX attributes (i.e., `hx-get` attribute), you will need to use the full path to the route after surmounting.  You can see an example of this in the `cascading_dropdowns` example application.
+1. **Easy way:**  Open an issue with a link to the app code (gist, file in a github repo, etc.), and I will add it.  I am completely fine with this, so if the full contribution way would take more time than you have do this!
+1. **Full Contribution Way:**  Open a PR with all the details needed for the site.  I can help through every step of this! 
+  + Copy a similar example directory and do a PR with all the details needed for the site
+  + **app.py**: Have a normal app, with 2 exceptions:
+      + You must have a `homepage` function that generates the main page.  You can use `app.get('/'); def homepage():` 
+      + Because the app will be submounted, `/` routes will be `/{dir_path}/` in your HTMX get/post/etc attributes.  You can see an example of this in the `cascading_dropdowns` example application.
+   + **text.md**: This is an optional markdown file.  Good for adding links to references, docs, attribution, etc.
+   + **metadata.ini**: Fill these out
+   + **img.png**:  An image of your app for the main page card
+   + **gif.gif**:  A gif of your app for the main page card (can be a copy of `img.png` if no dynamic content)
+  + Run `uvicorn main:app` in the root of this git repo and check:
+    + The main page card looks good (both in animations mode and not)
+    + Your app works.  If not, it's possible the submounting routes thing above!
 
 ### Other Contributions
 
+See issues for different things that need to be done to improve the project.
+
 If you have any suggestions for improving this project, please open an issue, submit a pull request, or contact me on the FastHTML discord server.
-
-The current top priority for improvement:
-
-+ Add more examples.  Ones you've found practically helpful are best.  But also:
-  + Stuff from https://htmx.org/examples/
-  + Login/Signup/Auth stuff
-  + Connection to a database
-  + More stuff from the docs
 
 Things on the list to do someday (PRs or discussions are welcome!).
 
