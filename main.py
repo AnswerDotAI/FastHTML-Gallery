@@ -9,7 +9,6 @@ links = (
     Link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css", type="text/css"),
     *HighlightJS(langs=['python', 'javascript', 'html', 'css']),
     Script(defer=True, data_domain="fasthtml.gallery", src="https://plausible-analytics-ce-production-9521.up.railway.app/js/script.js"),
-    *Socials(title='FastHTML Gallery', description=descr, site_name='fasthtml.gallery', twitter_site='@isaac_flath', image=f'/social.png', url='')
 )
 
 def create_display_page(dir_path, module_path):
@@ -46,9 +45,14 @@ def create_display_page(dir_path, module_path):
 
     @app.route('/display')
     def get():
+        metadata = configparser.ConfigParser()
+        metadata.read(dir_path/'metadata.ini')
+        meta = metadata['REQUIRED']
+        
         return (
-            Title(f"{dir_path.name.replace('_', ' ').title()}"),
+            Title(meta['ComponentName']),
             Div(
+                *Socials(title=meta['ComponentName'], description=meta['ComponentDescription'], site_name='fasthtml.gallery', twitter_site='@isaac_flath', image=f"{(dir_path/'img.png')}", url=''),
                 *tuple(links if MarkdownJS() in getattr(_app_module,'hdrs',[]) else links + (MarkdownJS(),)),                Div(
                     A("Back to Gallery",  href="/", style="margin-bottom: 20px;", cls="btn btn-primary"),
                     cls="d-flex align-items-center justify-content-between"
@@ -70,7 +74,7 @@ routes = tuple(
     for root, _, files in os.walk('examples') if 'app.py' in files
 )
 
-app, rt = fast_app(hdrs=links, routes=routes)
+app, rt = fast_app(hdrs=links+(*Socials(title='FastHTML Gallery', description=descr, site_name='fasthtml.gallery', twitter_site='@isaac_flath', image=f'/social.png', url=''),), routes=routes)
 
 @rt("/")
 def get():
