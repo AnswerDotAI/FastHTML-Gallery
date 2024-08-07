@@ -18,17 +18,17 @@ The best way to contribute is by adding examples to the gallery.  There 2 option
 
 1. **Easy way:**  Open an issue with a link to the app code (gist, file in a github repo, etc.), and I will add it.  I am completely fine with this, so if the full contribution way would take more time than you have do this!
 1. **Full Contribution Way:**  Open a PR with all the details needed for the site.  I can help through every step of this! 
-  + Copy a similar example directory and do a PR with all the details needed for the site
-  + **app.py**: Have a normal app, with 2 exceptions:
-      + You must have a `homepage` function that generates the main page.  You can use `app.get('/'); def homepage():` 
-      + Because the app will be submounted, `/` routes will be `/{dir_path}/` in your HTMX get/post/etc attributes.  You can see an example of this in the `cascading_dropdowns` example application.
-   + **text.md**: This is an optional markdown file.  Good for adding links to references, docs, attribution, etc.
-   + **metadata.ini**: Fill these out
-   + **img.png**:  An image of your app for the main page card
-   + **gif.gif**:  A gif of your app for the main page card (can be a copy of `img.png` if no dynamic content)
-  + Run `uvicorn main:app` in the root of this git repo and check:
-    + The main page card looks good (both in animations mode and not)
-    + Your app works.  If not, it's possible the submounting routes thing above!
+    + Copy a similar example directory and do a PR with all the details needed for the site
+      + **app.py**: Have a normal app, with 2 exceptions:
+          + You must have a `homepage` function that generates the main page.  You can use `app.get('/'); def homepage():` 
+          + Because the app will be submounted, `/` routes will be `/{dir_path}/` in your HTMX get/post/etc attributes.  You can see an example of this in the `cascading_dropdowns` example application.
+       + **text.md**: This is an optional markdown file.  Good for adding links to references, docs, attribution, etc.
+       + **metadata.ini**: Fill these out
+       + **img.png**:  An image of your app for the main page card
+       + **gif.gif**:  A gif of your app for the main page card (can be a copy of `img.png` if no dynamic content)
+    + Run `uvicorn main:app` in the root of this git repo and check:
+        + The main page card looks good (both in animations mode and not)
+        + Your app works.  If not, it's possible the submounting routes thing above!
 
 ### Other Contributions
 
