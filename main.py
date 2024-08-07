@@ -48,11 +48,10 @@ def create_display_page(dir_path, module_path):
         metadata = configparser.ConfigParser()
         metadata.read(dir_path/'metadata.ini')
         meta = metadata['REQUIRED']
-        
         return (
             Title(meta['ComponentName']),
             Div(
-                *Socials(title=meta['ComponentName'], description=meta['ComponentDescription'], site_name='fasthtml.gallery', twitter_site='@isaac_flath', image=f"{(dir_path/'img.png')}", url=''),
+                *Socials(title=meta['ComponentName'], description=meta['ComponentDescription'], site_name='fasthtml.gallery', twitter_site='@isaac_flath', image=f"/{(dir_path/'img.png')}", url=''),
                 *tuple(links if MarkdownJS() in getattr(_app_module,'hdrs',[]) else links + (MarkdownJS(),)),                Div(
                     A("Back to Gallery",  href="/", style="margin-bottom: 20px;", cls="btn btn-primary"),
                     cls="d-flex align-items-center justify-content-between"
@@ -129,8 +128,8 @@ def image_card(dir_path):
                     style="height: 200px; overflow: hidden;"
                 ),
                 Div(
-                    H3(meta['ComponentName'][1:-1], cls="card-title"),
-                    P(meta['ComponentDescription'][1:-1], cls="card-text"),
+                    H3(meta['ComponentName'], cls="card-title"),
+                    P(meta['ComponentDescription'], cls="card-text"),
                     cls="card-body",
                     style="height: 150px; overflow: auto;"),
                 style="height: 350px;"),
