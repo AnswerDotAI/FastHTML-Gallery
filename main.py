@@ -51,7 +51,8 @@ def create_display_page(dir_path, module_path):
         return (
             Title(meta['ComponentName']),
             Div(
-                *Socials(title=meta['ComponentName'], description=meta['ComponentDescription'], site_name='fasthtml.gallery', twitter_site='@isaac_flath', image=f"/{(dir_path/'img.png')}", url=''),
+                *Socials(title=meta['ComponentName'], description=meta['ComponentDescription'],
+                         site_name='fasthtml.gallery', twitter_site='@isaac_flath', image=f"/{dir_path/'img.png'}", url=''),
                 *tuple(links if MarkdownJS() in getattr(_app_module,'hdrs',[]) else links + (MarkdownJS(),)),                Div(
                     A("Back to Gallery",  href="/", style="margin-bottom: 20px;", cls="btn btn-primary"),
                     cls="d-flex align-items-center justify-content-between"
