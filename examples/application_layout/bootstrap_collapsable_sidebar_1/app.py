@@ -14,9 +14,9 @@ def SidebarItem(text, hx_get, hx_target, **kwargs):
     return Div(
         I(cls=f'bi bi-{text}'),
         Span(text),
-        cls='list-group-item border-end-0 d-inline-block text-truncate',
         hx_get=hx_get, hx_target=hx_target,
-        data_bs_parent='#sidebar',
+        data_bs_parent='#sidebar', role='button',
+        cls='list-group-item border-end-0 d-inline-block text-truncate',
         **kwargs)
 
 def Sidebar(sidebar_items, hx_get, hx_target):
