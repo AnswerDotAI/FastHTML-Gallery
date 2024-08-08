@@ -4,6 +4,7 @@ from importlib import import_module
 from fasthtml.common import *
 import configparser
 from utils import *
+import fh_bootstrap as bs
 
 links = (
     Link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css", type="text/css"),
@@ -17,23 +18,26 @@ def image_card_examples(dir_path):
     meta = metadata['REQUIRED']
 
     return Div(
-        A(
-            Card(
-                Div(
-                    Img(src=dir_path/'gif.gif', alt=meta['ImageAltText'], cls="card-img-top", data_png=dir_path/'img.png'),
+        Div(
+            Div(
+                A(Img(
+                    src=f"{'/files'/dir_path/'gif.gif'}", alt=meta['ImageAltText'], 
+                    cls="card-img-top border",
+                    style="width: 100%; height: 100%; object-fit: cover;",
+                    data_png=f"{'/files'/dir_path/'img.png'}"), 
+                    href=f"/{dir_path.parts[1]}/{dir_path.parts[2]}/display",),
                     style="height: 200px; overflow: hidden;"
                 ),
                 Div(
-                    H3(meta['ComponentName'], cls="card-title"),
-                    P(meta['ComponentDescription'], cls="card-text"),
-                    cls="card-body",
-                    style="height: 150px; overflow: auto;"),
-                style="height: 350px;"),
-            href=f"/{dir_path.parts[1]}/{dir_path.parts[2]}/display",
-            cls="card-link",
-            style="text-decoration: none; color: inherit;"),
-        cls="col-xs-12 col-sm-6 col-md-4",
-        style="margin-bottom: 20px;")
+                H5(meta['ComponentName'], cls="card-title fw-bold"),
+                P(meta['ComponentDescription'], cls="card-text text-muted"),
+                cls="card-body d-flex flex-column",
+                style="height: 150px; overflow: auto;"
+            ),
+            cls="card h-100 shadow-sm",
+        ),
+        cls="col-lg-4 col-md-6 col-sm-12 mb-4"
+    )
 
 
 def create_display_page(dir_path, module_path):
@@ -70,8 +74,7 @@ def create_display_page(dir_path, module_path):
         return (
             Title(meta['ComponentName']),
             Div(
-                *Socials(title=meta['ComponentName'], description=meta['ComponentDescription'],
-                         site_name='fasthtml.gallery', twitter_site='@isaac_flath', image=f"/{dir_path/'img.png'}", url=''),
+                *Socials(title=meta['ComponentName'], description=meta['ComponentDescription'], site_name='fasthtml.gallery', twitter_site='@isaac_flath', image=f"/{dir_path/'img.png'}", url=''),
                 *tuple(links if MarkdownJS() in getattr(_app_module,'hdrs',[]) else links + (MarkdownJS(),)),
                 Div(
                     A("Back to Gallery",  href="/", style="margin-bottom: 20px;", cls="btn btn-primary"),
@@ -83,7 +86,7 @@ def create_display_page(dir_path, module_path):
         )
     return app
 
-examples_routes = tuple(
+examples_routes = [
     Mount(get_route(root), create_display_page(root,get_module_path(root,'examples')))
     for root, _, files in os.walk('examples') if 'app.py' in files
-)
+]
