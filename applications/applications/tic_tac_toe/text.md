@@ -1,8 +1,8 @@
 # Tic Tac Toe Web App
 
-This project is a web-based implementation of the classic Tic Tac Toe game using FastHTML, HTMX, and Tailwind CSS built by Adedara Adeloro. It demonstrates modern web development techniques with a focus on server-side rendering and minimal JavaScript.
+This project is a web-based implementation of the classic Tic Tac Toe game built by Adedara Adeloro using FastHTML, HTMX, and Tailwind CSS.
 
-The build steps from the original project were simplifed to use CDNs for the FastHTML Gallery examples.  To check out the original project, click [here](https://github.com/TechBroAdedara/TicTacToe-with-FastHTML)
+The build steps from the original project were simplifed to use CDNs for the FastHTML Gallery version.  To check out the original project, click [here](https://github.com/TechBroAdedara/TicTacToe-with-FastHTML)
 
 ## Key Technologies and Techniques
 
