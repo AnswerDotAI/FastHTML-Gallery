@@ -1,20 +1,15 @@
 from fasthtml.common import *
+import pandas as pd
 from typing import List, Tuple, NamedTuple
-import uuid
+
+people = pd.read_csv("examples/dynamic_user_interface/infinite_scroll/people-1000.csv", index_col=0)
 
 class PaginatedTable(NamedTuple):
     rows: List[Tr]
     next_page: int
     end_reached: bool
 
-def generate_contact(id: int) -> dict:
-    return {'name': 'Agent Smith',
-            'email': f'void{str(id)}@matrix.com',
-            'phone': f'555-1234-{str(id)}',
-            'id': str(uuid.uuid4())
-            }
-
-def create_table_row(row_data: dict, is_header: bool = False) -> Tr:
+def create_table_row(row_data: pd.Series, is_header: bool = False) -> Tr:
     cell_type = Th if is_header else Td
     return Tr(*[cell_type(str(field)) for field in row_data])
 
