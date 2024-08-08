@@ -20,24 +20,29 @@ def image_card_examples(dir_path):
     return Div(
         Div(
             Div(
-                A(Img(
+                Img(
                     src=f"{'/files'/dir_path/'gif.gif'}", alt=meta['ImageAltText'], 
                     cls="card-img-top border",
                     style="width: 100%; height: 100%; object-fit: cover;",
                     data_png=f"{'/files'/dir_path/'img.png'}"), 
-                    href=f"/{dir_path.parts[1]}/{dir_path.parts[2]}/display",),
                     style="height: 200px; overflow: hidden;"
                 ),
                 Div(
-                H5(meta['ComponentName'], cls="card-title fw-bold"),
-                P(meta['ComponentDescription'], cls="card-text text-muted"),
-                cls="card-body d-flex flex-column",
-                style="height: 150px; overflow: auto;"
+                    H5(meta['ComponentName'], cls="card-title fw-bold"),
+                    P(meta['ComponentDescription'], cls="card-text text-muted"),
+                    cls="card-body d-flex flex-column",
+                    style="height: 150px; overflow: auto;",
+                    
             ),
             cls="card h-100 shadow-sm",
         ),
-        cls="col-lg-4 col-md-6 col-sm-12 mb-4"
+        A(href=f"/{dir_path.parts[1]}/{dir_path.parts[2]}/display", cls='stretched-link'),
+        cls="col-lg-4 col-md-6 col-sm-12 mb-4",
+        style="transform: rotate(0); transition: transform 0.3s ease;",
+        onmouseover="this.style.transform='scale(1.05)';",
+        onmouseout="this.style.transform='scale(1)';"
     )
+
 
 
 def create_display_page(dir_path, module_path):
