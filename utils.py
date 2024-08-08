@@ -14,9 +14,12 @@ def get_route(p,ext=None):
 
 def create_image_cards(n, ps, image_card_fn):
     return Div(
-        H2(n, style="color: #333; font-weight: 600; border-bottom: 2px solid #007bff; padding-bottom: 10px; margin-bottom: 20px;"),
+        Div(
+            H2(n, cls="display-4 text-primary mb-4"),
+            cls="text-center py-2 bg-light my-4"
+        ),
         Div(*[image_card_fn(p) for p in ps], cls="row")
-)
+    )
 
 
 def get_social_links(dir_path):
