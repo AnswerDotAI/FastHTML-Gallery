@@ -4,7 +4,6 @@ from importlib import import_module
 import configparser
 from fasthtml.components import Zero_md
 
-
 application_routes = []
 for root, dirs, files in os.walk('applications'):
     if 'app.py' in files:
@@ -18,29 +17,28 @@ def image_card_applications(dir_path):
     dpath = dir_path.parts[1]+'/'+dir_path.parts[2]
 
     return Div(
-        Card(
+        Div(
             Div(
-                A(Img(src=f"{'/files'/dir_path/'gif.gif'}", alt=meta['ImageAltText'], cls="card-img-top", data_png=f"{'/files'/dir_path/'img.png'}"), href=f"/{dpath}/app", target="_blank"),
-                style="height: 200px; overflow: hidden; position: relative;"
+                A(Img(
+                    src=f"{'/files'/dir_path/'gif.gif'}", alt=meta['ImageAltText'], 
+                    cls="card-img-top",
+                    data_png=f"{'/files'/dir_path/'img.png'}"), 
+                    href=f"/{dpath}/app", target="_blank"),
             ),
             Div(
-                H3(meta['ComponentName'], cls="card-title", style="font-size: 1.2rem; margin-bottom: 0.5rem;"),
-                P(meta['ComponentDescription'], cls="card-text", style="font-size: 0.9rem; color: #666;"),
+                H5(meta['ComponentName'], cls="card-title"),
+                P(meta['ComponentDescription'], cls="card-text"),
                 cls="card-body",
-                style="height: 120px; overflow: auto;"
             ),
             Div(
-                A(Button("App", cls="btn btn-primary btn-sm"), href=f"/{dpath}/app", style="text-decoration: none;",target="_blank"),
-                A(Button("Code", cls="btn btn-outline-secondary btn-sm"), href=f"/{dpath}/code", style="text-decoration: none;"),
-                A(Button("Info", cls="btn btn-outline-info btn-sm"), href=f"/{dpath}/info", style="text-decoration: none;"),
-                cls="card-footer bg-transparent",
-                style="display: flex; justify-content: space-between; padding: 0.75rem 1.25rem;"
+                A(Button("App", cls="btn btn-primary btn-sm"), href=f"/{dpath}/app", target="_blank"),
+                A(Button("Code", cls="btn btn-secondary btn-sm"), href=f"/{dpath}/code"),
+                A(Button("Info", cls="btn btn-info btn-sm"), href=f"/{dpath}/info"),
+                cls="card-footer d-flex justify-content-between"
             ),
-            style="height: 400px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); transition: all 0.3s ease;",
-            cls="h-100"
+            cls="card",
         ),
-        cls="col-xs-12 col-sm-6 col-md-4",
-        style="margin-bottom: 20px; padding: 0 10px;"
+        cls="col-lg-4 col-md-6 col-sm-12 mb-4"
     )
 
 def render_application_code(dir_path):
@@ -57,7 +55,7 @@ def render_application_code(dir_path):
         Head(
             *hdrs,
             Title(f"{dir_path.parts[1]}/{dir_path.parts[2]} - Code"),
-            
+
         ),
         Body(
             Pre(Code(code_text, cls='language-python'))

@@ -24,7 +24,9 @@ def homepage():
         *HighlightJS(langs=['python', 'javascript', 'html', 'css']),
         Script(defer=True, data_domain="fasthtml.gallery", src="https://plausible-analytics-ce-production-9521.up.railway.app/js/script.js"),
         *Socials(title='FastHTML Gallery', description=descr, site_name='fasthtml.gallery', twitter_site='@isaac_flath', image=f'/social.png', url=''),
-        toggle_script
+        toggle_script,
+        Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css", integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC", crossorigin="anonymous"),  
+        Script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js", integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM", crossorigin="anonymous"),
     )
 
     ### EXAMPLE CARDS ###
@@ -59,8 +61,5 @@ def homepage():
             cls="container",
         )
     )
-
-
-
 
 serve()
