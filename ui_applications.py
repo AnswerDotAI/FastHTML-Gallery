@@ -45,13 +45,11 @@ def image_card_applications(dir_path):
 
 def render_application_code(dir_path):
     hdrs = (
-        *HighlightJS(langs=['python', 'javascript', 'html', 'css']),
-    )
-    hdrs = (
         Link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css"),
         Script(src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"),
         Script(src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"),
-        Script('hljs.highlightAll();')
+        Script('hljs.highlightAll();'),
+        *get_social_links(dir_path)
     )
     code_text = (dir_path/'app.py').read_text().strip()
     code_text = strip_parent_route(code_text, f"{dir_path.parts[1]}/{dir_path.parts[2]}/app")
@@ -66,13 +64,13 @@ def render_application_code(dir_path):
         )
     )
 
-
 def render_application_markdown(dir_path):
     code_text = (dir_path/'text.md').read_text()
     return Html(
         Head(
             Script(type="module", src="https://cdn.jsdelivr.net/npm/zero-md@3?register"),
             Title(f"{dir_path.parts[1]}/{dir_path.parts[2]} - Info"),
+            *get_social_links(dir_path)
         ),
         Body(
             Zero_md(Script(code_text, type="text/markdown")),

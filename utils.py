@@ -1,7 +1,8 @@
 from pathlib import Path
 from fasthtml.common import *
+from configparser import ConfigParser
 
-__all__ = ['get_module_path','get_route','create_image_cards','toggle_script','strip_parent_route']
+__all__ = ['get_module_path','get_route','create_image_cards','toggle_script','strip_parent_route','get_social_links']
 
 def get_module_path(p,base_dir):
     return f'{base_dir}.{".".join(Path(p).parts[1:])}.app'
@@ -16,6 +17,15 @@ def create_image_cards(n, ps, image_card_fn):
         H2(n, style="color: #333; font-weight: 600; border-bottom: 2px solid #007bff; padding-bottom: 10px; margin-bottom: 20px;"),
         Div(*[image_card_fn(p) for p in ps], cls="row")
 )
+
+
+def get_social_links(dir_path):
+    metadata = ConfigParser()
+    metadata.read(dir_path/'metadata.ini')
+    meta = metadata['REQUIRED']
+    return Socials(title=meta['ComponentName'], description=meta['ComponentDescription'], site_name='fasthtml.gallery', twitter_site='@isaac_flath', image=f"/{dir_path/'img.png'}", url='')
+
+
 
 
 toggle_script = Script("""

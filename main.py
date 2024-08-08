@@ -41,8 +41,9 @@ def homepage():
     application_section_names = ('applications',)
     applications_sections = Div(*[create_image_cards(k.replace('_', ' ').title(), application_directories.get(k), image_card_applications) for k in application_section_names])
 
-    ### COMBINE ###
-    return Html(
+    ### COMBINE###
+    # Return HTML as standard so I can have better control of headers to prevent conflict between submounted app headers and gallery headers
+    return Html( 
         Head(
             Title("FastHTML Gallery"),
             *hdrs,
