@@ -9,8 +9,6 @@ application_routes = []
 for root, dirs, files in os.walk('applications'):
     if 'app.py' in files:
         application_routes.append(Mount(get_route(root,'app'), import_module(get_module_path(root,'applications')).app))
-    if 'static' in dirs:
-        application_routes.append(Mount(get_route(root,'static'), StaticFiles(directory=f"applications{get_route(root,'static')}")))
 
 def image_card_applications(dir_path):
     metadata = configparser.ConfigParser()
@@ -22,7 +20,7 @@ def image_card_applications(dir_path):
     return Div(
         Card(
             Div(
-                A(Img(src=dir_path/'gif.gif', alt=meta['ImageAltText'], cls="card-img-top", data_png=dir_path/'img.png'), href=f"/{dpath}/app", target="_blank"),
+                A(Img(src=f"{'/files'/dir_path/'gif.gif'}", alt=meta['ImageAltText'], cls="card-img-top", data_png=f"{'/files'/dir_path/'img.png'}"), href=f"/{dpath}/app", target="_blank"),
                 style="height: 200px; overflow: hidden; position: relative;"
             ),
             Div(
@@ -44,8 +42,6 @@ def image_card_applications(dir_path):
         cls="col-xs-12 col-sm-6 col-md-4",
         style="margin-bottom: 20px; padding: 0 10px;"
     )
-
-
 
 def render_application_code(dir_path):
     hdrs = (

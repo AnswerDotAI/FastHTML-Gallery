@@ -20,7 +20,7 @@ def image_card_examples(dir_path):
         A(
             Card(
                 Div(
-                    Img(src=dir_path/'gif.gif', alt=meta['ImageAltText'], cls="card-img-top", data_png=dir_path/'img.png'),
+                    Img(src=f"{'/files'/dir_path/'gif.gif'}", alt=meta['ImageAltText'], cls="card-img-top", data_png=f"{'/files'/dir_path/'img.png'}"),
                     style="height: 200px; overflow: hidden;"
                 ),
                 Div(
