@@ -16,7 +16,7 @@ def image_card_applications(dir_path):
     return Div(
         Card(
             Div(
-                A(Img(src=dir_path/'gif.gif', alt=meta['ImageAltText'], cls="card-img-top", data_png=dir_path/'img.png'), href=f"/{dir_path.parts[1]}/{dir_path.parts[2]}/app"),
+                A(Img(src=dir_path/'gif.gif', alt=meta['ImageAltText'], cls="card-img-top", data_png=dir_path/'img.png'), href=f"/{dir_path.parts[1]}/{dir_path.parts[2]}/app", target="_blank"),
                 style="height: 200px; overflow: hidden; position: relative;"
             ),
             Div(
@@ -26,9 +26,9 @@ def image_card_applications(dir_path):
                 style="height: 120px; overflow: auto;"
             ),
             Div(
-                A(Button("App", cls="btn btn-primary btn-sm"), href=f"/{dir_path.parts[1]}/{dir_path.parts[2]}/app", style="text-decoration: none;"),
+                A(Button("App", cls="btn btn-primary btn-sm"), href=f"/{dir_path.parts[1]}/{dir_path.parts[2]}/app", style="text-decoration: none;",target="_blank"),
                 A(Button("Code", cls="btn btn-outline-secondary btn-sm"), href=f"/{dir_path.parts[1]}/{dir_path.parts[2]}/code", style="text-decoration: none;"),
-                A(Button("Info", cls="btn btn-outline-info btn-sm"), href=f"/{dir_path.parts[1]}/{dir_path.parts[2]}", style="text-decoration: none;"),
+                A(Button("Info", cls="btn btn-outline-info btn-sm"), href=f"/{dir_path.parts[1]}/{dir_path.parts[2]}/info", style="text-decoration: none;"),
                 cls="card-footer bg-transparent",
                 style="display: flex; justify-content: space-between; padding: 0.75rem 1.25rem;"
             ),

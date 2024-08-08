@@ -51,7 +51,7 @@ def get():
 dir_paths = tuple(Path(root) for root, _, files in os.walk('applications') if 'app.py' in files)
 for dir_path in dir_paths:
     app.add_route(get_route(dir_path,'code'), render_application_code(dir_path))
-    app.add_route(get_route(dir_path), render_application_markdown(dir_path))
+    app.add_route(get_route(dir_path,'info'), render_application_markdown(dir_path))
 
 
 
