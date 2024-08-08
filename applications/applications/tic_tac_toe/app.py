@@ -68,7 +68,7 @@ def check_win(player) -> bool:
         winner_found_game_ended = True
         return "No Winner :("
     
-    return f"Player {"X" if player == "O" else "O"}'s turn!" 
+    return f'''Player {'X' if player == 'O' else 'O'}'s turn!'''
     #will keep returning this value [because its called after every button click], until a winner or none is found
 
 
@@ -100,7 +100,7 @@ def render_button(index:int):
     winner = check_win(player)  # function that checks if there's a winner
 
     buttons = [ Button(
-            f"{text if text is not None else "." }", 
+            f'''{text if text is not None else '.' }''', 
             cls="tic-button-disabled" if (text is not None) or winner_found_game_ended else "tic-button",
             hx_get=f"/applications/tic_tac_toe/app/on_click?index={idx}",
             disabled=True if (text is not None) or winner_found_game_ended else False,

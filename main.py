@@ -13,7 +13,6 @@ links = (
     *HighlightJS(langs=['python', 'javascript', 'html', 'css']),
     Script(defer=True, data_domain="fasthtml.gallery", src="https://plausible-analytics-ce-production-9521.up.railway.app/js/script.js"),
 )
-print(applications_routes)
 app, rt = fast_app(hdrs=links+(*Socials(title='FastHTML Gallery', description=descr, site_name='fasthtml.gallery', twitter_site='@isaac_flath', image=f'/social.png', url=''),), 
                    routes=examples_routes+applications_routes)
 
