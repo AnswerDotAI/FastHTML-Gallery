@@ -3,23 +3,13 @@ import configparser, re, os
 from pathlib import Path
 
 from utils import *
-from ui_applications import applications_routes, image_card_applications, render_application_code, render_application_markdown
+from ui_applications import application_routes, image_card_applications, render_application_code, render_application_markdown
 from ui_examples import examples_routes, image_card_examples
 
 descr = 'A gallery of FastHTML components showing common patterns in FastHTML apps, including chat bubbles, cascading dropdowns, interactive charts, etc.'
 
 
-# This is a standalone static files server:
-app = StaticFiles(directory="applications/applications/tic_tac_toe/static")
-
-# This is a static files server mounted within a Starlette application,
-# underneath the "/static" path.
-sf = (
-    Mount("/applications/applications/tic_tac_toe/static/", app=StaticFiles(directory="applications/applications/tic_tac_toe/static"), name="static"),
-)
-
-
-app = FastHTML(routes=examples_routes+applications_routes+sf)
+app = FastHTML(routes=examples_routes+application_routes)
 
 @app.get("/")
 def homepage():

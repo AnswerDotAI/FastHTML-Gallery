@@ -5,10 +5,12 @@ import configparser
 from fasthtml.components import Zero_md
 
 
-applications_routes = tuple(
-    Mount(get_route(root,'app'), import_module(get_module_path(root,'applications')).app)
-    for root, _, files in os.walk('applications') if 'app.py' in files
-)
+application_routes = []
+for root, _, files in os.walk('applications'):
+    if 'app.py' in files:
+        application_routes.append(Mount(get_route(root,'app'), import_module(get_module_path(root,'applications')).app))
+        if 'static' in files:
+            application_routes.append(Mount(get_route(root,'static'), StaticFiles(directory=get_route(root,'static'))))
 
 
 def image_card_applications(dir_path):
