@@ -19,18 +19,18 @@ app, rt = fast_app(hdrs=links+(*Socials(title='FastHTML Gallery', description=de
 @rt("/")
 def get():
     ### EXAMPLES ###
-    dir_paths = tuple(Path(root) for root, _, files in os.walk('examples') if 'app.py' in files)
-    dir_paths = sorted(dir_paths, key=lambda path: path.parts[0])
-    dir_paths = {k: list(vs) for k, vs in groupby(dir_paths, key=lambda path: path.parts[1]).items()}
-    keys = ('widgets','dynamic_user_interface','application_layout')
-    examples_sections = Div(*[create_image_cards(k.replace('_', ' ').title(), dir_paths.get(k), image_card_examples) for k in keys])
+    example_directories = tuple(Path(root) for root, _, files in os.walk('examples') if 'app.py' in files)
+    example_directories = sorted(example_directories, key=lambda path: path.parts[0])
+    example_directories = {k: list(vs) for k, vs in groupby(example_directories, key=lambda path: path.parts[1]).items()}
+    example_section_names = ('widgets','dynamic_user_interface','application_layout')
+    examples_sections = Div(*[create_image_cards(k.replace('_', ' ').title(), example_directories.get(k), image_card_examples) for k in example_section_names])
 
     ### APPLICATIONS ###
-    dir_paths = tuple(Path(root) for root, _, files in os.walk('applications') if 'app.py' in files)
-    dir_paths = sorted(dir_paths, key=lambda path: path.parts[0])
-    dir_paths = {k: list(vs) for k, vs in groupby(dir_paths, key=lambda path: path.parts[1]).items()}
-    keys = ('applications',)
-    applications_sections = Div(*[create_image_cards(k.replace('_', ' ').title(), dir_paths.get(k), image_card_applications) for k in keys])
+    application_directories = tuple(Path(root) for root, _, files in os.walk('applications') if 'app.py' in files)
+    application_directories = sorted(application_directories, key=lambda path: path.parts[0])
+    application_directories = {k: list(vs) for k, vs in groupby(application_directories, key=lambda path: path.parts[1]).items()}
+    application_section_names = ('applications',)
+    applications_sections = Div(*[create_image_cards(k.replace('_', ' ').title(), application_directories.get(k), image_card_applications) for k in application_section_names])
 
     ### COMBINE ###
     return (Title("FastHTML Gallery"),
@@ -48,8 +48,8 @@ def get():
         )
     )
 
-dir_paths = tuple(Path(root) for root, _, files in os.walk('applications') if 'app.py' in files)
-for dir_path in dir_paths:
+application_directories = tuple(Path(root) for root, _, files in os.walk('applications') if 'app.py' in files)
+for dir_path in application_directories:
     app.add_route(get_route(dir_path,'code'), render_application_code(dir_path))
     app.add_route(get_route(dir_path,'info'), render_application_markdown(dir_path))
 
