@@ -23,7 +23,7 @@ style = Style(
 
 hdrs = ( Script(src="https://cdn.tailwindcss.com") ,
         Script(src="https://unpkg.com/htmx.org@2.0.1", integrity="sha384-QWGpdj554B4ETpJJC9z+ZHJcA/i59TyjxEPXiiUgN2WmTyV5OEZWCD6gQhgkdpB/", crossorigin="anonymous"),
-        Link(rel="stylesheet", href="/applications/applications/tic_tac_toe/output.css"),
+        Link(rel="stylesheet", href="/applications/applications/tic_tac_toe/static/output.css"),
 
         )
 app, rt = fast_app(
