@@ -29,35 +29,30 @@ def homepage():
         Script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js", integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM", crossorigin="anonymous"),
     )
 
-    ### EXAMPLE CARDS ###
-    example_directories = tuple(Path(root) for root, _, files in os.walk('examples') if 'app.py' in files)
-    example_directories = sorted(example_directories, key=lambda path: path.parts[0])
-    example_directories = {k: list(vs) for k, vs in groupby(example_directories, key=lambda path: path.parts[1]).items()}
-    example_section_names = ('widgets','dynamic_user_interface','application_layout')
-    examples_sections = Div(*[create_image_cards(k.replace('_', ' ').title(), example_directories.get(k), image_card_examples) for k in example_section_names])
-
-    ### APPLICATION CARDS ###
-    application_directories = tuple(Path(root) for root, _, files in os.walk('applications') if 'app.py' in files)
-    application_directories = sorted(application_directories, key=lambda path: path.parts[0])
-    application_directories = {k: list(vs) for k, vs in groupby(application_directories, key=lambda path: path.parts[1]).items()}
-    application_section_names = ('applications',)
-    applications_sections = Div(*[create_image_cards(k.replace('_', ' ').title(), application_directories.get(k), image_card_applications) for k in application_section_names])
-
+    def get_sections(path, section_names, card_fn):
+        directories = tuple(Path(root) for root, _, files in os.walk(path) if 'app.py' in files)
+        directories = sorted(directories, key=lambda path: path.parts[0])
+        directories = {k: list(vs) for k, vs in groupby(directories, key=lambda path: path.parts[1]).items()}
+        return Div(*[create_image_cards(k.replace('_', ' ').title(), directories.get(k), card_fn) for k in section_names])
+        
     ### COMBINE###
-    # Return HTML as standard so I can have better control of headers to prevent conflict between submounted app headers and gallery headers
+    # Return HTML as standard so I can have better control of headers to minimze conflict between submounted app headers and gallery headers
     return Html( 
         Head(
             Title("FastHTML Gallery"),
             *hdrs,
         ),
         Body(
-            Div(
-                H1("FastHTML Gallery", style="display: inline-block; margin-right: 20px;"),
-                Button("Toggle Animations", onclick="toggleAnimations()", cls="btn btn-secondary", style="vertical-align: middle;"),
-                style="display: flex; justify-content: space-between; align-items: center;"
-            ),            Hr(),
-            examples_sections,
-            applications_sections,
+            Nav(
+                Div(
+                    H1("FastHTML Gallery", cls="navbar-brand mb-0 h1"),
+                    Button("Toggle Animations", onclick="toggleAnimations()", cls="btn btn-outline-primary", type="button"),
+                    cls="container-fluid d-flex justify-content-between align-items-center"
+                ),
+                cls="navbar navbar-expand-lg navbar-light bg-light mb-4"
+            ),
+            get_sections('examples', ('widgets','dynamic_user_interface','application_layout'), image_card_examples),
+            get_sections('applications', ('applications',), image_card_applications),
             cls="container",
         )
     )
