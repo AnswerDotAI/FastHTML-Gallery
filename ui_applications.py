@@ -6,12 +6,11 @@ from fasthtml.components import Zero_md
 
 
 application_routes = []
-for root, _, files in os.walk('applications'):
+for root, dirs, files in os.walk('applications'):
     if 'app.py' in files:
         application_routes.append(Mount(get_route(root,'app'), import_module(get_module_path(root,'applications')).app))
-        if 'static' in files:
-            application_routes.append(Mount(get_route(root,'static'), StaticFiles(directory=get_route(root,'static'))))
-
+    if 'static' in dirs:
+        application_routes.append(Mount(get_route(root,'static'), StaticFiles(directory=f"applications{get_route(root,'static')}")))
 
 def image_card_applications(dir_path):
     metadata = configparser.ConfigParser()
