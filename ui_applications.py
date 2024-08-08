@@ -4,11 +4,8 @@ from importlib import import_module
 import configparser
 from fasthtml.components import Zero_md
 
-application_routes = []
-for root, dirs, files in os.walk('applications'):
-    if 'app.py' in files:
-        application_routes.append(Mount(get_route(root,'app'), import_module(get_module_path(root,'applications')).app))
-
+application_routes = [Mount(get_route(root,'app'), import_module(get_module_path(root,'applications')).app) for root, dirs, files in os.walk('applications') if 'app.py' in files]
+    
 def image_card_applications(dir_path):
     metadata = configparser.ConfigParser()
     metadata.read(dir_path/'metadata.ini')
