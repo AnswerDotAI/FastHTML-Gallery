@@ -44,16 +44,14 @@ def homepage():
         ),
         Body(
             Nav(
-                Div(
-                    H1("FastHTML Gallery", cls="navbar-brand mb-0 h1"),
-                    Button("Toggle Animations", onclick="toggleAnimations()", cls="btn btn-outline-primary", type="button"),
-                    cls="container-fluid d-flex justify-content-between align-items-center"
+                Div(cls="container-fluid d-flex justify-content-between align-items-center")(
+                    H1(cls="navbar-brand mb-0 h1")("FastHTML Gallery" ),
+                    Button(cls="btn btn-outline-primary", type="button")("Toggle Animations", onclick="toggleAnimations()"),
                 ),
                 cls="navbar navbar-expand-lg navbar-light bg-light mb-4"
             ),
             get_sections('examples', ('widgets','dynamic_user_interface','application_layout'), image_card_examples),
             get_sections('applications', ('applications',), image_card_applications),
-            cls="container",
         )
     )
 
