@@ -10,6 +10,8 @@ links = (
     Link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css", type="text/css"),
     *HighlightJS(langs=['python', 'javascript', 'html', 'css']),
     Script(defer=True, data_domain="fasthtml.gallery", src="https://plausible-analytics-ce-production-9521.up.railway.app/js/script.js"),
+        Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css", integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC", crossorigin="anonymous"),  
+        Script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js", integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM", crossorigin="anonymous"),
 )
 
 def image_card_examples(dir_path):
@@ -59,11 +61,11 @@ def create_display_page(dir_path, module_path):
     code = Pre(Code(strip_parent_route((dir_path/'app.py').read_text().strip(), f"{dir_path.parts[1]}/{dir_path.parts[2]}")))
 
     dcls="col-xs-12 col-md-6 px-1"
-    column1 = Div(
+    column1 = Div(cls=dcls)(
                     md,
                     H2("Source Code"),
                     code,
-                    cls=dcls)
+                    )
 
     column2 = Div(
                     H2("Live Demo"),
@@ -78,15 +80,16 @@ def create_display_page(dir_path, module_path):
         meta = metadata['REQUIRED']
         return (
             Title(meta['ComponentName']),
-            Div(
+            Nav(cls="navbar navbar-expand-lg navbar-light bg-light shadow-sm mb-4")(
+                Div(cls="container-fluid")(
+                    Div(H1("FastHTML Gallery", cls="navbar-brand mb-0 h1"),cls="navbar-nav me-auto mb-2 mb-lg-0"),
+                    Div(A("Back to Gallery", href="/", cls="btn btn-outline-secondary me-2"),cls="d-flex"),
+                ),
+            ),
+            Div(cls="container-fluid")(
                 *Socials(title=meta['ComponentName'], description=meta['ComponentDescription'], site_name='fasthtml.gallery', twitter_site='@isaac_flath', image=f"/{dir_path/'img.png'}", url=''),
                 *tuple(links if MarkdownJS() in getattr(_app_module,'hdrs',[]) else links + (MarkdownJS(),)),
-                Div(
-                    A("Back to Gallery",  href="/", style="margin-bottom: 20px;", cls="btn btn-primary"),
-                    cls="d-flex align-items-center justify-content-between"
-                ),
                 Div(column1, column2, cls="row mx-n1"),
-                cls="container-fluid"
             )
         )
     return app
