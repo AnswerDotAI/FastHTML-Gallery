@@ -21,11 +21,12 @@ def homepage():
     ### HEADERS ###
     hdrs = (
         Link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css", type="text/css"),
+        Style('body {padding:1rem}'),
         *HighlightJS(langs=['python', 'javascript', 'html', 'css']),
         Script(defer=True, data_domain="fasthtml.gallery", src="https://plausible-analytics-ce-production-9521.up.railway.app/js/script.js"),
         *Socials(title='FastHTML Gallery', description=descr, site_name='fasthtml.gallery', twitter_site='@isaac_flath', image=f'/social.png', url=''),
         toggle_script,
-        Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css", integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC", crossorigin="anonymous"),  
+        Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css", integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC", crossorigin="anonymous"),
         Script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js", integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM", crossorigin="anonymous"),
     )
 
@@ -34,10 +35,10 @@ def homepage():
         directories = sorted(directories, key=lambda path: path.parts[0])
         directories = {k: list(vs) for k, vs in groupby(directories, key=lambda path: path.parts[1]).items()}
         return Div(*[create_image_cards(k.replace('_', ' ').title(), directories.get(k), card_fn) for k in section_names])
-        
+
     ### COMBINE###
     # Return HTML as standard so I can have better control of headers to minimze conflict between submounted app headers and gallery headers
-    return Html( 
+    return Html(
         Head(
             Title("FastHTML Gallery"),
             *hdrs,
