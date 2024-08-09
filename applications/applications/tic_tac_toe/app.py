@@ -1,13 +1,4 @@
-from fasthtml.common import (
-    fast_app,
-    Div,
-    H1,
-    P,
-    Button,
-    Link,
-    Script,
-    Style,
-)
+from fasthtml.common import *
 
 style = Style(
     """
@@ -15,9 +6,7 @@ style = Style(
                 min-height: 100vh;
                 margin:0;
                 background-color: #1A1A1E;
-                display:grid;
-
-            
+                display:grid;            
             }"""
 ) # custom style to be applied globally.
 
@@ -155,6 +144,16 @@ def render_board():
 def homepage():
     global button_states
     return Div(
+        Nav(cls="bg-gray-800 shadow-md")(
+            Div(cls="container mx-auto px-4 py-3 flex justify-between items-center")(
+                H1("FastHTML Gallery", cls="text-white text-xl font-semibold"),
+                Div(cls="space-x-2")(
+                    A("Back to Gallery", cls="inline-block px-4 py-2 text-sm font-medium text-white bg-transparent border border-white rounded hover:bg-white hover:text-gray-800 transition-colors duration-300", href="/"),
+                    A("Info", cls="inline-block px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors duration-300", href="/applications/tic_tac_toe/info"),
+                    A("Code", cls="inline-block px-4 py-2 text-sm font-medium text-white bg-gray-600 rounded hover:bg-gray-700 transition-colors duration-300", href="/applications/tic_tac_toe/code"),
+                ),
+            ),
+        ),
         Div(
             H1("Tic Tac Toe!", cls="font-bevan text-5xl text-white"),
             P(
@@ -167,11 +166,6 @@ def homepage():
             render_board(),  # render buttons.
 
             Div(
-                # Button("Go to state 1", 
-                #        cls="text-disabled-blue rounded-xl p-2 w-auto h-auto border-disabled-blue bg-custom-gray font-bevan text-xl m-3", 
-                #        disabled=True,
-                #        hx_get="/restart?state=4",
-                #        hx_target=".buttons-div"),
                 Button(
                     "Restart!",
                     cls="restart-button",
@@ -184,5 +178,5 @@ def homepage():
             ),
             cls="flex flex-col items-center justify-center",
         ),
-        cls="justify-center items-center h-screen bg-custom-background",
+        cls="justify-center items-center min-h-screen bg-custom-background",
     )
