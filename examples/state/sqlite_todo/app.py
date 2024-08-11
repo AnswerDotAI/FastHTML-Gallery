@@ -2,7 +2,7 @@ from fasthtml.common import *
 from fastsql import *
 
 app,rt,todos,Todo = fast_app(
-    'data/todos.db',
+    '/data/todos.db',
     id=int, title=str, pk='id')
 
 def tid(id): return f'todo-{id}'
