@@ -47,7 +47,13 @@ toggle_script = Script("""
 def strip_parent_route(text, parent_route):
     htmx_route_methods = ['hx_get', 'hx_post', 'hx_delete', 'hx_put', 'hx_patch']
     for method in htmx_route_methods:
+        # Pattern for string attributes
         pattern = f'({method}=(f?[\'"]))/({parent_route})(/[^\'"]*)(\\2|\'|")'
         replacement = r'\1\4\5'
         text = re.sub(pattern, replacement, text)
+        
+        # Pattern for dictionary keys
+        dict_pattern = f"('{method.replace('_', '-')}': f?['\"])/({parent_route})(/[^'\"]*)"
+        dict_replacement = r'\1\3'
+        text = re.sub(dict_pattern, dict_replacement, text)
     return text
