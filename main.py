@@ -51,7 +51,7 @@ def homepage():
                 ),
                 cls="navbar navbar-expand-lg navbar-light bg-light mb-4"
             ),
-            get_sections('examples', ('widgets','dynamic_user_interface','application_layout'), image_card_examples),
+            get_sections('examples', ('widgets','dynamic_user_interface','application_layout','state'), image_card_examples),
             get_sections('applications', ('applications',), image_card_applications),
         )
     )
