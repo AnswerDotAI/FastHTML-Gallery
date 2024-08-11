@@ -23,9 +23,9 @@ nav = Nav()(
         Div(cls="grid")(
             H1("FastHTML Gallery"),
             Div(cls="grid")(
-                Button("Back to Gallery", cls="outline", href="/"),
-                Button("Info", cls="secondary", href="/start_simple/sqlite_todo/info"),
-                Button("Code", href="/start_simple/sqlite_todo/code")))))
+                A("Back to Gallery", cls="outline", href="/", role="button" ),
+                A("Info", cls="secondary", href="/start_simple/sqlite_todo/info", role="button"),
+                A("Code", href="/start_simple/sqlite_todo/code", role="button")))))
 
 @app.get("/")
 async def homepage():
