@@ -43,4 +43,3 @@ async def post(todo:Todo): return todos.insert(todo), mk_input(hx_swap_oob='true
 async def delete(id:int): 
     try: todos.delete(id)
     except NotFoundError: pass # If someone else deleted it already we don't have to do anything
-    return None
