@@ -1,4 +1,5 @@
 python-fasthtml
 fh-matplotlib
 fh-altair
-fh-bootstrap @ git+https://github.com/isaac-flath/fh-bootstrap@GalleryRefactor
+pandas
+fastsql
