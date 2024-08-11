@@ -97,5 +97,3 @@ examples_routes = [
     Mount(get_route(root), create_display_page(root,get_module_path(root,'examples')))
     for root, _, files in os.walk('examples') if 'app.py' in files
 ]
-
-print(examples_routes)
