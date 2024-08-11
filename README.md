@@ -35,11 +35,3 @@ The best way to contribute is by adding examples to the gallery.  There 2 option
 See issues for different things that need to be done to improve the project.
 
 If you have any suggestions for improving this project, please open an issue, submit a pull request, or contact me on the FastHTML discord server.
-
-Things on the list to do someday (PRs or discussions are welcome!).
-
-+ Make the site prettier without making it too complicated
-+ Hover over image to see gif
-+ Add a way to organize gallery by content (headers, search, tags, idk).  PR welcome once 10+ examples exist.
-+ Safe way to have users modify in the browser?  I'm unsure I want to do this, so you'd have to convince me.
-+ Your idea?
