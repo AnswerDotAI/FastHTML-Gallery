@@ -3,31 +3,31 @@ import random
 
 app, rt = fast_app()
 
-def get_randomInt():
-    return random.randint(0, 100)
+def get_progress(percent_complete: int):
+    # simulate progress check
+    percent_complete += random.random()/3
+    return percent_complete
 
-@rt('/')
-def get():
-    return (
-        H1("showcasing progressbar"),
-        Progress(
-            _id="progress_number",
-            value="32",
-            max="100"
-        ),
-        Button(
-            "click me",
-            hx_get='/refresh_progressbar_number',
-            hx_target="#progress_number"
-        )
-    )
+@app.get('/')
+def homepage():
+    return Div(H3("Start the job to see progress!"),id='progress_bar'),Button("Start Job",hx_post='/widgets/progress_bar/job', hx_target="#progress_bar",)
 
-@rt('/refresh_progressbar_number', methods=['GET'])
-def refresh_progressbar_number():
-    new_value = get_randomInt()
-    return Progress(
-                    id="progress_number",
-                    value=new_value,
-                    max="100",
-                    hx_swap_oob="true"
-                   )
+@app.post('/job')
+def update_status():
+    # Start the job
+    return progress_bar(percent_complete=0)
+
+@app.get('/job')
+def update_progress(percent_complete: float):
+    # Check if done
+    if percent_complete >= 1: return H3("Job Complete!", id="progress_bar")
+    # get progress
+    percent_complete = get_progress(percent_complete)
+    # Update progress bar
+    return progress_bar(percent_complete)
+
+def progress_bar(percent_complete: float):
+    return Progress(id="progress_bar",value=percent_complete,
+                    hx_get='/widgets/progress_bar/job',hx_target="#progress_bar",hx_trigger="every 500ms",
+                    hx_vals=f"js:'percent_complete': '{percent_complete}'")
+                    
