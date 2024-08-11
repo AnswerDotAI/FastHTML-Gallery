@@ -1,5 +1,6 @@
 from fasthtml.common import *
 from fastsql import *
+from sqlite_minutils.db import NotFoundError
 
 app,rt,todos,Todo = fast_app(
     'data/todos.db',
@@ -39,4 +40,7 @@ async def homepage():
 async def post(todo:Todo): return todos.insert(todo), mk_input(hx_swap_oob='true')
 
 @rt("/{id}")
-async def delete(id:int): todos.delete(id), None
+async def delete(id:int): 
+    try: todos.delete(id)
+    except NotFoundError: pass # If someone else deleted it already we don't have to do anything
+    return None
