@@ -22,7 +22,7 @@ def image_card_applications(dir_path):
                     cls="card-img-top border",
                     style="width: 100%; height: 100%; object-fit: cover;",
                     data_png=f"{'/files'/dir_path/'img.png'}"), 
-                    href=f"/{dpath}/app", target="_blank"),
+                    href=f"/{dpath}/app"),
             ),
             Div(cls="card-body d-flex flex-column",
                 style="height: 150px; overflow: auto;",)(
@@ -30,7 +30,7 @@ def image_card_applications(dir_path):
                 P(cls="card-text")(meta['ComponentDescription']),
                 ),
             Div(cls="card-footer d-flex justify-content-between")(
-                A(Button("App", cls="btn btn-primary btn-sm"), href=f"/{dpath}/app", target="_blank"),
+                A(Button("App", cls="btn btn-primary btn-sm"), href=f"/{dpath}/app"),
                 A(Button("Code", cls="btn btn-secondary btn-sm"), href=f"/{dpath}/code"),
                 A(Button("Info", cls="btn btn-info btn-sm"), href=f"/{dpath}/info"),
             ),

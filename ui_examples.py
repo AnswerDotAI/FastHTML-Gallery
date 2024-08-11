@@ -4,7 +4,6 @@ from importlib import import_module
 from fasthtml.common import *
 import configparser
 from utils import *
-import fh_bootstrap as bs
 
 links = (
     Link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css", type="text/css"),
