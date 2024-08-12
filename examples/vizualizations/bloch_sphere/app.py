@@ -13,12 +13,15 @@ def calculate_coordinates(theta, phi):
     z = np.cos(theta)
     return x, y, z
 
-def create_scene(axis):
+def create_scenes():
     axis2ticktext = {'X': ['|-⟩', '|+⟩'], 'Y': ['|-i⟩', '|i⟩'], 'Z': ['|1⟩', '|0⟩']}
-    return dict(title=dict(text='axis', font=dict(size=25)), 
+    scenes = {}
+    for axis in ['X','Y','Z']:
+        scenes[f'{axis.lower()}axis'] = dict(title=dict(text='axis', font=dict(size=25)), 
                 range=[-1.2, 1.2], tickvals=[-1, 1], 
                 ticktext=axis2ticktext[axis],
                 tickfont=dict(size=15) )
+    return scenes
 
 def plot_bloch(state: np.array):
     fig = go.Figure()
@@ -52,7 +55,7 @@ def plot_bloch(state: np.array):
     for x, y, z in coords:
         fig.add_trace(go.Scatter3d(x=x, y=y, z=z, mode='lines', line=dict(color='black', width=2), showlegend=False, name="Axes"))
 
-    fig.update_layout(scene=dict(xaxis=create_scene('X'), yaxis=create_scene('Y'), zaxis=create_scene('Z'), aspectmode='cube',),
+    fig.update_layout(scene=dict(**create_scenes(), aspectmode='cube',),
                       legend=dict( font=dict(size=20), x=0.05,y=0.95, xanchor='left', yanchor='top', bgcolor='rgba(0,0,0,0)',),
                       margin=dict(l=0, r=0, t=0, b=0))
     
