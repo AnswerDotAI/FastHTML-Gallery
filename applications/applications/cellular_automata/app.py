@@ -29,6 +29,12 @@ def mk_box(color,size=5):
 def mk_row(colors,font_size=0,size=5):
     return Div(*[mk_box(color,size) for color in colors], cls="row",style=f"font-size:{font_size}px;")
 
+def mk_button(show):
+    return Button("Hide Rule" if show else "Show Rule",
+        hx_get="/show_rule?show=" + ("False" if show else "True"),
+        hx_target="#rule", id="sh_rule", hx_swap_oob="outerHTML",
+        hx_include="[name='rule_number']")
+
 @app.get('/')
 def homepage():
     return Div(
@@ -41,17 +47,27 @@ def homepage():
             Div(Label("Width", cls="form-label"),
                 Input(name="width", id='width_set',  value="100", style="width: 340px;")),    
             Button("Run",cls="btn btn-active btn-primary", type="submit", hx_get="/run", 
-                   hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML"),
-        Button("Show Rule",cls="btn btn-active btn-primary", type="submit", hx_get="/show_rule",hx_target="#rule", hx_include="[name='rule_number']"))),
-        Group(Div(id="grid"), Div(id="rule")))
+                   hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML"))),
+        Group(Div(id="grid"), 
+              Div(style="max-width:200px")(
+                    mk_button(False),
+                    Div(id="rule"),
+                    Div('')
+                    )))
 
 @rt('/show_rule')
-def get(rule_number: int):
+def get(rule_number: int, show: bool):
     rule = [int(x) for x in f'{rule_number:08b}']
-    return Div(*[Group(
-        Div(mk_row(list(k),font_size=10,size=20),style="max-width:100px"), 
-        Div(P(" -> "),style="max-width:100px"), 
-        Div(mk_box(rule[v],size=20),style="max-width:100px")) for k,v in bindict.items()])
+    return Div(
+        Div(mk_button(show)),
+        Div(*[Group(
+            Div(mk_row(list(k),font_size=10,size=20),style="max-width:100px"), 
+            Div(P(" -> "),style="max-width:100px"), 
+            Div(mk_box(rule[v],size=20),style="max-width:100px")) for k,v in bindict.items()] if show else '')
+    )
+
+
+
 
 
 def run(rule=30, start = initial_row, generations = 100):
