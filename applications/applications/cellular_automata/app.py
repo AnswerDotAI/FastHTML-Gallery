@@ -139,7 +139,7 @@ def inputTemplate(label, name, val, errorMsg=None, input_type='text'):
     # Generic template for replacing the input field and showing the validation message
     return Div(hx_target='this', hx_swap='outerHTML', cls=f"{errorMsg if errorMsg else 'Valid'}")(
                Label(label), # Creates label for the input field
-               Input(name=name,type=input_type,value=f'{val}',hx_post=f'/dynamic_user_interface/inline_validation/{name.lower()}',hx_indicator=f'#{name.lower()}ind'), # Creates input field
+               Input(name=name,type=input_type,value=f'{val}',style="width: 340px;",hx_post=f'/validate/{name.lower()}',hx_indicator=f'#{name.lower()}ind'), # Creates input field
                Div(f'{errorMsg}', style='color: red;') if errorMsg else None) # Creates red error message below if there is an error
 
 def ruleInputTemplate(val, errorMsg=None): return inputTemplate('Rule Number', 'rule_number', val, errorMsg, input_type='number')
