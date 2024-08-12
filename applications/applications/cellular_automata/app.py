@@ -43,13 +43,16 @@ def homepage():
             Div(Label("Rule Number", cls="form-label"),
                 Input(name="rule_number", id='rule_set', value="30", style="width: 340px;")),
             Div(Label("Number of Generations", cls="form-label"),
-                Input(name="generations", id='generations_set',  value="100",style="width: 340px;")),
+                Input(name="generations", id='generations_set',  value="50",style="width: 340px;")),
             Div(Label("Width", cls="form-label"),
                 Input(name="width", id='width_set',  value="100", style="width: 340px;")),    
             Button("Run",cls="btn btn-active btn-primary", type="submit", hx_get="/run", 
                    hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML"))),
-        Group(Div(id="grid"), 
-              Div(style="max-width:200px")(
+        Group(
+            Div(
+                Div(id="progress_bar"),
+                Div(id="grid")), 
+            Div(style="max-width:200px")(
                     mk_button(False),
                     Div(id="rule"),
                     Div('')
@@ -66,20 +69,16 @@ def get(rule_number: int, show: bool):
             Div(mk_box(rule[v],size=20),style="max-width:100px")) for k,v in bindict.items()] if show else '')
     )
 
-
-
-
-
 def run(rule=30, start = initial_row, generations = 100):
     rule = [int(x) for x in f'{rule:08b}']
-    yield start
+    yield 0, start
     old_row = [0] + start + [0]
     new_row = []
-    for _ in range(generations):
+    for g in range(1,generations):
         for i in range(1,len(old_row)-1):
             key=tuple(old_row[i-1:i+2])
             new_row.append(rule[bindict[key]])
-        yield new_row
+        yield (g+1)/generations,new_row
         old_row = [0] + new_row + [0]
         new_row = []
 
@@ -89,12 +88,18 @@ def get(rule_number: int, generations: int, width: int):
     global generator 
     generator = run(rule=rule_number,generations=generations,start=start)
     return Div(
-        Div(mk_row(next(generator)),
-        Div(id="next",hx_trigger="every .1s", hx_get="/next", hx_target="#grid",hx_swap="beforeend")),id="grid")
+        Div(style=f"width: {(width+1)*5}px",id="progress_bar",hx_swap_oob="outerHTML:#progress_bar"),
+        Div(id="next",hx_trigger="every .1s", hx_get="/next", hx_target="#grid",hx_swap="beforeend"),id="grid")
 
 
 @rt('/next')
 def get():
-    val = next(generator,False)
-    if val: return mk_row(val)
+    g,val = next(generator,(False,False))
+    if val: return Div(
+        progress_bar(g),
+        mk_row(val))
     else: return Response(status_code=286)
+
+def progress_bar(percent_complete: float):
+    return Div(hx_swap_oob="innerHTML:#progress_bar")(
+            Progress(value=percent_complete))
