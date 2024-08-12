@@ -35,9 +35,17 @@ def mk_button(show):
         hx_target="#rule", id="sh_rule", hx_swap_oob="outerHTML",
         hx_include="[name='rule_number']")
 
+nav = Nav()(
+    Div(cls="container")(
+        Div(cls="grid")(
+            H1("FastHTML Gallery"),
+            Div(cls="grid")(
+                A("Back to Gallery", cls="outline", href="/", role="button" ),
+                A("Info", cls="secondary", href="/applications/cellular_automata/info", role="button"),
+                A("Code", href="/applications/cellular_automata/code", role="button")))))
 @app.get('/')
 def homepage():
-    return Div(
+    return Title("Cellular Automata"),Main(nav,Div(
         Div(P(explanation,id="explanations")),
         Form(Group(
             Div(Label("Rule Number", cls="form-label"),
@@ -56,7 +64,8 @@ def homepage():
                     mk_button(False),
                     Div(id="rule"),
                     Div('')
-                    )))
+                    ))))
+
 
 @rt('/show_rule')
 def get(rule_number: int, show: bool):
