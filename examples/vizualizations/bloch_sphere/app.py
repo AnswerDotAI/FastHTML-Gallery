@@ -20,31 +20,34 @@ def homepage():
             Main(P(desc),
                  *[Button(gate, hx_get=f"/vizualizations/bloch_sphere/apply_gate/{gate}", hx_target="#chart", hx_swap="innerHTML", hx_vals=hx_vals,  title=f"Apply {gate} gate") for gate in single_qubit_gates.keys()], 
                  Button("Reset", hx_get="/vizualizations/bloch_sphere/reset", hx_target="#chart", hx_swap="innerHTML", title="Reset the circuit"),
-                 Div(apply_gate(), id="chart"),
+                 Div(update_state_apply_gate(), id="chart"),
                  H4("Available gates"),
-                 P("- H: Hadamard gate. Puts the state in superposition. "),
-                 P("- X: Pauli-X (NOT) gate. Rotate 180 degrees around the X-Axis."),
-                 P("- Y: Pauli-Y (\"bit-flip\") gate. Rotate 180 degrees around the Y-Axis."),
-                 P("- Z: Pauli-Z (\"phase-flip\") gate. Rotate 180 degrees around the Z-Axis."),
-                 P("- S: Phase gate. Rotates around the Z-axis by 90 degrees."),
-                 P("- T: π/8 gate. Rotates around the Z-axis by 45 degrees.")))
+                 Ul(Li(Strong("H :"),"Hadamard gate. Puts the state in superposition. "),
+                    Li(Strong("X :"),"Pauli-X (NOT) gate. Rotate 180 degrees around the X-Axis."),
+                    Li(Strong("Y :"),"Pauli-Y (\"bit-flip\") gate. Rotate 180 degrees around the Y-Axis."),
+                    Li(Strong("Z :"),"Pauli-Z (\"phase-flip\") gate. Rotate 180 degrees around the Z-Axis."),
+                    Li(Strong("S :"),"Phase gate. Rotates around the Z-axis by 90 degrees."),
+                    Li(Strong("T :"),"π/8 gate. Rotates around the Z-axis by 45 degrees."))))
 
 
-def apply_gate(gates: list[str] = None):
+
+@app.get('/reset')
+def reset(): return update_state_apply_gate()
+
+@app.get('/apply_gate/{gate}')
+def update_state_apply_gate(gate: str=None, gates: str=None):
     if gates is None: gates = []
-    state = construct_state(gates)
+    else:
+        # Transform from circuit representation to gate names
+        gates = [g for g in gates if g in single_qubit_gates.keys()]
+        gates.append(gate)
+    # Create initial state
+    state = np.array([1, 0]) # |0> basis state
+    for gate in gates: state = single_qubit_gates[gate] @ state
+    # Create visualization
     return Div(plot_bloch(state),
             H4(f"Quantum Circuit: {visualize_circuit(gates)}", id="quantum_circuit"),
             id="chart")
-
-@app.get('/reset')
-def reset(): return apply_gate()
-
-@app.get('/apply_gate/{gate}')
-def update_state_apply_gate(gate: str, gates: str):
-    gates = [g for g in gates if g in single_qubit_gates.keys()]
-    gates.append(gate)
-    return apply_gate(gates)
 
 def visualize_circuit(gates: list[str]):
     circuit = "|0⟩-" 
@@ -66,7 +69,7 @@ def create_scenes():
     axis2ticktext = {'X': ['|-⟩', '|+⟩'], 'Y': ['|-i⟩', '|i⟩'], 'Z': ['|1⟩', '|0⟩']}
     scenes = {}
     for axis in ['X','Y','Z']:
-        scenes[f'{axis.lower()}axis'] = dict(title=dict(text='axis', font=dict(size=25)), 
+        scenes[f'{axis.lower()}axis'] = dict(title=dict(text=axis, font=dict(size=25)), 
                 range=[-1.2, 1.2], tickvals=[-1, 1], 
                 ticktext=axis2ticktext[axis],
                 tickfont=dict(size=15) )
@@ -110,10 +113,6 @@ def plot_bloch(state: np.array):
     
     return plotly2fasthtml(fig)
 
-def construct_state(gates: list[str]):
-    state = np.array([1, 0]) # |0> basis state
-    for gate in gates: state = single_qubit_gates[gate] @ state
-    return state
 
 single_qubit_gates = {
     # Hadamard
