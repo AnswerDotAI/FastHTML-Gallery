@@ -6,11 +6,9 @@ app, rt = fast_app()
 explanation = Div(
     H1("Cellular Automata"),
     H4("Input explanations:"),
-    Ul(
-        Li(Strong("Rule Number: "),"Determines the next state of a cell based on the current state of the cell and its neighbors."),
+    Ul(Li(Strong("Rule Number: "),"Determines the next state of a cell based on the current state of the cell and its neighbors."),
         Li(Strong("Number of Generations: "),"Determines how many generations to run the automaton."),
-        Li(Strong("Width: "),"Determines the width of the grid."),
-    ))
+        Li(Strong("Width: "),"Determines the width of the grid."),))
 
 generator = None
 bindict = {
@@ -43,14 +41,13 @@ def homepage():
             Div(Label("Width", cls="form-label"),
                 Input(name="width", id='width_set',  value="100", style="width: 340px;")),    
             Button("Run",cls="btn btn-active btn-primary", type="submit", hx_get="/run", 
-                   hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML"))),
-        Button("Show Rule",cls="btn btn-active btn-primary", type="submit", hx_get="/show_rule",hx_target="#rule", hx_include="[name='rule_number']"),
+                   hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML"),
+        Button("Show Rule",cls="btn btn-active btn-primary", type="submit", hx_get="/show_rule",hx_target="#rule", hx_include="[name='rule_number']"))),
         Group(Div(id="grid"), Div(id="rule")))
 
 @rt('/show_rule')
 def get(rule_number: int):
     rule = [int(x) for x in f'{rule_number:08b}']
-
     return Div(*[Group(
         Div(mk_row(list(k),font_size=10,size=20),style="max-width:100px"), 
         Div(P(" -> "),style="max-width:100px"), 
