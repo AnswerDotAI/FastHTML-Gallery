@@ -50,15 +50,11 @@ def homepage():
 @rt('/show_rule')
 def get(rule_number: int):
     rule = [int(x) for x in f'{rule_number:08b}']
-    res = []
-    for k in [(1,1,1),(1,1,0),(1,0,1),(1,0,0),(0,1,1),(0,1,0),(0,0,1),(0,0,0)]:
-        v = rule[bindict[k]]
-        res.append(
-            Group(
-                Div(mk_row(list(k),font_size=10,size=20),style="max-width:100px"), 
-                Div(P(" -> "),style="max-width:100px"), 
-                Div(mk_box(v,size=20),style="max-width:100px")))
-    return Div(*res)
+
+    return Div(*[Group(
+        Div(mk_row(list(k),font_size=10,size=20),style="max-width:100px"), 
+        Div(P(" -> "),style="max-width:100px"), 
+        Div(mk_box(rule[v],size=20),style="max-width:100px")) for k,v in bindict.items()])
 
 
 def run(rule=30, start = initial_row, generations = 100):
@@ -74,7 +70,6 @@ def run(rule=30, start = initial_row, generations = 100):
         old_row = [0] + new_row + [0]
         new_row = []
 
-
 @rt('/run')
 def get(rule_number: int, generations: int, width: int):
     start = [0]*(width//2) + [1] + [0]*(width//2)
@@ -83,6 +78,7 @@ def get(rule_number: int, generations: int, width: int):
     return Div(
         Div(mk_row(next(generator)),
         Div(id="next",hx_trigger="every .1s", hx_get="/next", hx_target="#grid",hx_swap="beforeend")),id="grid")
+
 
 @rt('/next')
 def get():
