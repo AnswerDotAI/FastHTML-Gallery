@@ -14,13 +14,13 @@ You can see a visual representation of the rule in the app.
 
 ## Key Technologies and Techniques
 
-* **HTMX Polling**: We use polling to update the grid every 100ms. This is done by setting the `hx-get` attribute `every .1s`. This triggers a GET request until we run out of generations and then the `Response(status_code=286)` stops the polling.
+* **[HTMX Polling](https://htmx.org/docs/#polling)**: We use polling to update the grid every 100ms. This is done by setting the `hx-get` attribute `every .1s`. This triggers a GET request until we run out of generations and then the `Response(status_code=286)` stops the polling.
 
 * **[Progress Bar](https://fasthtml.gallery/widgets/progress_bar/display)**
 
 * **[Show Hide Button](https://fasthtml.gallery/widgets/show_hide/display)**
 
-* **Inline Validation**:
+* **[Inline Validation](https://fasthtml.gallery/dynamic_user_interface/inline_validation/display)**:
 
 
 
