@@ -29,8 +29,6 @@ def homepage():
                     Li(Strong("S :"),"Phase gate. Rotates around the Z-axis by 90 degrees."),
                     Li(Strong("T :"),"π/8 gate. Rotates around the Z-axis by 45 degrees."))))
 
-
-
 @app.get('/reset')
 def reset(): return update_state_apply_gate()
 
