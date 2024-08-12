@@ -4,11 +4,12 @@ from starlette.responses import Response
 app, rt = fast_app()
 
 explanation = Div(
-    P("This is an implementation of a 1D cellular automaton. The user can input a rule number, the number of generations to run, and the width of the grid."),
+    H1("Cellular Automata"),
+    H4("Input explanations:"),
     Ul(
-        Li("The rule number is used to determine the next state of a cell based on the current state of the cell and its neighbors."),
-        Li("The automaton runs for the specified number of generations using the rule number to determine the next state of each cell."),
-        Li("The automaton is initialized with a single black cell in the center and white cells on either side based on the width value."),
+        Li(Strong("Rule Number: "),"Determines the next state of a cell based on the current state of the cell and its neighbors."),
+        Li(Strong("Number of Generations: "),"Determines how many generations to run the automaton."),
+        Li(Strong("Width: "),"Determines the width of the grid."),
     ))
 
 generator = None
@@ -35,23 +36,15 @@ def homepage():
     return Div(
         Div(P(explanation,id="explanations")),
         Form(Group(
-            Div(
-                Label("Rule Number", cls="form-label"),
-                Input(name="rule_number", id='rule_set', value="30", style="width: 340px;")
-            ),
-            Div(
-                Label("Number of Generations", cls="form-label"),
-                Input(name="generations", id='generations_set',  value="100",style="width: 340px;")
-            ),
-            Div(
-                Label("Width", cls="form-label"),
-                Input(name="width", id='width_set',  value="100", style="width: 340px;")
-            ),    
+            Div(Label("Rule Number", cls="form-label"),
+                Input(name="rule_number", id='rule_set', value="30", style="width: 340px;")),
+            Div(Label("Number of Generations", cls="form-label"),
+                Input(name="generations", id='generations_set',  value="100",style="width: 340px;")),
+            Div(Label("Width", cls="form-label"),
+                Input(name="width", id='width_set',  value="100", style="width: 340px;")),    
             Button("Run",cls="btn btn-active btn-primary", type="submit", hx_get="/run", 
-                   hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML")
-            )),
+                   hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML"))),
         Button("Show Rule",cls="btn btn-active btn-primary", type="submit", hx_get="/show_rule",hx_target="#rule", hx_include="[name='rule_number']"),
-        
         Group(Div(id="grid"), Div(id="rule")))
 
 @rt('/show_rule')
@@ -94,7 +87,5 @@ def get(rule_number: int, generations: int, width: int):
 @rt('/next')
 def get():
     val = next(generator,False)
-    if val:
-        return mk_row(val)
-    else: 
-        return Response(status_code=286)
+    if val: return mk_row(val)
+    else: return Response(status_code=286)
