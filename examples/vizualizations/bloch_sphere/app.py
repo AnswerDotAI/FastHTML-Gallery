@@ -108,7 +108,7 @@ def homepage():
             Main(P(desc),
                  *[Button(gate, hx_get=f"/vizualizations/bloch_sphere/apply_gate/{gate}", hx_target="#chart", hx_swap="innerHTML", hx_vals=hx_vals,  title=f"Apply {gate} gate") for gate in single_qubit_gates.keys()], 
                  Button("Reset", hx_get="/vizualizations/bloch_sphere/reset", hx_target="#chart", hx_swap="innerHTML", title="Reset the circuit"),
-                 Div(apply_gate(), H4("Quantum Circuit: ",id='quantum_circuit'), id="chart"),
+                 Div(apply_gate(), id="chart"),
                  H4("Available gates"),
                  P("- H: Hadamard gate. Puts the state in superposition. "),
                  P("- X: Pauli-X (NOT) gate. Rotate 180 degrees around the X-Axis."),
