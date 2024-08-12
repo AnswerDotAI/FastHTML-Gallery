@@ -1,11 +1,60 @@
 import numpy as np
 from fasthtml.common import *
 import plotly.graph_objects as go
-
 from fh_plotly import plotly2fasthtml, plotly_headers
 
+########################
+### FastHTML Section ###
+########################
 
 app, rt = fast_app(hdrs=plotly_headers)
+
+@app.get('/')
+def homepage():
+    desc = """
+    The Bloch Sphere is a 3D visualization of a single quantum state. 
+    You can interact with the buttons (Gates) to see how the state changes. See the description below for more information on what each gate represents.
+    """
+    hx_vals = 'js:{"gates": document.getElementById("quantum_circuit").textContent}'
+    return (Title("Interactive Bloch Sphere"), 
+            Main(P(desc),
+                 *[Button(gate, hx_get=f"/vizualizations/bloch_sphere/apply_gate/{gate}", hx_target="#chart", hx_swap="innerHTML", hx_vals=hx_vals,  title=f"Apply {gate} gate") for gate in single_qubit_gates.keys()], 
+                 Button("Reset", hx_get="/vizualizations/bloch_sphere/reset", hx_target="#chart", hx_swap="innerHTML", title="Reset the circuit"),
+                 Div(apply_gate(), id="chart"),
+                 H4("Available gates"),
+                 P("- H: Hadamard gate. Puts the state in superposition. "),
+                 P("- X: Pauli-X (NOT) gate. Rotate 180 degrees around the X-Axis."),
+                 P("- Y: Pauli-Y (\"bit-flip\") gate. Rotate 180 degrees around the Y-Axis."),
+                 P("- Z: Pauli-Z (\"phase-flip\") gate. Rotate 180 degrees around the Z-Axis."),
+                 P("- S: Phase gate. Rotates around the Z-axis by 90 degrees."),
+                 P("- T: π/8 gate. Rotates around the Z-axis by 45 degrees.")))
+
+
+def apply_gate(gates: list[str] = None):
+    if gates is None: gates = []
+    state = construct_state(gates)
+    return Div(plot_bloch(state),
+            H4(f"Quantum Circuit: {visualize_circuit(gates)}", id="quantum_circuit"),
+            id="chart")
+
+@app.get('/reset')
+def reset(): return apply_gate()
+
+@app.get('/apply_gate/{gate}')
+def update_state_apply_gate(gate: str, gates: str):
+    gates = [g for g in gates if g in single_qubit_gates.keys()]
+    gates.append(gate)
+    return apply_gate(gates)
+
+def visualize_circuit(gates: list[str]):
+    circuit = "|0⟩-" 
+    circuit += "".join([f"[{gate}]─" for gate in gates]) + "|"
+    return circuit
+
+############################
+### Math/Quantum Section ###
+############################
+
 
 def calculate_coordinates(theta, phi):
     x = np.sin(theta) * np.cos(phi)
@@ -66,11 +115,6 @@ def construct_state(gates: list[str]):
     for gate in gates: state = single_qubit_gates[gate] @ state
     return state
 
-def visualize_circuit(gates: list[str]):
-    circuit = "|0⟩-" 
-    circuit += "".join([f"[{gate}]─" for gate in gates]) + "|"
-    return circuit
-
 single_qubit_gates = {
     # Hadamard
     "H": np.array([[1, 1],
@@ -89,41 +133,6 @@ single_qubit_gates = {
                    [0, np.exp(1j * np.pi / 4)]])
 }
 
-@app.get('/reset')
-def reset(): return apply_gate()
 
 
-@app.get('/apply_gate/{gate}')
-def apply_gate(gate: str, gates: str):
-    gates = [g for g in gates if g in single_qubit_gates.keys()]
-    gates.append(gate)
-    return apply_gate(gates)
 
-
-desc = """
-The Bloch Sphere is a 3D visualization of a single quantum state. 
-You can interact with the buttons (Gates) to see how the state changes. See the description below for more information on what each gate represents.
-"""
-@app.get('/')
-def homepage():
-    hx_vals = 'js:{"gates": document.getElementById("quantum_circuit").textContent}'
-    return (Title("Interactive Bloch Sphere"), 
-            Main(P(desc),
-                 *[Button(gate, hx_get=f"/vizualizations/bloch_sphere/apply_gate/{gate}", hx_target="#chart", hx_swap="innerHTML", hx_vals=hx_vals,  title=f"Apply {gate} gate") for gate in single_qubit_gates.keys()], 
-                 Button("Reset", hx_get="/vizualizations/bloch_sphere/reset", hx_target="#chart", hx_swap="innerHTML", title="Reset the circuit"),
-                 Div(apply_gate(), id="chart"),
-                 H4("Available gates"),
-                 P("- H: Hadamard gate. Puts the state in superposition. "),
-                 P("- X: Pauli-X (NOT) gate. Rotate 180 degrees around the X-Axis."),
-                 P("- Y: Pauli-Y (\"bit-flip\") gate. Rotate 180 degrees around the Y-Axis."),
-                 P("- Z: Pauli-Z (\"phase-flip\") gate. Rotate 180 degrees around the Z-Axis."),
-                 P("- S: Phase gate. Rotates around the Z-axis by 90 degrees."),
-                 P("- T: π/8 gate. Rotates around the Z-axis by 45 degrees.")))
-
-
-def apply_gate(gates: list[str] = None):
-    if gates is None: gates = []
-    state = construct_state(gates)
-    return Div(plot_bloch(state),
-            H4(f"Quantum Circuit: {visualize_circuit(gates)}", id="quantum_circuit"),
-            id="chart")
