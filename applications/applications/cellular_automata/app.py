@@ -48,22 +48,22 @@ def homepage():
     return Title("Cellular Automata"),Main(nav,Div(
         Div(P(explanation,id="explanations")),
         Form(Group(
-            Div(Label("Rule Number", cls="form-label"),
-                Input(name="rule_number", id='rule_set', value="30", style="width: 340px;")),
-            Div(Label("Number of Generations", cls="form-label"),
-                Input(name="generations", id='generations_set',  value="50",style="width: 340px;")),
-            Div(Label("Width", cls="form-label"),
-                Input(name="width", id='width_set',  value="100", style="width: 340px;")),    
-            Button("Run",cls="btn btn-active btn-primary", type="submit", hx_get="/run", 
-                   hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML"))),
+            Div(hx_target='this', hx_swap='outerHTML')(Label(_for="rule_number", cls="form-label")("Rule Number"),
+                Input(type='number', name="rule_number", id='rule_set', value="30", style="width: 340px;",hx_post='/validate/rule_number', hx_indicator='#rule_numberind')),
+            Div(hx_target='this', hx_swap='outerHTML')(Label("Number of Generations", cls="form-label"),
+                Input(type='number',name="generations", id='generations_set',  value="50",style="width: 340px;",hx_post='/validate/generations', hx_indicator='#generationsind')),
+            Div(hx_target='this', hx_swap='outerHTML')(Label("Width", cls="form-label"),
+                Input(type='number',name="width", id='width_set',  value="100", style="width: 340px;",hx_post='/validate/width', hx_indicator='#widthind')),    
+            Button(cls="btn btn-active btn-primary", type="submit", hx_get="/run", 
+                   hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML")("Run"))),
         Group(
             Div(
                 Div(id="progress_bar"),
                 Div(id="grid")), 
+                
             Div(style="max-width:200px")(
                     mk_button(False),
                     Div(id="rule"),
-                    Div('')
                     ))))
 
 
@@ -112,3 +112,38 @@ def get():
 def progress_bar(percent_complete: float):
     return Div(hx_swap_oob="innerHTML:#progress_bar")(
             Progress(value=percent_complete))
+
+
+
+@rt('/validate/rule_number')
+def post(rule_number: int): return ruleInputTemplate(rule_number, validate_rule_number(rule_number))
+
+@rt('/validate/generations')
+def post(generations: int): return generationsInputTemplate(generations, validate_generations(generations))
+
+@rt('/validate/width')
+def post(width: int): return widthScaleInputTemplate(width, validate_width(width))
+
+
+def validate_rule_number(rule_number: int):
+    print(rule_number)
+    if (rule_number < 0) or (rule_number > 255 ): return "Enter an integer between 0 and 255"
+
+def validate_generations(generations: int):
+    if generations < 0: return "Enter a positive integer"
+
+def validate_width(width: int):
+    if width < 0: return "Enter a positive integer"
+
+def inputTemplate(label, name, val, errorMsg=None, input_type='text'):
+    # Generic template for replacing the input field and showing the validation message
+    return Div(hx_target='this', hx_swap='outerHTML', cls=f"{errorMsg if errorMsg else 'Valid'}")(
+               Label(label), # Creates label for the input field
+               Input(name=name,type=input_type,value=f'{val}',hx_post=f'/dynamic_user_interface/inline_validation/{name.lower()}',hx_indicator=f'#{name.lower()}ind'), # Creates input field
+               Div(f'{errorMsg}', style='color: red;') if errorMsg else None) # Creates red error message below if there is an error
+
+def ruleInputTemplate(val, errorMsg=None): return inputTemplate('Rule Number', 'rule_number', val, errorMsg, input_type='number')
+
+def generationsInputTemplate(val, errorMsg=None): return inputTemplate('Generations', 'generations', val, errorMsg, input_type='number')
+
+def widthScaleInputTemplate(val, errorMsg=None): return inputTemplate('Width', 'width', val, errorMsg, input_type='number')
