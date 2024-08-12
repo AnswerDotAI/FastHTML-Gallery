@@ -30,9 +30,6 @@ def mk_box(color,size=5):
 def mk_row(colors,font_size=0,size=5):
     return Div(*[mk_box(color,size) for color in colors], cls="row",style=f"font-size:{font_size}px;")
 
-def mk_grid(rows):
-    return Div(*[mk_row(row) for row in rows])
-
 @app.get('/')
 def homepage():
     return Div(
