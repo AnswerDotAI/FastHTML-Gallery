@@ -47,15 +47,16 @@ nav = Nav()(
 def homepage():
     return Title("Cellular Automata"),Main(nav,Div(
         Div(P(explanation,id="explanations")),
-        Form(Group(
-            Div(hx_target='this', hx_swap='outerHTML')(Label(_for="rule_number", cls="form-label")("Rule Number"),
-                Input(type='number', name="rule_number", id='rule_set', value="30", style="width: 340px;",hx_post='/validate/rule_number', hx_indicator='#rule_numberind')),
-            Div(hx_target='this', hx_swap='outerHTML')(Label("Number of Generations", cls="form-label"),
-                Input(type='number',name="generations", id='generations_set',  value="50",style="width: 340px;",hx_post='/validate/generations', hx_indicator='#generationsind')),
-            Div(hx_target='this', hx_swap='outerHTML')(Label("Width", cls="form-label"),
-                Input(type='number',name="width", id='width_set',  value="100", style="width: 340px;",hx_post='/validate/width', hx_indicator='#widthind')),    
-            Button(cls="btn btn-active btn-primary", type="submit", hx_get="/run", 
-                   hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML")("Run"))),
+        Form(
+            Group(
+                Div(hx_target='this', hx_swap='outerHTML')(Label(_for="rule_number", cls="form-label")("Rule Number"),
+                    Input(type='number', name="rule_number", id='rule_set', value="30", style="width: 340px;",hx_post='/validate/rule_number', hx_indicator='#rule_numberind')),
+                Div(hx_target='this', hx_swap='outerHTML')(Label("Number of Generations", cls="form-label"),
+                    Input(type='number',name="generations", id='generations_set',  value="50",style="width: 340px;",hx_post='/validate/generations', hx_indicator='#generationsind')),
+                Div(hx_target='this', hx_swap='outerHTML')(Label("Width", cls="form-label"),
+                    Input(type='number',name="width", id='width_set',  value="100", style="width: 340px;",hx_post='/validate/width', hx_indicator='#widthind')),    
+                Div(id='submit-btn-container')(
+                    Button(cls="btn btn-active btn-primary", type="submit", hx_get="/run", hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML")("Run")))),
         Group(
             Div(
                 Div(id="progress_bar"),
@@ -93,6 +94,21 @@ def run(rule=30, start = initial_row, generations = 100):
 
 @rt('/run')
 def get(rule_number: int, generations: int, width: int):
+
+    errors = {'rule_number': validate_rule_number(rule_number),
+              'generations': validate_generations(generations),
+              'width': validate_width(width)}
+    # Removes the None values from the errors dictionary (No errors)
+    errors = {k: v for k, v in errors.items() if v is not None}
+    # Return Button with error message if they exist
+    
+    if errors:
+        print(errors)
+        return Div(id='submit-btn-container',hx_swap_oob="outerHTML:#submit-btn-container")(
+                Button(cls="btn btn-active btn-primary", type="submit", hx_get="/run", hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML")("Run"),
+                *[Div(error, style='color: red;') for error in errors.values()])
+
+    print("here")
     start = [0]*(width//2) + [1] + [0]*(width//2)
     global generator 
     generator = run(rule=rule_number,generations=generations,start=start)
@@ -126,7 +142,6 @@ def post(width: int): return widthScaleInputTemplate(width, validate_width(width
 
 
 def validate_rule_number(rule_number: int):
-    print(rule_number)
     if (rule_number < 0) or (rule_number > 255 ): return "Enter an integer between 0 and 255"
 
 def validate_generations(generations: int):
