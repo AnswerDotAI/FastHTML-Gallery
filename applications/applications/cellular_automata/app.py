@@ -53,15 +53,15 @@ def homepage():
             Div(hx_target='this', hx_swap='outerHTML')(Label("Number of Generations", cls="form-label"),
                 Input(type='number',name="generations", id='generations_set',  value="50",style="width: 340px;",hx_post='/validate/generations', hx_indicator='#generationsind')),
             Div(hx_target='this', hx_swap='outerHTML')(Label("Width", cls="form-label"),
-                Input(type='number',name="width", id='width_set',  value="100", style="width: 340px;",hx_post='/validate/width', hx_indicator='#widthind')),    
+                Input(type='number',name="width", id='width_set',  value="100", style="width: 340px;",hx_post='/validate/width', hx_indicator='#widthind')), 
             Button(cls="btn btn-active btn-primary", type="submit", hx_get="/run", 
                    hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML")("Run"))),
         Group(
-            Div(
+            Div(style="margin-left:50px")(
                 Div(id="progress_bar"),
                 Div(id="grid")), 
                 
-            Div(style="max-width:200px")(
+            Div(style="margin-right:50px; max-width:200px")(
                     mk_button(False),
                     Div(id="rule"),
                     ))))
@@ -102,12 +102,12 @@ def get(rule_number: int, generations: int, width: int):
     # Return Button with error message if they exist
     
     if errors:
-        print(errors)
-        return Div(id='submit-btn-container',hx_swap_oob="outerHTML:#submit-btn-container")(
-                Button(cls="btn btn-active btn-primary", type="submit", hx_get="/run", hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML")("Run"),
-                *[Div(error, style='color: red;') for error in errors.values()])
+        return Div(Div(id="grid"),
+                   Div(id="progress_bar",hx_swap_oob="outerHTML:#progress_bar"),
+                Div(id='submit-btn-container',hx_swap_oob="outerHTML:#submit-btn-container")(
+                    Button(cls="btn btn-active btn-primary", type="submit", hx_get="/run", hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML")("Run"),
+                    *[Div(error, style='color: red;') for error in errors.values()]))
 
-    print("here")
     start = [0]*(width//2) + [1] + [0]*(width//2)
     global generator 
     generator = run(rule=rule_number,generations=generations,start=start)
