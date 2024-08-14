@@ -2,9 +2,6 @@ from fasthtml.common import *
 from starlette.responses import Response
 
 
-
-
-
 generator = None
 bindict = {
     (1,1,1):0,
