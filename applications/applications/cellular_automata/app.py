@@ -149,7 +149,7 @@ def run(rule=30, start = initial_row, generations = 100):
         new_row = []
 
 ########################
-### Validation Lagic ###
+### Validation Logic ###
 ########################
 
 def validate_rule_number(rule_number: int):
