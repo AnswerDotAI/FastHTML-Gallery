@@ -3,3 +3,6 @@ fh-matplotlib
 fh-altair
 pandas
 fastsql
+plotly
+fh-plotly
+numpy
