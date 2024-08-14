@@ -1,5 +1,6 @@
 from fasthtml.common import *
 from starlette.responses import Response
+from uuid import uuid4
 
 app, rt = fast_app()
 
@@ -10,7 +11,7 @@ explanation = Div(
         Li(Strong("Number of Generations: "),"Determines how many generations to run the automaton."),
         Li(Strong("Width: "),"Determines the width of the grid."),))
 
-generator = None
+generator = {}
 bindict = {
     (1,1,1):0,
     (1,1,0):1,
@@ -44,7 +45,9 @@ nav = Nav()(
                 A("Info", cls="secondary", href="/applications/cellular_automata/info", role="button"),
                 A("Code", href="/applications/cellular_automata/code", role="button")))))
 @app.get('/')
-def homepage():
+def homepage(sess):
+    if 'id' not in sess: sess['id'] = str(uuid4())
+    
     return Title("Cellular Automata"),Main(nav,Div(
         Div(P(explanation,id="explanations")),
         Form(Group(
@@ -92,7 +95,7 @@ def run(rule=30, start = initial_row, generations = 100):
         new_row = []
 
 @rt('/run')
-def get(rule_number: int, generations: int, width: int):
+def get(rule_number: int, generations: int, width: int, sess):
 
     errors = {'rule_number': validate_rule_number(rule_number),
               'generations': validate_generations(generations),
@@ -110,19 +113,22 @@ def get(rule_number: int, generations: int, width: int):
 
     start = [0]*(width//2) + [1] + [0]*(width//2)
     global generator 
-    generator = run(rule=rule_number,generations=generations,start=start)
+    generator[sess['id']] = run(rule=rule_number,generations=generations,start=start)
     return Div(
         Div(style=f"width: {(width+1)*5}px",id="progress_bar",hx_swap_oob="outerHTML:#progress_bar"),
         Div(id="next",hx_trigger="every .1s", hx_get="/applications/cellular_automata/app/next", hx_target="#grid",hx_swap="beforeend"),id="grid")
 
 
 @rt('/next')
-def get():
-    g,val = next(generator,(False,False))
+def get(sess):
+    global generator
+    g,val = next(generator[sess['id']],(False,False))
     if val: return Div(
         progress_bar(g),
         mk_row(val))
-    else: return Response(status_code=286)
+    else: 
+        del generator[sess['id']]
+        return Response(status_code=286)
 
 def progress_bar(percent_complete: float):
     return Div(hx_swap_oob="innerHTML:#progress_bar")(
