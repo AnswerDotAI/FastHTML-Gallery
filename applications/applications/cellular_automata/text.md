@@ -50,8 +50,8 @@ The app uses FastHTML to define routes and handle the cellular automata logic on
 
 The automata state is managed server-side using a generator function:
 
-- `generator`: A global variable that stores the cellular automata generator.
-- `run()`: A function that yields each generation of the automata.
+- `generator`: A global variable dict that stores the cellular automata generator for each session.
+- `run()`: A yields each automata generation.
 
 ### Dynamic Content
 
