@@ -1,14 +1,9 @@
 from fasthtml.common import *
 from starlette.responses import Response
 
-app, rt = fast_app()
 
-explanation = Div(
-    H1("Cellular Automata"),
-    H4("Input explanations:"),
-    Ul(Li(Strong("Rule Number: "),"Determines the next state of a cell based on the current state of the cell and its neighbors."),
-        Li(Strong("Number of Generations: "),"Determines how many generations to run the automaton."),
-        Li(Strong("Width: "),"Determines the width of the grid."),))
+
+
 
 generator = None
 bindict = {
@@ -23,6 +18,21 @@ bindict = {
 initial_row = [0]*50 + [1] + [0]*50
 color_map = {0:"white", 1:"black"}
 
+####################
+### HTML Widgets ###
+####################
+
+explanation = Div(
+    H1("Cellular Automata"),
+    H4("Input explanations:"),
+    Ul(Li(Strong("Rule Number: "),"Determines the next state of a cell based on the current state of the cell and its neighbors."),
+        Li(Strong("Number of Generations: "),"Determines how many generations to run the automaton."),
+        Li(Strong("Width: "),"Determines the width of the grid."),))
+
+def progress_bar(percent_complete: float):
+    return Div(hx_swap_oob="innerHTML:#progress_bar")(
+            Progress(value=percent_complete))
+
 def mk_box(color,size=5):
     return Div(cls="box", style=f"background-color:{color_map[color]};height:{size}px;width:{size}px;margin:0;display:inline-block;")
 
@@ -35,6 +45,12 @@ def mk_button(show):
         hx_target="#rule", id="sh_rule", hx_swap_oob="outerHTML",
         hx_include="[name='rule_number']")
 
+########################
+### FastHTML Section ###
+########################
+
+app, rt = fast_app()
+
 nav = Nav()(
     Div(cls="container")(
         Div(cls="grid")(
@@ -43,7 +59,7 @@ nav = Nav()(
                 A("Back to Gallery", cls="outline", href="/", role="button" ),
                 A("Info", cls="secondary", href="/applications/cellular_automata/info", role="button"),
                 A("Code", href="/applications/cellular_automata/code", role="button")))))
-@app.get('/')
+@rt('/')
 def homepage():
     return Title("Cellular Automata"),Main(nav,Div(
         Div(P(explanation,id="explanations")),
@@ -66,7 +82,6 @@ def homepage():
                     Div(id="rule"),
                     ))))
 
-
 @rt('/show_rule')
 def get(rule_number: int, show: bool):
     rule = [int(x) for x in f'{rule_number:08b}']
@@ -77,19 +92,6 @@ def get(rule_number: int, show: bool):
             Div(P(" -> "),style="max-width:100px"), 
             Div(mk_box(rule[v],size=20),style="max-width:100px")) for k,v in bindict.items()] if show else '')
     )
-
-def run(rule=30, start = initial_row, generations = 100):
-    rule = [int(x) for x in f'{rule:08b}']
-    yield 0, start
-    old_row = [0] + start + [0]
-    new_row = []
-    for g in range(1,generations):
-        for i in range(1,len(old_row)-1):
-            key=tuple(old_row[i-1:i+2])
-            new_row.append(rule[bindict[key]])
-        yield (g+1)/generations,new_row
-        old_row = [0] + new_row + [0]
-        new_row = []
 
 @rt('/run')
 def get(rule_number: int, generations: int, width: int):
@@ -115,7 +117,6 @@ def get(rule_number: int, generations: int, width: int):
         Div(style=f"width: {(width+1)*5}px",id="progress_bar",hx_swap_oob="outerHTML:#progress_bar"),
         Div(id="next",hx_trigger="every .1s", hx_get="/applications/cellular_automata/app/next", hx_target="#grid",hx_swap="beforeend"),id="grid")
 
-
 @rt('/next')
 def get():
     g,val = next(generator,(False,False))
@@ -123,12 +124,6 @@ def get():
         progress_bar(g),
         mk_row(val))
     else: return Response(status_code=286)
-
-def progress_bar(percent_complete: float):
-    return Div(hx_swap_oob="innerHTML:#progress_bar")(
-            Progress(value=percent_complete))
-
-
 
 @rt('/validate/rule_number')
 def post(rule_number: int): return inputTemplate('Rule Number', 'rule_number',rule_number, validate_rule_number(rule_number))
@@ -139,6 +134,26 @@ def post(generations: int): return inputTemplate('Generations', 'generations', g
 @rt('/validate/width')
 def post(width: int): return inputTemplate('Width', 'width', width, validate_width(width))
 
+#########################
+### Application Logic ###
+#########################
+
+def run(rule=30, start = initial_row, generations = 100):
+    rule = [int(x) for x in f'{rule:08b}']
+    yield 0, start
+    old_row = [0] + start + [0]
+    new_row = []
+    for g in range(1,generations):
+        for i in range(1,len(old_row)-1):
+            key=tuple(old_row[i-1:i+2])
+            new_row.append(rule[bindict[key]])
+        yield (g+1)/generations,new_row
+        old_row = [0] + new_row + [0]
+        new_row = []
+
+########################
+### Validation Lagic ###
+########################
 
 def validate_rule_number(rule_number: int):
     if (rule_number < 0) or (rule_number > 255 ): return "Enter an integer between 0 and 255 (inclusive)"
