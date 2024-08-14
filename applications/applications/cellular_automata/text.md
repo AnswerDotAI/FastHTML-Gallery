@@ -1,6 +1,6 @@
 # Cellular Automata
 
-Cellular automata are a class of models that are used to simulate complex systems. They are made up of a grid of cells, each of which can be in one of a finite number of states. The state of each cell is updated at each time step based on the states of its neighbors. Cellular automata are used in a wide range of applications, including modeling the spread of diseases, traffic flow, and the behavior of crowds.This project is a 1 dimensional cellular automata. 
+Cellular automata are a class of models that are used to simulate complex systems. Cellular automata are used in a wide range of applications, including modeling the spread of diseases, traffic flow, and the behavior of crowds. This project is a 1 dimensional cellular automata. 
 
 ## How it works
 
