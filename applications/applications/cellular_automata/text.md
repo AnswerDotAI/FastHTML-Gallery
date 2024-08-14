@@ -2,27 +2,23 @@
 
 Cellular automata are a class of models that are used to simulate complex systems. Cellular automata are used in a wide range of applications, including modeling the spread of diseases, traffic flow, and the behavior of crowds. This project is a 1 dimensional cellular automata. 
 
-## How it works
+## Cellular Automata Details
 
 We start with an initial row. In this app the row is a series of white squares followed by a single black square followed by more white squares. 
 
-A cell is created based on the state of the three cells above it ( directly above and to the left and right). That means there are eight possible combinations of the three cells. We consider a white square to be a 0 and a black square to be a 1. This gives us a number between 0 and 7, I'll call this the cell update number.
+A cell is created based on the state of the three cells above it (directly above and to the left and right). That means there are **eight** possible combinations of the three cells. We consider a white square to be a 0 and a black square to be a 1. This gives us a number between 0 and 7, I'll call this the cell update number.
 
-The rule is a number between 0 and 255 (inclusive). We take that number and convert it to its binary representation. This will be a sequence of 8x 0s and 1s. Taking the cell update number, we look at the corresponding digit in the rule. If it is a 1, the cell becomes black, if it is a 0, the cell becomes white.
+The rule is a number between 0 and 255 (inclusive). We take that number and convert it to its binary representation. This will be a sequence of **8**x 0s and 1s. Taking the cell update number, we look at the corresponding digit in the rule. If it is a 1, the cell becomes black, if it is a 0, the cell becomes white.
 
-You can see a visual representation of the rule in the app. 
+The cellular automata is visualized as a grid of white and black boxes, representing the 0 and 1 states respectively.
 
 ## User Interface
 
 The app provides three main inputs:
 
-- Rule Number (0-255): Determines the cellular automata rule
-- Number of Generations (1-200): Sets how many rows will be generated
-- Width (1-200): Defines the width of the grid
-
-## Visualization
-
-The cellular automata is visualized as a grid of white and black boxes, representing the 0 and 1 states respectively. The grid is dynamically updated using HTMX polling, creating an animated effect as new generations are added.
+- **Rule (0-255):** Determines the cellular automata rule
+- **Generations (1-200):** Sets how many rows will be generated
+- **Width (1-200):** Defines the width of the grid
 
 ## Key Technologies and Techniques
 
