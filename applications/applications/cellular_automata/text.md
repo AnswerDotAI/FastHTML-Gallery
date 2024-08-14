@@ -36,6 +36,8 @@ The cellular automata is visualized as a grid of white and black boxes, represen
 
 + **Dynamic Grid Generation**: The automata grid is generated row by row, creating an animated effect.
 
++ **Server Side Session State**: The state of each in progress generation is stored by session ID on the server.
+
 ### Server-Side Logic
 
 The app uses FastHTML to define routes and handle the cellular automata logic on the server. Key routes include:
