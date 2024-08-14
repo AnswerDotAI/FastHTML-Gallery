@@ -23,8 +23,8 @@ color_map = {0:"white", 1:"black"}
 explanation = Div(
     H1("Cellular Automata"),
     H4("Input explanations:"),
-    Ul(Li(Strong("Rule Number: "),"Determines the next state of a cell based on the current state of the cell and its neighbors."),
-        Li(Strong("Number of Generations: "),"Determines how many generations to run the automaton."),
+    Ul(Li(Strong("Rule: "),"Determines the next state of a cell based on the current state of the cell and its neighbors."),
+        Li(Strong("Generations: "),"Determines how many generations to run the automaton."),
         Li(Strong("Width: "),"Determines the width of the grid."),))
 
 def progress_bar(percent_complete: float):
@@ -65,12 +65,12 @@ def homepage(sess):
     return Title("Cellular Automata"),Main(nav,Div(
         Div(P(explanation,id="explanations")),
         Form(Group(
-            Div(hx_target='this', hx_swap='outerHTML')(Label(_for="rule_number", cls="form-label")("Rule Number"),
-                Input(type='number', name="rule_number", id='rule_set', value="30", style="width: 340px;",hx_post='/applications/cellular_automata/app/validate/rule_number')),
-            Div(hx_target='this', hx_swap='outerHTML')(Label("Number of Generations", cls="form-label"),
-                Input(type='number',name="generations", id='generations_set',  value="50",style="width: 340px;",hx_post='/applications/cellular_automata/app/validate/generations', hx_indicator='#generationsind')),
+            Div(hx_target='this', hx_swap='outerHTML')(Label(_for="rule_number", cls="form-label")("Rule"),
+                Input(type='number', name="rule_number", id='rule_set', value="30",hx_post='/applications/cellular_automata/app/validate/rule_number')),
+            Div(hx_target='this', hx_swap='outerHTML')(Label("Generations", cls="form-label"),
+                Input(type='number',name="generations", id='generations_set',  value="50",hx_post='/applications/cellular_automata/app/validate/generations', hx_indicator='#generationsind')),
             Div(hx_target='this', hx_swap='outerHTML')(Label("Width", cls="form-label"),
-                Input(type='number',name="width", id='width_set',  value="100", style="width: 340px;",hx_post='/applications/cellular_automata/app/validate/width', hx_indicator='#widthind')), 
+                Input(type='number',name="width", id='width_set',  value="100", hx_post='/applications/cellular_automata/app/validate/width', hx_indicator='#widthind')), 
             Button(cls="btn btn-active btn-primary", type="submit", hx_get="/applications/cellular_automata/app/run", 
                    hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML")("Run"))),
         Group(
