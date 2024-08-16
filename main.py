@@ -31,7 +31,7 @@ def homepage():
     )
 
     def get_sections(path, section_names, card_fn):
-        directories = tuple(Path(root) for root, _, files in os.walk(path) if 'app.py' in files)
+        directories = tuple(Path(root) for root, _, files in os.walk(path) if 'app.py' in files and not Path(root).name.startswith('_'))
         directories = sorted(directories, key=lambda path: path.parts[0])
         directories = {k: list(vs) for k, vs in groupby(directories, key=lambda path: path.parts[1]).items()}
         return Div(*[create_image_cards(k.replace('_', ' ').title(), directories.get(k), card_fn) for k in section_names])
