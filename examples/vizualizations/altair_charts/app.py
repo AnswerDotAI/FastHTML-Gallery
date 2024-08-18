@@ -23,7 +23,7 @@ def homepage():
     return Title("Altair Demo"), Main(
         H1("Altair Demo"),
         Div(id="chart"),
-        Button("Increment", hx_get="/widgets/altair_charts/increment", hx_target="#chart", hx_swap="innerHTML"),
+        Button("Increment", get=increment, hx_target="#chart", hx_swap="innerHTML"),
         style="margin: 20px"
     )
 
