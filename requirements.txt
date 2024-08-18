@@ -1,4 +1,4 @@
-python-fasthtml
+python-fasthtml @ git+https://github.com/answerdotai/fasthtml
 fh-matplotlib
 fh-altair
 pandas
