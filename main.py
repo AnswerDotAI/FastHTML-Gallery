@@ -8,7 +8,7 @@ from ui_examples import examples_routes, image_card_examples
 
 descr = 'A gallery of FastHTML components showing common patterns in FastHTML apps, including chat bubbles, cascading dropdowns, interactive charts, etc.'
 
-app = FastHTML(debug=True, routes=examples_routes+application_routes+ [Mount('/files', StaticFiles(directory='.')),])
+app = FastHTML(routes=examples_routes+application_routes+ [Mount('/files', StaticFiles(directory='.')),])
 
 ## Add application code/info routes
 application_directories = tuple(Path(root) for root, _, files in os.walk('applications') if 'app.py' in files)
