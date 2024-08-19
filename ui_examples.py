@@ -68,7 +68,7 @@ def create_display_page(dir_path, module_path):
                     Div(H1("FastHTML Gallery", cls="navbar-brand mb-0 h1"), A(href='/',cls="stretched-link"), cls="navbar-nav me-auto mb-2 mb-lg-0 position-relative"),
                     Div(A("Back to Gallery", href="/", cls="btn btn-outline-secondary me-2"),cls="d-flex"),),),
             Div(cls="container-fluid")(
-                *Socials(title=meta['ComponentName'], description=meta['ComponentDescription'], site_name='fasthtml.gallery', twitter_site='@isaac_flath', image=f"/{dir_path/'img.png'}", url=''),
+                *Socials(title=meta['ComponentName'], description=meta['ComponentDescription'], site_name='gallery.fastht.ml', twitter_site='@isaac_flath', image=f"/{dir_path/'img.png'}", url=''),
                 Div(column1, column2, cls="row mx-n1"),))
     return app
 

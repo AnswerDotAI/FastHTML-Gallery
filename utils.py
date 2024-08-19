@@ -26,7 +26,7 @@ def get_social_links(dir_path):
     metadata = ConfigParser()
     metadata.read(dir_path/'metadata.ini')
     meta = metadata['REQUIRED']
-    return Socials(title=meta['ComponentName'], description=meta['ComponentDescription'], site_name='fasthtml.gallery', twitter_site='@isaac_flath', image=f"/files/{dir_path/'img.png'}", url='')
+    return Socials(title=meta['ComponentName'], description=meta['ComponentDescription'], site_name='gallery.fastht.ml', twitter_site='@isaac_flath', image=f"/files/{dir_path/'img.png'}", url='')
 
 
 
