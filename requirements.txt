@@ -1,3 +1,4 @@
+fastcore @ git+https://github.com/isaac-flath/fastcore@testing
 python-fasthtml==0.4.4
 fh-matplotlib
 fh-altair
@@ -6,3 +7,4 @@ fastsql
 plotly
 fh-plotly
 numpy
+fastcore @ git+https://github.com/isaac-flath/fastcore@testing
