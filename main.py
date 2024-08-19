@@ -5,6 +5,7 @@ from pathlib import Path
 from utils import *
 from ui_applications import application_routes, image_card_applications, render_application_code, render_application_markdown
 from ui_examples import examples_routes, image_card_examples
+from functools import partial
 
 descr = 'A gallery of FastHTML components showing common patterns in FastHTML apps, including chat bubbles, cascading dropdowns, interactive charts, etc.'
 
@@ -13,8 +14,8 @@ app = FastHTML(routes=examples_routes+application_routes+ [Mount('/files', Stati
 ## Add application code/info routes
 application_directories = tuple(Path(root) for root, _, files in os.walk('applications') if 'app.py' in files)
 for dir_path in application_directories:
-    app.add_route(get_route(dir_path,'code'), render_application_code(dir_path))
-    app.add_route(get_route(dir_path,'info'), render_application_markdown(dir_path))
+    app.add_route(get_route(dir_path,'code'), partial(render_application_code,dir_path))
+    app.add_route(get_route(dir_path,'info'), partial(render_application_markdown,dir_path))
 
 @app.get("/")
 def homepage():

@@ -95,5 +95,6 @@ def render_application_markdown(dir_path):
                 Zero_md(Script(code_text, type="text/markdown")),
             ),
             
-        ))
+        )
+    )
     

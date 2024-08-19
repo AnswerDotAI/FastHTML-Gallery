@@ -1,5 +1,4 @@
-fastcore @ git+https://github.com/isaac-flath/fastcore@FT-dunder-add-bug-fix
-python-fasthtml==0.4.4
+python-fasthtml
 fh-matplotlib
 fh-altair
 pandas
@@ -7,4 +6,5 @@ fastsql
 plotly
 fh-plotly
 numpy
-fastcore @ git+https://github.com/isaac-flath/fastcore@FT-dunder-add-bug-fix
+fastcore
+
