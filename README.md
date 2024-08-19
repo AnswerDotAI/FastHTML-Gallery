@@ -1,5 +1,6 @@
 # FastHTML-Gallery
 
+
 This is a gallery of FastHTML components that shows common patterns in FastHTML apps. It includes minimal examples of chat bubbles, cascading dropdowns, interactive charts, and more.
 
 ## Running
