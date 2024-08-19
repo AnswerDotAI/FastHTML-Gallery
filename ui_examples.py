@@ -8,8 +8,8 @@ from utils import *
 links = (Link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css", type="text/css"),
     *HighlightJS(langs=['python', 'javascript', 'html', 'css']),
     MarkdownJS(),
-    Script(defer=True, data_domain="fasthtml.gallery", src="https://plausible-analytics-ce-production-9521.up.railway.app/js/script.js"),
-    Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css", integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC", crossorigin="anonymous"),  
+    Script(defer=True, data_domain="gallery.fastht.ml", src="https://plausible-analytics-ce-production-dba0.up.railway.app/js/script.js"),
+    Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css", integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC", crossorigin="anonymous"),
     Script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js", integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM", crossorigin="anonymous"),)
 
 def image_card_examples(dir_path):
@@ -18,10 +18,10 @@ def image_card_examples(dir_path):
     meta = metadata['REQUIRED']
 
     return Div(Div(Div(Img(
-                    src=f"{'/files'/dir_path/'gif.gif'}", alt=meta['ImageAltText'], 
+                    src=f"{'/files'/dir_path/'gif.gif'}", alt=meta['ImageAltText'],
                     cls="card-img-top border",
                     style="width: 100%; height: 100%; object-fit: cover;",
-                    data_png=f"{'/files'/dir_path/'img.png'}"), 
+                    data_png=f"{'/files'/dir_path/'img.png'}"),
                     style="height: 200px; overflow: hidden;"),
                 Div(H5(meta['ComponentName'], cls="card-title fw-bold"),
                     P(meta['ComponentDescription'], cls="card-text text-muted"),
