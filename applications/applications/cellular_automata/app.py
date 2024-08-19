@@ -76,8 +76,7 @@ def homepage(sess):
         Group(
             Div(style="margin-left:50px")(
                 Div(id="progress_bar"),
-                Div(id="grid")), 
-                
+                Div(id="grid")),
             Div(style="margin-right:50px; max-width:200px")(
                     mk_button(False),
                     Div(id="rule"),
@@ -108,7 +107,9 @@ def get(rule_number: int, generations: int, width: int, sess):
         return Div(Div(id="grid"),
                    Div(id="progress_bar",hx_swap_oob="outerHTML:#progress_bar"),
                 Div(id='submit-btn-container',hx_swap_oob="outerHTML:#submit-btn-container")(
-                    Button(cls="btn btn-active btn-primary", type="submit", hx_get="/applications/cellular_automata/app/run", hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML")("Run"),
+                    Button(cls="btn btn-active btn-primary", type="submit", 
+                           hx_get="/applications/cellular_automata/app/run", hx_target="#grid", 
+                           hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML")("Run"),
                     *[Div(error, style='color: red;') for error in errors.values()]))
 
     start = [0]*(width//2) + [1] + [0]*(width//2)
