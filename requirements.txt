@@ -9,4 +9,4 @@ plotly
 fh-plotly
 numpy
 fastcore
-
+requests
