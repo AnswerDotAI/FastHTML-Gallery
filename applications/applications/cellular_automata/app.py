@@ -1,8 +1,9 @@
 from fasthtml.common import *
 from starlette.responses import Response
+from uuid import uuid4
 
 
-generator = None
+generator = {}
 bindict = {
     (1,1,1):0,
     (1,1,0):1,
@@ -22,8 +23,8 @@ color_map = {0:"white", 1:"black"}
 explanation = Div(
     H1("Cellular Automata"),
     H4("Input explanations:"),
-    Ul(Li(Strong("Rule Number: "),"Determines the next state of a cell based on the current state of the cell and its neighbors."),
-        Li(Strong("Number of Generations: "),"Determines how many generations to run the automaton."),
+    Ul(Li(Strong("Rule: "),"Determines the next state of a cell based on the current state of the cell and its neighbors."),
+        Li(Strong("Generations: "),"Determines how many generations to run the automaton."),
         Li(Strong("Width: "),"Determines the width of the grid."),))
 
 def progress_bar(percent_complete: float):
@@ -56,17 +57,20 @@ nav = Nav()(
                 A("Back to Gallery", cls="outline", href="/", role="button" ),
                 A("Info", cls="secondary", href="/applications/cellular_automata/info", role="button"),
                 A("Code", href="/applications/cellular_automata/code", role="button")))))
-@rt('/')
-def homepage():
+
+
+@app.get('/')
+def homepage(sess):
+    if 'id' not in sess: sess['id'] = str(uuid4())
     return Title("Cellular Automata"),Main(nav,Div(
         Div(P(explanation,id="explanations")),
         Form(Group(
-            Div(hx_target='this', hx_swap='outerHTML')(Label(_for="rule_number", cls="form-label")("Rule Number"),
-                Input(type='number', name="rule_number", id='rule_set', value="30", style="width: 340px;",hx_post='/applications/cellular_automata/app/validate/rule_number')),
-            Div(hx_target='this', hx_swap='outerHTML')(Label("Number of Generations", cls="form-label"),
-                Input(type='number',name="generations", id='generations_set',  value="50",style="width: 340px;",hx_post='/applications/cellular_automata/app/validate/generations', hx_indicator='#generationsind')),
+            Div(hx_target='this', hx_swap='outerHTML')(Label(_for="rule_number", cls="form-label")("Rule"),
+                Input(type='number', name="rule_number", id='rule_set', value="30",hx_post='/applications/cellular_automata/app/validate/rule_number')),
+            Div(hx_target='this', hx_swap='outerHTML')(Label("Generations", cls="form-label"),
+                Input(type='number',name="generations", id='generations_set',  value="50",hx_post='/applications/cellular_automata/app/validate/generations', hx_indicator='#generationsind')),
             Div(hx_target='this', hx_swap='outerHTML')(Label("Width", cls="form-label"),
-                Input(type='number',name="width", id='width_set',  value="100", style="width: 340px;",hx_post='/applications/cellular_automata/app/validate/width', hx_indicator='#widthind')), 
+                Input(type='number',name="width", id='width_set',  value="100", hx_post='/applications/cellular_automata/app/validate/width', hx_indicator='#widthind')), 
             Button(cls="btn btn-active btn-primary", type="submit", hx_get="/applications/cellular_automata/app/run", 
                    hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML")("Run"))),
         Group(
@@ -91,7 +95,7 @@ def get(rule_number: int, show: bool):
     )
 
 @rt('/run')
-def get(rule_number: int, generations: int, width: int):
+def get(rule_number: int, generations: int, width: int, sess):
 
     errors = {'rule_number': validate_rule_number(rule_number),
               'generations': validate_generations(generations),
@@ -109,18 +113,21 @@ def get(rule_number: int, generations: int, width: int):
 
     start = [0]*(width//2) + [1] + [0]*(width//2)
     global generator 
-    generator = run(rule=rule_number,generations=generations,start=start)
+    generator[sess['id']] = run(rule=rule_number,generations=generations,start=start)
     return Div(
         Div(style=f"width: {(width+1)*5}px",id="progress_bar",hx_swap_oob="outerHTML:#progress_bar"),
         Div(id="next",hx_trigger="every .1s", hx_get="/applications/cellular_automata/app/next", hx_target="#grid",hx_swap="beforeend"),id="grid")
 
 @rt('/next')
-def get():
-    g,val = next(generator,(False,False))
+def get(sess):
+    global generator
+    g,val = next(generator[sess['id']],(False,False))
     if val: return Div(
         progress_bar(g),
         mk_row(val))
-    else: return Response(status_code=286)
+    else: 
+        del generator[sess['id']]
+        return Response(status_code=286)
 
 @rt('/validate/rule_number')
 def post(rule_number: int): return inputTemplate('Rule Number', 'rule_number',rule_number, validate_rule_number(rule_number))
