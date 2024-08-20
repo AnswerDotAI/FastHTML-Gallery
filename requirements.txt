@@ -1,7 +1,9 @@
 python-fasthtml
 fh-matplotlib
 fh-altair
+great_tables
 pandas
+polars
 fastsql
 plotly
 fh-plotly
