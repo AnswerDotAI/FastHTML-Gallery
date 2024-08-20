@@ -20,7 +20,7 @@ def homepage():
             Main(P(desc),
                  *[Button(gate, hx_get=f"/vizualizations/bloch_sphere/apply_gate/{gate}", hx_target="#chart", hx_swap="innerHTML", hx_vals=hx_vals,  title=f"Apply {gate} gate") for gate in single_qubit_gates.keys()], 
                  Button("Reset", hx_get="/vizualizations/bloch_sphere/reset", hx_target="#chart", hx_swap="innerHTML", title="Reset the circuit"),
-                 Div(update_state_apply_gate(), id="chart"),
+                 Div(update_state_apply_gate.__wrapped__(), id="chart"),
                  H4("Available gates"),
                  Ul(Li(Strong("H :"),"Hadamard gate. Puts the state in superposition. "),
                     Li(Strong("X :"),"Pauli-X (NOT) gate. Rotate 180 degrees around the X-Axis."),
@@ -30,7 +30,7 @@ def homepage():
                     Li(Strong("T :"),"π/8 gate. Rotates around the Z-axis by 45 degrees."))))
 
 @app.get('/reset')
-def reset(): return update_state_apply_gate()
+def reset(): return update_state_apply_gate.__wrapped__()
 
 @app.get('/apply_gate/{gate}')
 def update_state_apply_gate(gate: str=None, gates: str=None):

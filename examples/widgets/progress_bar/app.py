@@ -30,4 +30,3 @@ def progress_bar(percent_complete: float):
     return Progress(id="progress_bar",value=percent_complete,
                     hx_get='/widgets/progress_bar/job',hx_target="#progress_bar",hx_trigger="every 500ms",
                     hx_vals=f"js:'percent_complete': '{percent_complete}'")
-                    
