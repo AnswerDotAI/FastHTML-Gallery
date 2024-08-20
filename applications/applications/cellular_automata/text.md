@@ -21,7 +21,7 @@ The app provides three main inputs:
 
 ## Key Technologies and Techniques
 
-* **HTMX Polling**: We use polling to update the grid every 100ms. This is done by setting the `hx-get` attribute `every .1s`. This triggers a GET request until we run out of generations, and then the `Response(status_code=286)` stops the polling.  See the [HTMX documentation for polling](https://htmx.org/docs/#polling)
+* **HTMX Polling**: We use polling to update the grid every 100ms. This is done by setting the `hx-trigger` attribute `every .1s`. This triggers a GET request until we run out of generations, and then the `Response(status_code=286)` stops the polling.  See the [HTMX documentation for polling](https://htmx.org/docs/#polling)
 * **Progress Bar**:  A progress bar that shows the progress of the cellular automata.  Check out the [FastHTML Gallery page for progress bars!](https://fasthtml.gallery/widgets/progress_bar/display)
 * **Show Hide Button**: A button that shows and hides the rule number.  Check out the [FastHTML Gallery page for show hide buttons!](https://fasthtml.gallery/widgets/show_hide/display)
 * **Inline Input Validation**:  Real-time validation for rule number, generations, and width inputs.  Check out the [FastHTML Gallery page for inline validation!](https://fasthtml.gallery/dynamic_user_interface/inline_validation/display)
