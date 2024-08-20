@@ -137,7 +137,7 @@ def homepage():
             P("A FastHTML app by Adedara Adeloro", cls="font-bevan text-custom-blue font-light"),
             cls="m-14"),
         Div(
-            render_board(),  # render buttons.
+            render_board.__wrapped__(),  # render buttons.
             Div(
                 Button(
                     "Restart!",

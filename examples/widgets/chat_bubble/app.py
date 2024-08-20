@@ -15,9 +15,8 @@ def create_chat_message(role, content, msg_num):
     # msg 0 = left, msg 1 = right, msg 2 = left, etc.
     alignment = 'flex-end' if msg_num % 2 == 1 else 'flex-start'
 
-    message = Div(
-        Div(
-            Div( # Shows the Role
+    message = Div(Div(
+            Div(# Shows the Role
                 Strong(role.capitalize()),
                 style=f"color: {text_color}; font-size: 0.9em; letter-spacing: 0.05em;"),
             Div(# Shows content and applies font color to stuff other than syntax highlighting
