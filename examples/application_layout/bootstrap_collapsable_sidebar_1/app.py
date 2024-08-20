@@ -39,7 +39,7 @@ def homepage():
                 cls='col-auto px-0'),
             Main(
                 A(I(cls='bi bi-list bi-lg py-2 p-1'), 'Menu',
-                  href='#', data_bs_target='#sidebar', data_bs_toggle='collapse',
+                  href='#', data_bs_target='#sidebar', data_bs_toggle='collapse', aria_expanded='false', aria_controls='sidebar',
                   cls='border rounded-3 p-1 text-decoration-none'),
                 Div(
                   Div(
