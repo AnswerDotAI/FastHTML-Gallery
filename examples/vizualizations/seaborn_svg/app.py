@@ -28,20 +28,20 @@ def plot_heatmap(matrix,figsize=(6,7),**kwargs):
   plt.title('heatmap')
 
 
-@rt("/")
-def get():
+@app.get("/")
+def homepage():
   return Div(
     H3("Move the slider to change the width of the graph"),
     Input(
        type="range",
        min="1", max="10", value="1",
-       hx_get='/update_chart', hx_target="#plot",
+       get=update_heatmap, hx_target="#plot",
        id='width'),
     Div(id="plot")
  )
 
-@rt("/update_chart")
-def get(width:int):
+@app.get("/update_charts")
+def update_heatmap(width:int):
   svg_plot = plot_heatmap(data,figsize=(width,7))
   return svg_plot
 
