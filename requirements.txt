@@ -10,3 +10,4 @@ fh-plotly
 numpy
 fastcore
 requests
+seaborn
