@@ -8,11 +8,18 @@ app,rt,todos,Todo = fast_app(
 
 def tid(id): return f'todo-{id}'
 
+
+@app.delete("/delete_todo",name='delete_todo')
+async def delete_todo(id:int): 
+    try: todos.delete(id)
+    except NotFoundError: pass # If someone else deleted it already we don't have to do anything
+
+
 @patch
 def __ft__(self:Todo):
     show = Strong(self.title, target_id='current-todo')
     delete = A('delete',
-               hx_delete=f'/start_simple/sqlite_todo/app/{self.id}', 
+               hx_delete=delete_todo.rt(id=self.id).lstrip('/'), 
                hx_target=f'#{tid(self.id)}',
                hx_swap='outerHTML')
     return Li(show, ' | ', delete, id=tid(self.id))
@@ -31,15 +38,10 @@ nav = Nav()(
 @app.get("/")
 async def homepage():
     add =  Form(Group(mk_input(), Button("Add")), 
-                hx_post="/start_simple/sqlite_todo/app/", target_id='todo-list', hx_swap="beforeend")
+                post="insert_todo", target_id='todo-list', hx_swap="beforeend")
     card = Card(Ul(*todos(), id='todo-list'), header=add, footer=Div(id='current-todo')),
     title = 'Todo list'
     return Title(title), Main(nav, H1(title), card, cls='container')
 
-@rt("/")
+@rt("/",name='insert_todo')
 async def post(todo:Todo): return todos.insert(todo), mk_input(hx_swap_oob='true')
-
-@rt("/{id}")
-async def delete(id:int): 
-    try: todos.delete(id)
-    except NotFoundError: pass # If someone else deleted it already we don't have to do anything

@@ -10,7 +10,7 @@ def get_progress(percent_complete: int):
 
 @app.get('/')
 def homepage():
-    return Div(H3("Start the job to see progress!"),id='progress_bar'),Button("Start Job",hx_post='/widgets/progress_bar/job', hx_target="#progress_bar",)
+    return Div(H3("Start the job to see progress!"),id='progress_bar'),Button("Start Job",post='update_status', hx_target="#progress_bar",)
 
 @app.post('/job')
 def update_status():
@@ -28,5 +28,5 @@ def update_progress(percent_complete: float):
 
 def progress_bar(percent_complete: float):
     return Progress(id="progress_bar",value=percent_complete,
-                    hx_get='/widgets/progress_bar/job',hx_target="#progress_bar",hx_trigger="every 500ms",
+                    get='update_progress',hx_target="#progress_bar",hx_trigger="every 500ms",
                     hx_vals=f"js:'percent_complete': '{percent_complete}'")
