@@ -8,6 +8,13 @@ button,input { margin: 0 1rem; }
 '''), )
 app, rt = fast_app(hdrs=hdrs)
 
+navbar = Nav()(Div(cls="container")(Div(cls="grid")(
+        H1("FastHTML Gallery"),
+        Div(cls="grid", style="justify-content: end;")(
+            A("Back to Gallery", cls="outline", href="/", role="button"),
+            A("Info", cls="secondary", href="/start_simple/csv_editor/info", role="button"),
+            A("Code", href="/start_simple/csv_editor/code", role="button")))))
+
 @rt("/get_test_file")
 async def get_test_file():
     import httpx
@@ -19,7 +26,7 @@ async def get_test_file():
 @app.get("/")
 def homepage(sess):
     if 'id' not in sess: sess['id'] = str(uuid4())
-    return Titled("CSV Uploader", 
+    return navbar,Titled("CSV Uploader", 
                   A('Download Example CSV', href="get_test_file", download="ex_data.csv"),
         Group(Input(type="file", name="csv_file", accept=".csv"),
             Button("Upload", hx_post="upload", hx_target="#results",
