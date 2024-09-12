@@ -5,6 +5,7 @@ db = database('sqlite.db')
 hdrs = (Style('''
 button,input { margin: 0 1rem; }
 [role="group"] { border: 1px solid #ccc; }
+.edited { outline: 2px solid orange; }
 '''), )
 app, rt = fast_app(hdrs=hdrs)
 
@@ -35,7 +36,7 @@ def homepage(sess):
         Div(id="results"))
 
 def render_row(row):
-    vals = [Td(Input(value=v, name=k)) for k,v in row.items()]
+    vals = [Td(Input(value=v, name=k, oninput="this.classList.add('edited')")) for k,v in row.items()]
     vals.append(Td(Group(Button('delete', hx_delete=remove.rt(id=row['id']).lstrip('/')),
                    Button('update', hx_post='update', hx_include="closest tr"))))
     return Tr(*vals, hx_target='closest tr', hx_swap='outerHTML')
