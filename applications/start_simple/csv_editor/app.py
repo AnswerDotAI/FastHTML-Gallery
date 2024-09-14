@@ -21,19 +21,20 @@ async def get_test_file():
     import httpx
     url = "https://raw.githubusercontent.com/AnswerDotAI/FastHTML-Gallery/main/applications/start_simple/csv_editor/ex_data.csv"
     response = await httpx.AsyncClient().get(url)
-    return Response(response.text, media_type="text/csv", 
+    return Response(response.text, media_type="text/csv",
                         headers={'Content-Disposition': 'attachment; filename="ex_data.csv"'})
 
 @app.get("/")
 def homepage(sess):
     if 'id' not in sess: sess['id'] = str(uuid4())
-    return navbar,Titled("CSV Uploader", 
-                  A('Download Example CSV', href="get_test_file", download="ex_data.csv"),
-        Group(Input(type="file", name="csv_file", accept=".csv"),
-            Button("Upload", hx_post="upload", hx_target="#results",
-                   hx_encoding="multipart/form-data", hx_include='previous input'),
-            A('Download', href='download', type="button")),
-        Div(id="results"))
+    cts = Titled("CSV Uploader",
+                 A('Download Example CSV', href="get_test_file", download="ex_data.csv"),
+                 Group(Input(type="file", name="csv_file", accept=".csv"),
+                       Button("Upload", hx_post="upload", hx_target="#results",
+                              hx_encoding="multipart/form-data", hx_include='previous input'),
+                       A('Download', href='download', type="button")),
+                 Div(id="results"))
+    return navbar,cts
 
 def render_row(row):
     vals = [Td(Input(value=v, name=k, oninput="this.classList.add('edited')")) for k,v in row.items()]
@@ -69,3 +70,4 @@ def post(csv_file: UploadFile, sess):
     return (Span('First 50 rows only', style="color: red;") if i>=51 else '', Table(Thead(header), Tbody(*vals)))
 
 serve()
+
