@@ -14,22 +14,15 @@ def get_route(p,ext=None):
 
 def create_image_cards(n, ps, image_card_fn):
     return Div(
-        Div(
-            H2(n, cls="display-4 text-primary mb-4"),
-            cls="text-center py-2 bg-light my-4"
-        ),
-        Div(*[image_card_fn(p) for p in ps], cls="row")
-    )
-
+        Div(H2(n, cls="display-4 text-primary mb-4"),
+            cls="text-center py-2 bg-light my-4"),
+        Div(*[image_card_fn(p) for p in ps], cls="row"))
 
 def get_social_links(dir_path):
     metadata = ConfigParser()
     metadata.read(dir_path/'metadata.ini')
     meta = metadata['REQUIRED']
     return Socials(title=meta['ComponentName'], description=meta['ComponentDescription'], site_name='gallery.fastht.ml', twitter_site='@isaac_flath', image=f"/files/{dir_path/'img.png'}", url='')
-
-
-
 
 toggle_script = Script("""
     function toggleAnimations() {

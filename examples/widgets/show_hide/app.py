@@ -5,14 +5,14 @@ content = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit am
 
 def mk_button(show):
     return Button("Hide" if show else "Show",
-        hx_get="/widgets/show_hide/toggle?show=" + ("False" if show else "True"),
+        get="toggle?show=" + ("False" if show else "True"),
         hx_target="#content", id="toggle", hx_swap_oob="outerHTML")
 
 @app.get('/')
 def homepage():
     return Div(mk_button(False), Div(id="content"))
 
-@rt('/toggle')
+@rt('/toggle', name='toggle')
 def get(show: bool):
     return Div(
             Div(mk_button(show)),
