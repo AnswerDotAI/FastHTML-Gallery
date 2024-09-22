@@ -37,7 +37,7 @@ def homepage(sess):
 
 @rt("/click/{count}")
 def click(count: int,sess):
-    ret,et = [],""
+    et = ""
     if count == 1:
         timer[sess['id']] = Timer()
     if count == 10:
