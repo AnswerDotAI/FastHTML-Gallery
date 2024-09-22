@@ -1,10 +1,10 @@
 from fh_altair import altair2fasthml, altair_headers
-from fasthtml.common import * 
+from fasthtml.common import *
 import numpy as np
 import pandas as pd
 import altair as alt
 
-app, rt = fast_app(hdrs=altair_headers)  
+app, rt = fast_app(hdrs=altair_headers)
 
 count = 0
 plotdata = []

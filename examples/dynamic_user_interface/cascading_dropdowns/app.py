@@ -14,8 +14,8 @@ def mk_opts(nm, cs):
         Option(f'-- select {nm} --', disabled='', selected='', value=''),
         *map(Option, cs))
 
-@rt('/lessons')
-def get(chapter: str):
+@app.get('/get_lessons')
+def get_lessons(chapter: str):
     return Select(*mk_opts('lesson', lessons[chapter]), name='lesson')
 
 @app.get('/')
@@ -23,7 +23,7 @@ def homepage():
     chapter_dropdown = Select(
         *mk_opts('chapter', chapters),
         name='chapter',
-        hx_get='/dynamic_user_interface/cascading_dropdowns/lessons', hx_target='#lessons')
+        get='get_lessons', hx_target='#lessons')
 
     return Div(
         Div(

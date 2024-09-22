@@ -29,7 +29,7 @@ def get_notstr_table(color1: str = "#663399", color2: str = "#FFA500"):
     # Return the table by converting to raw HTML
     return Div(NotStr(sza_gt.as_raw_html()))
 
-@app.post("/submit")
+@app.post("/submit", name="submit")
 def post(d: dict):
     return get_notstr_table(**d)
 
@@ -38,7 +38,7 @@ def homepage():
     return (Title("FastHTML-GT Website"),
             Titled("Great Tables shown in FastHTML", style="text-align:center"),
             Main(cls='container')(
-                Form(hx_post="/vizualizations/great_tables_tables/submit", hx_target="#gt", hx_trigger="input")(
+                Form(post="submit", hx_target="#gt", hx_trigger="input")(
                     Grid(Card(H2("Color1"), Input(type="color",id="color1", value="#663399")),
                          Card(H2("Color2"), Input(type="color",id="color2", value="#FFA500")))),
                 Div(get_notstr_table(), id="gt")))

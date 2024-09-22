@@ -35,7 +35,7 @@ def homepage():
     return Div(
         Div(
             Div(
-                Sidebar(sidebar_items, hx_get='/application_layout/bootstrap_collapsable_sidebar_1/menucontent', hx_target='#current-menu-content'),
+                Sidebar(sidebar_items, hx_get='menucontent', hx_target='#current-menu-content'),
                 cls='col-auto px-0'),
             Main(
                 A(I(cls='bi bi-list bi-lg py-2 p-1'), 'Menu',
