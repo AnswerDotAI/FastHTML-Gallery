@@ -1,16 +1,34 @@
 from pathlib import Path
-import re
 from importlib import import_module
 from fasthtml.common import *
 import configparser
 from utils import *
+import inspect
+from functools import wraps
 
-links = (Link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css", type="text/css"),
-    *HighlightJS(langs=['python', 'javascript', 'html', 'css']),
-    MarkdownJS(),
-    Script(defer=True, data_domain="gallery.fastht.ml", src="https://plausible-analytics-ce-production-dba0.up.railway.app/js/script.js"),
-    Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css", integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC", crossorigin="anonymous"),
-    Script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js", integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM", crossorigin="anonymous"),)
+hdrs_tailwind_franken_highlightJS_markdownJS = (
+        Script(src='https://cdn.tailwindcss.com'),
+        Script(src='https://cdn.jsdelivr.net/npm/uikit@3.21.6/dist/js/uikit.min.js'),
+        Script(src='https://cdn.jsdelivr.net/npm/uikit@3.21.6/dist/js/uikit-icons.min.js'),
+        Script(type='module', src='https://unpkg.com/franken-wc@0.0.6/dist/js/wc.iife.js'),
+        Link(rel='stylesheet', href='https://unpkg.com/franken-wc@0.0.6/dist/css/blue.min.css'),
+        Script(defer=True, data_domain="gallery.fastht.ml", src="https://plausible-analytics-ce-production-dba0.up.railway.app/js/script.js"),
+        HighlightJS(langs=['python', 'javascript', 'html', 'css']),
+        MarkdownJS(),)
+
+def show_code(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        # TODO:  Add socials
+        # TODO: Add MD FILE
+        # TODO: Add TITLE
+        # TODO: Add Navbar
+        with open(inspect.getfile(func), 'r') as f: code = f.read()
+        return Div(cls="flex")(
+            Div(cls="w-1/2 p-4 overflow-auto")(
+                Pre(Code(cls="language-python")(code))),
+            Div(cls="w-1/2 p-4 overflow-auto")(func(*args, **kwargs)))
+    return wrapper
 
 def image_card_examples(dir_path):
     metadata = configparser.ConfigParser()
@@ -72,7 +90,4 @@ def create_display_page(dir_path, module_path):
                 Div(column1, column2, cls="row mx-n1"),))
     return app
 
-examples_routes = [
-    Mount(get_route(root), create_display_page(root,get_module_path(root,'examples')))
-    for root, _, files in os.walk('examples') if 'app.py' in files
-]
+examples_routes = [Mount(get_route(root,'display'), import_module(get_module_path(root,'examples')).app) for root, dirs, files in os.walk('examples') if 'app.py' in files]

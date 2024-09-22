@@ -1,8 +1,10 @@
 from fasthtml.common import *
+from ui_examples import hdrs_tailwind_franken_highlightJS_markdownJS, show_code
 
-app, rt = fast_app()
+app, rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS)
 
-@app.get('/')
+@rt('/')
+@show_code
 def homepage():
     return Div(*[create_chat_message(**msg, msg_num=i) for i, msg in enumerate(example_messages)])
 
@@ -54,3 +56,4 @@ example_messages = [
         }
     ]
 
+serve()
