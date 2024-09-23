@@ -1,7 +1,7 @@
 from fasthtml.common import *
 from ui_examples import hdrs_tailwind_franken_highlightJS_markdownJS, show_code
 
-app, rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS)
+app, rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS())
 
 @rt('/')
 @show_code

@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pylab as plt
 from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS
 
-app, rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS)
+app, rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS())
 
 @matplotlib2fasthtml
 def generate_chart(num_points):

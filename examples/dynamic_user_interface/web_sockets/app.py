@@ -2,7 +2,7 @@ from fasthtml.common import *
 from collections import deque
 from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS
 
-app = FastHTML(ws_hdr=True, hdrs=hdrs_tailwind_franken_highlightJS_markdownJS)
+app = FastHTML(ws_hdr=True, hdrs=hdrs_tailwind_franken_highlightJS_markdownJS())
 
 # All messages here, but only most recent 15 are stored
 messages = deque(maxlen=15)

@@ -1,7 +1,7 @@
 from fasthtml.common import *
 from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS
 
-app, rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS)
+app, rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS())
 
 chapters = ['ch1', 'ch2', 'ch3']
 lessons = {

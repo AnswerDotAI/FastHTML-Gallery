@@ -25,18 +25,11 @@ def navbar():
         Div(cls='uk-navbar-right')(
             Ul(cls='uk-navbar-nav')(Li(A('Back to Gallery',href='/', style="padding: 0 10px;")))))
 
-# def remove_show_code_lines(file_path):
-#     with open(file_path, 'r') as f:
-#         lines = f.readlines()
-#
-#     filtered_lines = [line for line in lines if '@show_code' not in line]
-#
-#     return ''.join(filtered_lines)
-
 def remove_show_code_lines(file_path):
     with open(file_path, 'r') as f: lines = f.readlines()
     filtered_lines = [line for line in lines if '@show_code' not in line]
     hdrs_def = inspect.getsource(hdrs_tailwind_franken_highlightJS_markdownJS).splitlines()
+    hdrs_def = [f"{o}\n" for o in hdrs_def]
     from_uiexamples_idx = next((i for i, line in enumerate(filtered_lines) if 'from ui_examples' in line), -1)
     filtered_lines = filtered_lines[:from_uiexamples_idx] + hdrs_def + filtered_lines[from_uiexamples_idx+1:]
     return ''.join(filtered_lines)

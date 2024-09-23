@@ -21,7 +21,7 @@ def generate_table_part(part_num: int = 1, size: int = 20) -> Tuple[Tr]:
         'hx-swap': 'afterend'})
     return tuple(paginated)
 
-app, rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS)
+app, rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS())
 
 @app.get("/")
 @show_code
