@@ -2,14 +2,15 @@ import numpy as np
 from fasthtml.common import *
 import plotly.graph_objects as go
 from fh_plotly import plotly2fasthtml, plotly_headers
-
+from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS
 ########################
 ### FastHTML Section ###
 ########################
 
-app, rt = fast_app(hdrs=plotly_headers)
+app, rt = fast_app(hdrs=(plotly_headers,*hdrs_tailwind_franken_highlightJS_markdownJS))
 
 @app.get('/')
+@show_code
 def homepage():
     desc = """
     The Bloch Sphere is a 3D visualization of a single quantum state. 
@@ -18,8 +19,8 @@ def homepage():
     hx_vals = 'js:{"gates": document.getElementById("quantum_circuit").textContent}'
     return (Title("Interactive Bloch Sphere"), 
             Main(P(desc),
-                 *[Button(gate, hx_get=f"/vizualizations/bloch_sphere/apply_gate/{gate}", hx_target="#chart", hx_swap="innerHTML", hx_vals=hx_vals,  title=f"Apply {gate} gate") for gate in single_qubit_gates.keys()], 
-                 Button("Reset", hx_get="/vizualizations/bloch_sphere/reset", hx_target="#chart", hx_swap="innerHTML", title="Reset the circuit"),
+                 *[Button(gate, hx_get=f"apply_gate/{gate}", hx_target="#chart", hx_swap="innerHTML", hx_vals=hx_vals, cls='uk-button uk-button-primary', title=f"Apply {gate} gate") for gate in single_qubit_gates.keys()], 
+                 Button("Reset", hx_get="reset", hx_target="#chart", hx_swap="innerHTML", title="Reset the circuit", cls='uk-button uk-button-default'),
                  Div(update_state_apply_gate.__wrapped__(), id="chart"),
                  H4("Available gates"),
                  Ul(Li(Strong("H :"),"Hadamard gate. Puts the state in superposition. "),

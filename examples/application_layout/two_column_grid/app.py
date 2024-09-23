@@ -1,8 +1,10 @@
 from fasthtml.common import *
+from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS, show_code
 
-app, rt = fast_app()
+app, rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS)
 
 @app.get('/')
+@show_code
 def homepage():
     return Titled('Try editing fields:', Grid(
         Form(post="submit", hx_target="#result", hx_trigger="input delay:200ms")(

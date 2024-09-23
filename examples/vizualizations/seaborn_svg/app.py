@@ -1,7 +1,8 @@
 from fasthtml.common import *
 import numpy as np, seaborn as sns, matplotlib.pylab as plt
+from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS
 
-app,rt = fast_app()
+app,rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS)
 data = np.random.rand(4,10)
 
 def fh_svg(func):
@@ -22,6 +23,7 @@ def plot_heatmap(matrix,figsize=(6,7),**kwargs):
   sns.heatmap(matrix, cmap='coolwarm', annot=False,**kwargs)
 
 @app.get("/")
+@show_code
 def homepage():
   return Div(Label(H3("Heatmap Columns"), _for='n_cols'),
              Input(type="range", min="1", max="10", value="1",

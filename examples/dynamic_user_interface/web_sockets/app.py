@@ -1,7 +1,8 @@
 from fasthtml.common import *
 from collections import deque
+from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS
 
-app = FastHTML(ws_hdr=True)
+app = FastHTML(ws_hdr=True, hdrs=hdrs_tailwind_franken_highlightJS_markdownJS)
 
 # All messages here, but only most recent 15 are stored
 messages = deque(maxlen=15)
@@ -16,10 +17,12 @@ def render_messages(messages):
 def mk_input(): return Input(id='msg', placeholder="Type your message", value="", hx_swap_oob="true")
 
 @app.get('/')
+@show_code
 def homepage():
     return Titled("Leave a message for others!"),Div(
         Form(mk_input(), ws_send=True), # input field
-        Div(P("Leave a Message for others to see what they left for you!"),id='msg-list'), # All the Messages
+        P("Leave a message for others!"),
+        Div(render_messages(messages),id='msg-list'), # All the Messages
         hx_ext='ws', ws_connect='ws') # Use a web socket 
 
 def on_connect(ws, send): users[id(ws)] = send

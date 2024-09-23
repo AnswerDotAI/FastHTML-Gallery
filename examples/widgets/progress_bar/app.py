@@ -1,7 +1,8 @@
 from fasthtml.common import *
 import random
+from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS
 
-app, rt = fast_app()
+app, rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS)
 
 def get_progress(percent_complete: int):
     # simulate progress check
@@ -9,8 +10,10 @@ def get_progress(percent_complete: int):
     return percent_complete
 
 @app.get('/')
+@show_code
 def homepage():
-    return Div(H3("Start the job to see progress!"),id='progress_bar'),Button("Start Job",post='update_status', hx_target="#progress_bar",)
+    return (Div(H3("Start the job to see progress!"),id='progress_bar'),
+            Button("Start Job",post='update_status', hx_target="#progress_bar",cls='uk-button uk-button-primary'))
 
 @app.post('/job')
 def update_status():

@@ -2,8 +2,9 @@ from fh_matplotlib import matplotlib2fasthtml
 from fasthtml.common import *
 import numpy as np
 import matplotlib.pylab as plt
+from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS
 
-app, rt = fast_app()
+app, rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS)
 
 @matplotlib2fasthtml
 def generate_chart(num_points):
@@ -11,6 +12,7 @@ def generate_chart(num_points):
     plt.plot(range(len(plotdata)), plotdata)
 
 @app.get("/")
+@show_code
 def homepage():
     return Div(
         Div(id="chart"),

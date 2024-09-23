@@ -3,8 +3,9 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 from fh_plotly import plotly2fasthtml, plotly_headers
+from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS
 
-app, rt = fast_app(hdrs=plotly_headers)
+app, rt = fast_app(hdrs=(plotly_headers,*hdrs_tailwind_franken_highlightJS_markdownJS))
 
 y_data = [1, 2, 3, 2]
 x_data = [3, 1, 2, 4]
@@ -34,6 +35,7 @@ def generate_3d_scatter_chart():
     return plotly2fasthtml(fig)
 
 @app.get('/')
+@show_code
 def homepage():
     return Div(
         H1("Plotly Interactive Charts Demo with FastHTML"),

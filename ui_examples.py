@@ -6,7 +6,8 @@ from utils import *
 import inspect
 from functools import wraps
 
-hdrs_tailwind_franken_highlightJS_markdownJS = (
+def hdrs_tailwind_franken_highlightJS_markdownJS():
+    return (
         Script(src='https://cdn.tailwindcss.com'),
         Script(src='https://cdn.jsdelivr.net/npm/uikit@3.21.6/dist/js/uikit.min.js'),
         Script(src='https://cdn.jsdelivr.net/npm/uikit@3.21.6/dist/js/uikit-icons.min.js'),
@@ -16,18 +17,47 @@ hdrs_tailwind_franken_highlightJS_markdownJS = (
         HighlightJS(langs=['python', 'javascript', 'html', 'css']),
         MarkdownJS(),)
 
+
+def navbar():
+    return Nav(cls="uk-navbar-container", uk_navbar=True)(
+        Div(cls="uk-navbar-left")(
+            Ul(cls="uk-navbar-nav")(Li(A("FastHTML Gallery", href="/", cls='uk-h3 custom-nav-left', style="padding: 0 10px;")))),
+        Div(cls='uk-navbar-right')(
+            Ul(cls='uk-navbar-nav')(Li(A('Back to Gallery',href='/', style="padding: 0 10px;")))))
+
+# def remove_show_code_lines(file_path):
+#     with open(file_path, 'r') as f:
+#         lines = f.readlines()
+#
+#     filtered_lines = [line for line in lines if '@show_code' not in line]
+#
+#     return ''.join(filtered_lines)
+
+def remove_show_code_lines(file_path):
+    with open(file_path, 'r') as f: lines = f.readlines()
+    filtered_lines = [line for line in lines if '@show_code' not in line]
+    hdrs_def = inspect.getsource(hdrs_tailwind_franken_highlightJS_markdownJS).splitlines()
+    from_uiexamples_idx = next((i for i, line in enumerate(filtered_lines) if 'from ui_examples' in line), -1)
+    filtered_lines = filtered_lines[:from_uiexamples_idx] + hdrs_def + filtered_lines[from_uiexamples_idx+1:]
+    return ''.join(filtered_lines)
+
 def show_code(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        # TODO:  Add socials
-        # TODO: Add MD FILE
-        # TODO: Add TITLE
-        # TODO: Add Navbar
-        with open(inspect.getfile(func), 'r') as f: code = f.read()
-        return Div(cls="flex")(
-            Div(cls="w-1/2 p-4 overflow-auto")(
-                Pre(Code(cls="language-python")(code))),
-            Div(cls="w-1/2 p-4 overflow-auto")(func(*args, **kwargs)))
+        file = Path(inspect.getfile(func))
+        metadata = configparser.ConfigParser()
+        metadata.read(file.parent/'metadata.ini')
+        meta = metadata['REQUIRED']
+        socials = Socials(title=meta['ComponentName'], description=meta['ComponentDescription'], site_name='gallery.fastht.ml',
+                          twitter_site='@isaac_flath', image=str(file.parent/'img.png'), url=''),
+        md=''
+        if (file.parent/'text.md').exists():
+            md = Div((file.parent/'text.md').read_text(),cls='marked')
+        code = remove_show_code_lines(file)
+        return socials,navbar(),H1(meta['ComponentName'],cls='uk-h1'),Br(),Div(cls="uk-grid")(
+                                    Div(cls="uk-width-1-2@m uk-overflow-auto")(
+                                        md,Pre(Code(cls="language-python")(code))),
+                                    Div(cls="uk-width-1-2@m uk-overflow-auto")(func(*args, **kwargs)))
     return wrapper
 
 def image_card_examples(dir_path):
@@ -51,43 +81,5 @@ def image_card_examples(dir_path):
         style="transform: rotate(0); transition: transform 0.3s ease;",
         onmouseover="this.style.transform='scale(1.05)';",
         onmouseout="this.style.transform='scale(1)';")
-
-def create_display_page(dir_path, module_path):
-    dir_path = Path(dir_path)
-
-    _app_module = import_module(module_path)
-    app = _app_module.app
-    homepage = _app_module.homepage
-    if hasattr(homepage, '__wrapped__'):
-        homepage = homepage.__wrapped__
-    md = ''
-    if (dir_path/'text.md').exists():
-        md = Div((dir_path/'text.md').read_text(),cls='marked')
-
-    code = Pre(Code(strip_parent_route((dir_path/'app.py').read_text().strip(), f"{dir_path.parts[1]}/{dir_path.parts[2]}")))
-
-    dcls="col-xs-12 col-md-6 px-1"
-    column1 = Div(cls=dcls)(md,
-                            H2("Source Code"),
-                            code,)
-    column2 = Div(H2("Live Demo"),
-                    homepage(),
-                    cls=dcls)
-    @app.route('/display')
-    def get():
-        metadata = configparser.ConfigParser()
-        metadata.read(dir_path/'metadata.ini')
-        meta = metadata['REQUIRED']
-        return (
-            Title(meta['ComponentName']),
-            Head(*links),
-            Nav(cls="navbar navbar-expand-lg navbar-light bg-light shadow-sm mb-4")(
-                Div(cls="container-fluid")(
-                    Div(H1("FastHTML Gallery", cls="navbar-brand mb-0 h1"), A(href='/',cls="stretched-link"), cls="navbar-nav me-auto mb-2 mb-lg-0 position-relative"),
-                    Div(A("Back to Gallery", href="/", cls="btn btn-outline-secondary me-2"),cls="d-flex"),),),
-            Div(cls="container-fluid")(
-                *Socials(title=meta['ComponentName'], description=meta['ComponentDescription'], site_name='gallery.fastht.ml', twitter_site='@isaac_flath', image=f"/{dir_path/'img.png'}", url=''),
-                Div(column1, column2, cls="row mx-n1"),))
-    return app
 
 examples_routes = [Mount(get_route(root,'display'), import_module(get_module_path(root,'examples')).app) for root, dirs, files in os.walk('examples') if 'app.py' in files]

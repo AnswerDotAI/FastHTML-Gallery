@@ -1,14 +1,15 @@
 from fasthtml.common import *
 import re
-
+from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS
 ################
 ### FastHTML ###
 ################
 
-app, rt = fast_app()
+app, rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS)
 
 @app.get('/')
-def homepage(): 
+@show_code
+def homepage():
     return Form(post='submit', hx_target='#submit-btn-container', hx_swap='outerHTML')(
                 # Calls /email route to validate email
                 Div(hx_target='this', hx_swap='outerHTML')(

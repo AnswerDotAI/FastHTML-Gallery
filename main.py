@@ -40,21 +40,13 @@ def homepage():
     ### COMBINE###
     # Return HTML as standard so I can have better control of headers to minimze conflict between submounted app headers and gallery headers
     return Html(
-        Head(
-            Title("FastHTML Gallery"),
-            *hdrs,
-        ),
-        Body(
-            Nav(
-                Div(cls="container-fluid d-flex justify-content-between align-items-center")(
+        Head(Title("FastHTML Gallery"),
+            *hdrs,),
+        Body(Nav(Div(cls="container-fluid d-flex justify-content-between align-items-center")(
                     H1(cls="navbar-brand mb-0 h1")("FastHTML Gallery" ),
-                    Button(cls="btn btn-outline-primary", type="button")("Toggle Animations", onclick="toggleAnimations()"),
-                ),
-                cls="navbar navbar-expand-lg navbar-light bg-light mb-4"
-            ),
-            get_sections('examples', ('widgets','dynamic_user_interface','application_layout','vizualizations'), image_card_examples),
-            get_sections('applications', ('start_simple','applications',), image_card_applications),
-        )
-    )
+                    Button(cls="btn btn-outline-primary", type="button")("Toggle Animations", onclick="toggleAnimations()"),),
+                cls="navbar navbar-expand-lg navbar-light bg-light mb-4"),
+            get_sections('examples', ('widgets','dynamic_user_interface','vizualizations'), image_card_examples),
+            get_sections('applications', ('start_simple','applications',), image_card_applications),))
 
 serve()
