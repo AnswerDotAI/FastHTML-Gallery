@@ -1,8 +1,8 @@
 from fasthtml.common import *
 import numpy as np, seaborn as sns, matplotlib.pylab as plt
-from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS
+from ui_examples import show_code, FastHTML_Gallery_Standard_HDRS
 
-app,rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS())
+app,rt = fast_app(hdrs=FastHTML_Gallery_Standard_HDRS())
 data = np.random.rand(4,10)
 
 def fh_svg(func):

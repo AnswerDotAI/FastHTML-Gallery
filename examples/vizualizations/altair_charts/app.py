@@ -3,9 +3,9 @@ from fasthtml.common import *
 import numpy as np
 import pandas as pd
 import altair as alt
-from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS
+from ui_examples import show_code, FastHTML_Gallery_Standard_HDRS
 
-app, rt = fast_app(hdrs=(altair_headers,*hdrs_tailwind_franken_highlightJS_markdownJS()))
+app, rt = fast_app(hdrs=(altair_headers,*FastHTML_Gallery_Standard_HDRS()))
 
 
 count = 0

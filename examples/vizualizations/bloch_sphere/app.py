@@ -2,12 +2,12 @@ import numpy as np
 from fasthtml.common import *
 import plotly.graph_objects as go
 from fh_plotly import plotly2fasthtml, plotly_headers
-from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS
+from ui_examples import show_code, FastHTML_Gallery_Standard_HDRS
 ########################
 ### FastHTML Section ###
 ########################
 
-app, rt = fast_app(hdrs=(plotly_headers,*hdrs_tailwind_franken_highlightJS_markdownJS()))
+app, rt = fast_app(hdrs=(plotly_headers,*FastHTML_Gallery_Standard_HDRS()))
 
 @app.get('/')
 @show_code

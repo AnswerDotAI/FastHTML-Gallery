@@ -1,8 +1,8 @@
 from fasthtml.common import *
 import random
-from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS
+from ui_examples import show_code, FastHTML_Gallery_Standard_HDRS
 
-app, rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS())
+app, rt = fast_app(hdrs=FastHTML_Gallery_Standard_HDRS())
 
 def get_progress(percent_complete: int):
     # simulate progress check

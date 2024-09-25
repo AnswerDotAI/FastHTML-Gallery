@@ -1,11 +1,11 @@
 from fasthtml.common import *
 import re
-from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS
+from ui_examples import show_code, FastHTML_Gallery_Standard_HDRS
 ################
 ### FastHTML ###
 ################
 
-app, rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS())
+app, rt = fast_app(hdrs=FastHTML_Gallery_Standard_HDRS())
 
 @app.get('/')
 @show_code

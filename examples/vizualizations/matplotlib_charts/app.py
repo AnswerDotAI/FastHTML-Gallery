@@ -2,9 +2,9 @@ from fh_matplotlib import matplotlib2fasthtml
 from fasthtml.common import *
 import numpy as np
 import matplotlib.pylab as plt
-from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS
+from ui_examples import show_code, FastHTML_Gallery_Standard_HDRS
 
-app, rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS())
+app, rt = fast_app(hdrs=FastHTML_Gallery_Standard_HDRS())
 
 @matplotlib2fasthtml
 def generate_chart(num_points):

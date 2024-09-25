@@ -1,6 +1,6 @@
 from fasthtml.common import *
 import uuid
-from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS
+from ui_examples import show_code, FastHTML_Gallery_Standard_HDRS
 column_names = ('name', 'email', 'id')
 
 def generate_contact(id: int) -> Dict[str, str]:
@@ -21,7 +21,7 @@ def generate_table_part(part_num: int = 1, size: int = 20) -> Tuple[Tr]:
         'hx-swap': 'afterend'})
     return tuple(paginated)
 
-app, rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS())
+app, rt = fast_app(hdrs=FastHTML_Gallery_Standard_HDRS())
 
 @app.get("/")
 @show_code

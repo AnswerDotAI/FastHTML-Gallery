@@ -3,9 +3,9 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 from fh_plotly import plotly2fasthtml, plotly_headers
-from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS
+from ui_examples import show_code, FastHTML_Gallery_Standard_HDRS
 
-app, rt = fast_app(hdrs=(plotly_headers,*hdrs_tailwind_franken_highlightJS_markdownJS()))
+app, rt = fast_app(hdrs=(plotly_headers,*FastHTML_Gallery_Standard_HDRS()))
 
 y_data = [1, 2, 3, 2]
 x_data = [3, 1, 2, 4]

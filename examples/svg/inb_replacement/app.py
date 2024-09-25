@@ -1,8 +1,8 @@
 from fasthtml.common import *
 from fasthtml.svg import *
-from ui_examples import hdrs_tailwind_franken_highlightJS_markdownJS, show_code
+from ui_examples import FastHTML_Gallery_Standard_HDRS, show_code
 
-app, rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS())
+app, rt = fast_app(hdrs=FastHTML_Gallery_Standard_HDRS())
 
 def mk_shape(shape):
     if shape == "circle":

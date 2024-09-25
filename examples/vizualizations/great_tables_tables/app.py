@@ -3,9 +3,9 @@ import polars as pl
 from great_tables import GT, html
 from great_tables.data import sza
 from fasthtml.common import *
-from ui_examples import show_code, hdrs_tailwind_franken_highlightJS_markdownJS
+from ui_examples import show_code, FastHTML_Gallery_Standard_HDRS
 
-app, rt = fast_app(hdrs=hdrs_tailwind_franken_highlightJS_markdownJS())
+app, rt = fast_app(hdrs=FastHTML_Gallery_Standard_HDRS())
 
 @cache
 def get_sza_pivot():

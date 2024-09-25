@@ -1,13 +1,12 @@
 from fasthtml.common import *
 from fasthtml.svg import *
-from fasthtml.components import Script
 from random import randint
 from uuid import uuid4
 import time 
-from ui_examples import hdrs_tailwind_franken_highlightJS_markdownJS, show_code
+from ui_examples import FastHTML_Gallery_Standard_HDRS, show_code
 
 timer = {}
-app, rt = fast_app(hdrs=[Script(src="https://d3js.org/d3.v7.min.js"), *hdrs_tailwind_franken_highlightJS_markdownJS()])
+app, rt = fast_app(hdrs=[Script(src="https://d3js.org/d3.v7.min.js"), *FastHTML_Gallery_Standard_HDRS()])
 
 class Timer:
     def __init__(self):
