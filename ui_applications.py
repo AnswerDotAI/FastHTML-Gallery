@@ -31,8 +31,8 @@ def image_card_applications(dir_path):
                 ),
             Div(cls="card-footer d-flex justify-content-between")(
                 A(Button("App", cls="btn btn-primary btn-sm"), href=f"/{dpath}/app"),
-                A(Button("Code", cls="btn btn-secondary btn-sm"), href=f"/{dpath}/code"),
-                A(Button("Info", cls="btn btn-info btn-sm"), href=f"/{dpath}/info"),
+                A(Button("Code", cls="btn btn-secondary btn-sm"), href=f"/code/{dpath}"),
+                A(Button("Info", cls="btn btn-info btn-sm"), href=f"/info/{dpath}"),
             ),
         ),
         )
@@ -60,7 +60,7 @@ def render_application_code(dir_path):
                     ),
                     Div(cls="d-flex")(
                         A("Back to Gallery", href="/", cls="btn btn-outline-secondary me-2"),
-                        A("Info", href=f"/{dir_path.parts[1]}/{dir_path.parts[2]}/info", cls="btn btn-info me-2"),
+                        A("Info", href=f"/info/{dir_path.parts[1]}/{dir_path.parts[2]}", cls="btn btn-info me-2"),
                         A("App", href=f"/{dir_path.parts[1]}/{dir_path.parts[2]}/app", cls="btn btn-primary"),
                     ),
                 ),
@@ -86,7 +86,7 @@ def render_application_markdown(dir_path):
                     ),
                     Div(cls="d-flex")(
                         A("Back to Gallery", href="/", cls="btn btn-outline-secondary me-2"),
-                        A("Code", href=f"/{dir_path.parts[1]}/{dir_path.parts[2]}/code", cls="btn btn-secondary me-2"),
+                        A("Code", href=f"/code/{dir_path.parts[1]}/{dir_path.parts[2]}", cls="btn btn-secondary me-2"),
                         A("App", href=f"/{dir_path.parts[1]}/{dir_path.parts[2]}/app", cls="btn btn-primary"),
                     ),
                 ),

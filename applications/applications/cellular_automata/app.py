@@ -55,8 +55,8 @@ nav = Nav()(
             H1("FastHTML Gallery"),
             Div(cls="grid")(
                 A("Back to Gallery", cls="outline", href="/", role="button" ),
-                A("Info", cls="secondary", href="/applications/cellular_automata/info", role="button"),
-                A("Code", href="/applications/cellular_automata/code", role="button")))))
+                A("Info", cls="secondary", href="/info/applications/cellular_automata", role="button"),
+                A("Code", href="/code/applications/cellular_automata", role="button")))))
 
 
 @app.get('/')

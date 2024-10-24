@@ -127,8 +127,8 @@ def homepage():
                 H1("FastHTML Gallery", cls="text-white text-xl font-semibold"),
                 Div(cls="space-x-2")(
                     navitem("Back to Gallery", cls="bg-transparent border border-white hover:bg-white hover:text-gray-800", href="/"),
-                    navitem("Info", cls="bg-blue-600 hover:bg-blue-700", href="/applications/tic_tac_toe/info"),
-                    navitem("Code", cls="bg-gray-600 hover:bg-gray-700", href="/applications/tic_tac_toe/code"),
+                    navitem("Info", cls="bg-blue-600 hover:bg-blue-700", href="/info/applications/tic_tac_toe"),
+                    navitem("Code", cls="bg-gray-600 hover:bg-gray-700", href="/code/applications/tic_tac_toe"),
                 ),
             ),
         ),

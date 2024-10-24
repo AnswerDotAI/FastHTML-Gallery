@@ -11,3 +11,4 @@ numpy
 fastcore
 requests
 seaborn
+fh_frankenui @ git+https://github.com/AnswerDotAI/fh-frankenui.git

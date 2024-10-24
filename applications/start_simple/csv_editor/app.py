@@ -13,8 +13,8 @@ navbar = Nav()(Div(cls="container")(Div(cls="grid")(
         H1("FastHTML Gallery"),
         Div(cls="grid", style="justify-content: end;")(
             A("Back to Gallery", cls="outline", href="/", role="button"),
-            A("Info", cls="secondary", href="/start_simple/csv_editor/info", role="button"),
-            A("Code", href="/start_simple/csv_editor/code", role="button")))))
+            A("Info", cls="secondary", href="/info/start_simple/csv_editor", role="button"),
+            A("Code", href="/code/start_simple/csv_editor", role="button")))))
 
 @rt("/get_test_file")
 async def get_test_file():

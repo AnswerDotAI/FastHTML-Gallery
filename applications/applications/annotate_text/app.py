@@ -106,8 +106,8 @@ def get(idx:int = 0):
                 H1("FastHTML Gallery", cls="text-white text-xl font-semibold"),
                 Div(cls="space-x-2")(
                     navitem("Back to Gallery", color="white", href="/"),
-                    navitem("Info", color='blue',href="/applications/annotate_text/info"),
-                    navitem("Code", color="gray", href="/applications/annotate_text/code"))))
+                    navitem("Info", color='blue',href="/info/applications/annotate_text"),
+                    navitem("Code", color="gray", href="/code/applications/annotate_text"))))
     
     return Main(navbar,content,
                 cls="container mx-auto min-h-screen bg-gray-100 p-8 flex flex-col",
