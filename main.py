@@ -46,7 +46,7 @@ def homepage():
                     H1(cls="navbar-brand mb-0 h1")("FastHTML Gallery" ),
                     Button(cls="btn btn-outline-primary", type="button")("Toggle Animations", onclick="toggleAnimations()"),),
                 cls="navbar navbar-expand-lg navbar-light bg-light mb-4"),
-            get_sections('examples', ('widgets','dynamic_user_interface','vizualizations', 'svg'), image_card_examples),
+            get_sections('examples', ('widgets','dynamic_user_interface','visualizations', 'svg'), image_card_examples),
             get_sections('applications', ('start_simple','applications',), image_card_applications),))
 
 serve()
