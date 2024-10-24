@@ -5,16 +5,13 @@ import configparser
 from utils import *
 import inspect
 from functools import wraps
+import fh_frankenui.core as franken
 
 # FastHTML_Gallery_Standard_HDRS
 def FastHTML_Gallery_Standard_HDRS():
     return (
-        Script(src='https://cdn.tailwindcss.com'),
-        Script(src='https://cdn.jsdelivr.net/npm/uikit@3.21.6/dist/js/uikit.min.js'),
-        Script(src='https://cdn.jsdelivr.net/npm/uikit@3.21.6/dist/js/uikit-icons.min.js'),
-        Script(type='module', src='https://unpkg.com/franken-wc@0.0.6/dist/js/wc.iife.js'),
-        Link(rel='stylesheet', href='https://unpkg.com/franken-wc@0.0.6/dist/css/blue.min.css'),
-        Script(defer=True, data_domain="gallery.fastht.ml", src="https://plausible-analytics-ce-production-dba0.up.railway.app/js/script.js"),
+        franken.Theme.blue.headers(),
+        #Script(defer=True, data_domain="gallery.fastht.ml", src="https://plausible-analytics-ce-production-dba0.up.railway.app/js/script.js"),
         HighlightJS(langs=['python', 'javascript', 'html', 'css']),
         MarkdownJS(),)
 
