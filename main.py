@@ -128,6 +128,7 @@ def ImageCard(dir_path):
                 src=f"{'/files'/dir_path/'gif.gif'}", alt=meta['ImageAltText'],
                 style="width: 100%; height: 350px; object-fit: cover;",
                 data_png=f"{'/files'/dir_path/'img.png'}",
+                loading="lazy",
                 cls="card-img-top"), 
                 href=f"/split/{dpath}"),
             Div(
