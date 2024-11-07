@@ -1,7 +1,7 @@
 from fasthtml.common import *
 from collections import deque
 
-app, rt = fast_app(ws_hdr=True)
+app, rt = fast_app(exts='ws')
 
 # All messages here, but only most recent 15 are stored
 messages = deque(maxlen=15)
@@ -24,7 +24,6 @@ def index():
         hx_ext='ws', ws_connect='ws') # Use a web socket 
 
 def on_connect(ws, send): users[id(ws)] = send
-    
 def on_disconnect(ws):users.pop(id(ws),None)
 
 @app.ws('/ws', conn=on_connect, disconn=on_disconnect)
