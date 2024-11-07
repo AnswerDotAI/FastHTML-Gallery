@@ -1,4 +1,4 @@
-python-fasthtml
+python-fasthtml @ git+https://github.com/AnswerDotAI/fasthtml.git
 fh-matplotlib
 fh-altair
 great_tables
@@ -12,3 +12,5 @@ fastcore
 requests
 seaborn
 fh_frankenui @ git+https://github.com/AnswerDotAI/fh-frankenui.git
+markdown2
+lxml

@@ -72,24 +72,30 @@ hdrs = (
 
 app = FastHTML(routes=application_routes+ [Mount('/files', StaticFiles(directory='.')),], hdrs=hdrs, pico=False)
 
-def NavBar(dir_path):
+def NavBar(dir_path, info=True):
+    nav_items = [
+        Li(A("Back to Gallery", href="/")),
+        Li(A("Code", href=f"/code/{dir_path.parts[1]}/{dir_path.parts[2]}")),
+        Li(A("App",  href=f"/app/{dir_path.parts[1]}/{dir_path.parts[2]}"))
+    ]
+    
+    if info:
+        nav_items.insert(1, Li(A("Info", href=f"/info/{dir_path.parts[1]}/{dir_path.parts[2]}")))
+        
     return NavBarContainer(
             NavBarLSide(
                 A(H1("Fh-Gallery", cls="navbar-brand mb-0 h1"), href="/")),
             NavBarCenter(H1(f"{dir_path.name.replace('_',' ').title()}")),
             NavBarRSide(
-                NavBarNav(
-                    Li(A("Back to Gallery", href="/")),
-                    Li(A("Info", href=f"/info/{dir_path.parts[1]}/{dir_path.parts[2]}")),
-                    Li(A("Code", href=f"/code/{dir_path.parts[1]}/{dir_path.parts[2]}")),
-                    Li(A("App", href=f"/app/{dir_path.parts[1]}/{dir_path.parts[2]}")))))   
+                NavBarNav(*nav_items)))
 
 @app.get('/split/{category}/{project}')
 def split_view(category: str, project: str):
     dir_path = Path('examples')/category/project
     code_text = (dir_path/'app.py').read_text().strip()
+    info = (dir_path/'text.md').exists()
     return (
-        NavBar(dir_path),
+        NavBar(dir_path, info=info),
         Title(f"{dir_path.name} - Split View"),
         Container(
             Div(Div(Pre(Code(code_text, cls='language-python')), style="width: 50%; padding: 10px;"),
@@ -101,7 +107,8 @@ def split_view(category: str, project: str):
 def application_code(category:str, project:str):
     dir_path = Path('examples')/category/project
     code_text = (dir_path/'app.py').read_text().strip()
-    return  (NavBar(dir_path), Title(f"{dir_path.name} - Code"), Container(Pre(Code(code_text, cls='language-python'))))
+    info = (dir_path/'text.md').exists()
+    return  (NavBar(dir_path, info=info), Title(f"{dir_path.name} - Code"), Container(Pre(Code(code_text, cls='language-python'))))
     
 @app.get('/info/{category}/{project}')
 def application_info(category:str, project:str):
@@ -116,7 +123,6 @@ def ImageCard(dir_path):
     dpath = dir_path.parts[1]+'/'+dir_path.parts[2]
 
     text_md_exists = (dir_path/'text.md').exists()
-    print(dpath)
     return Card(
             A(Img(
                 src=f"{'/files'/dir_path/'gif.gif'}", alt=meta['ImageAltText'],
