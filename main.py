@@ -93,7 +93,7 @@ def NavBar(dir_path, info=True):
 def split_view(category: str, project: str):
     dir_path = Path('examples')/category/project
     code_text = (dir_path/'app.py').read_text().strip()
-    info = (dir_path/'text.md').exists()
+    info = (dir_path/'info.md').exists()
     return (
         NavBar(dir_path, info=info),
         Title(f"{dir_path.name} - Split View"),
@@ -107,13 +107,13 @@ def split_view(category: str, project: str):
 def application_code(category:str, project:str):
     dir_path = Path('examples')/category/project
     code_text = (dir_path/'app.py').read_text().strip()
-    info = (dir_path/'text.md').exists()
+    info = (dir_path/'info.md').exists()
     return  (NavBar(dir_path, info=info), Title(f"{dir_path.name} - Code"), Container(Pre(Code(code_text, cls='language-python'))))
     
 @app.get('/info/{category}/{project}')
 def application_info(category:str, project:str):
     dir_path = Path('examples')/category/project
-    md_text = (dir_path/'text.md').read_text()
+    md_text = (dir_path/'info.md').read_text()
     return (NavBar(dir_path), Title(f"{dir_path.name} - Info"), Container(render_md(md_text)))
 
 def ImageCard(dir_path):
@@ -122,12 +122,12 @@ def ImageCard(dir_path):
     meta = metadata['REQUIRED']
     dpath = dir_path.parts[1]+'/'+dir_path.parts[2]
 
-    text_md_exists = (dir_path/'text.md').exists()
+    text_md_exists = (dir_path/'info.md').exists()
     return Card(
             A(Img(
-                src=f"{'/files'/dir_path/'gif.gif'}", alt=meta['ImageAltText'],
+                src=f"{'/files'/dir_path/'card_thumbnail.gif'}", alt=meta['ImageAltText'],
                 style="width: 100%; height: 350px; object-fit: cover;",
-                data_png=f"{'/files'/dir_path/'img.png'}",
+                data_png=f"{'/files'/dir_path/'card_thumbnail.png'}",
                 loading="lazy",
                 cls="card-img-top"), 
                 href=f"/split/{dpath}"),
