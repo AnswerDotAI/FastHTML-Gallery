@@ -1,18 +1,17 @@
 from fasthtml.common import *
-from ui_examples import FastHTML_Gallery_Standard_HDRS, show_code
 
-app, rt = fast_app(hdrs=FastHTML_Gallery_Standard_HDRS())
+app, rt = fast_app()
 
 @rt('/')
-@show_code
 def homepage():
     return Div(*[create_chat_message(**msg, msg_num=i) for i, msg in enumerate(example_messages)])
 
 def create_chat_message(role, content, msg_num):
-    if role == 'system': color = '#8B5CF6'
-    elif role == 'user': color = "#F000B8"
-    else: color = "#37CDBE"
     text_color = '#1F2937'
+    match role:
+        case 'system': color = '#8B5CF6'
+        case 'user': color = "#F000B8"
+        case _: color = "#37CDBE"
 
     # msg 0 = left, msg 1 = right, msg 2 = left, etc.
     alignment = 'flex-end' if msg_num % 2 == 1 else 'flex-start'

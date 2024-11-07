@@ -1,6 +1,5 @@
 from fasthtml.common import *
 import uuid
-from ui_examples import show_code, FastHTML_Gallery_Standard_HDRS
 column_names = ('name', 'email', 'id')
 
 def generate_contact(id: int) -> Dict[str, str]:
@@ -21,17 +20,16 @@ def generate_table_part(part_num: int = 1, size: int = 20) -> Tuple[Tr]:
         'hx-swap': 'afterend'})
     return tuple(paginated)
 
-app, rt = fast_app(hdrs=FastHTML_Gallery_Standard_HDRS())
+app, rt = fast_app()
 
-@app.get("/")
-@show_code
-def homepage():
+@rt
+def index():
     return Titled('Infinite Scroll',
                   Div(Table(
                       Thead(Tr(*[Th(key) for key in column_names])),
                       Tbody(generate_table_part(1)))))
 
-@rt("/page/", name="page")
-def get(idx:int|None = 0):
+@rt
+def page(idx:int|None = 0):
     return generate_table_part(idx)
 

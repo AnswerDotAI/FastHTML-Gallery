@@ -8,7 +8,7 @@ style = Style("""body{
 }""") # custom style to be applied globally.
 
 hdrs = (Script(src="https://cdn.tailwindcss.com") ,
-        Link(rel="stylesheet", href="/files/applications/applications/tic_tac_toe/output.css"))
+        Link(rel="stylesheet", href="/files/examples/applications/tic_tac_toe/output.css"))
 
 app, rt = fast_app(hdrs=(hdrs, style), pico=False)
 
@@ -78,7 +78,7 @@ def render_button(index:int):
             f'''{text if text is not None else '.' }''',
             cls="tic-button-disabled" if (text is not None) or winner_found_game_ended else "tic-button",
             disabled=True if (text is not None) or winner_found_game_ended else False,
-            hx_get=f"/applications/tic_tac_toe/app/on_click?index={idx}",
+            hx_get=f"on_click?index={idx}",
             hx_target=".buttons-div", hx_swap='outerHTML')
         for idx, text in enumerate(button_states[current_state_index])
     ]
@@ -108,7 +108,7 @@ def render_board():
         Button(
             ".",
             cls="tic-button",
-            hx_get=f"/applications/tic_tac_toe/app/on_click?index={i}",
+            hx_get=f"on_click?index={i}",
             hx_swap="outerHTML", hx_target=".buttons-div")
         for i, _ in enumerate(button_states[current_state_index])
     ]
@@ -120,18 +120,7 @@ def render_board():
 @app.get("/")
 def homepage():
     global button_states
-    def navitem(txt, cls, href): return A(txt, cls="inline-block px-4 py-2 text-sm font-medium text-white rounded transition-colors duration-300"+cls, href=href),
     return Div(
-        Nav(cls="bg-gray-800 shadow-md")(
-            Div(cls="container mx-auto px-4 py-3 flex justify-between items-center")(
-                H1("FastHTML Gallery", cls="text-white text-xl font-semibold"),
-                Div(cls="space-x-2")(
-                    navitem("Back to Gallery", cls="bg-transparent border border-white hover:bg-white hover:text-gray-800", href="/"),
-                    navitem("Info", cls="bg-blue-600 hover:bg-blue-700", href="/info/applications/tic_tac_toe"),
-                    navitem("Code", cls="bg-gray-600 hover:bg-gray-700", href="/code/applications/tic_tac_toe"),
-                ),
-            ),
-        ),
         Div(
             H1("Tic Tac Toe!", cls="font-bevan text-5xl text-white"),
             P("A FastHTML app by Adedara Adeloro", cls="font-bevan text-custom-blue font-light"),
@@ -143,7 +132,7 @@ def homepage():
                     "Restart!",
                     disabled=False,
                     cls="restart-button",
-                    hx_get="/applications/tic_tac_toe/app/restart", hx_target=".buttons-div", hx_swap="outerHTML"),
+                    hx_get="restart", hx_target=".buttons-div", hx_swap="outerHTML"),
                 cls="flex flex-col items-center justify-center m-10"),
             cls="flex flex-col items-center justify-center"),
         cls="justify-center items-center min-h-screen bg-custom-background")

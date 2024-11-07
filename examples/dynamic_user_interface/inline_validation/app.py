@@ -1,15 +1,13 @@
 from fasthtml.common import *
 import re
-from ui_examples import show_code, FastHTML_Gallery_Standard_HDRS
 ################
 ### FastHTML ###
 ################
 
-app, rt = fast_app(hdrs=FastHTML_Gallery_Standard_HDRS())
+app, rt = fast_app()
 
-@app.get('/')
-@show_code
-def homepage():
+@rt
+def index():
     return Form(post='submit', hx_target='#submit-btn-container', hx_swap='outerHTML')(
                 # Calls /email route to validate email
                 Div(hx_target='this', hx_swap='outerHTML')(
@@ -30,17 +28,16 @@ def homepage():
 ### Field Validation Routing ###
 # Validates the field and generates FastHTML with appropriate validation and template function
 
-@app.post('/email')
+@rt
 def email(email: str): return inputTemplate('Email Address', 'email', email, validate_email(email))
 
-@app.post('/cool')
+@rt
 def cool(cool: str): return inputTemplate('Is this cool?', 'cool', cool, validate_cool(cool))
      
-@app.post('/coolscale')
+@rt
 def coolscale(CoolScale: int): return inputTemplate('How cool (scale of 1 - 10)?', 'CoolScale', CoolScale, validate_coolscale(CoolScale), input_type='number')
 
-
-@app.post('/submit')
+@rt
 def submit(email: str, cool: str, CoolScale: int):
     # Validates all fields in the form
     errors = {'email': validate_email(email),

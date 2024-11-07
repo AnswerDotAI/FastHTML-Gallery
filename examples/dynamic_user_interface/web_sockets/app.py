@@ -1,8 +1,7 @@
 from fasthtml.common import *
 from collections import deque
-from ui_examples import show_code, FastHTML_Gallery_Standard_HDRS
 
-app = FastHTML(ws_hdr=True, hdrs=FastHTML_Gallery_Standard_HDRS())
+app, rt = fast_app(ws_hdr=True)
 
 # All messages here, but only most recent 15 are stored
 messages = deque(maxlen=15)
@@ -16,9 +15,8 @@ def render_messages(messages):
 # Input field is reset via hx_swap_oob after submitting a message
 def mk_input(): return Input(id='msg', placeholder="Type your message", value="", hx_swap_oob="true")
 
-@app.get('/')
-@show_code
-def homepage():
+@rt
+def index():
     return Titled("Leave a message for others!"),Div(
         Form(mk_input(), ws_send=True), # input field
         P("Leave a message for others!"),

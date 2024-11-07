@@ -3,10 +3,9 @@ from fasthtml.svg import *
 from random import randint
 from uuid import uuid4
 import time 
-from ui_examples import FastHTML_Gallery_Standard_HDRS, show_code
 
 timer = {}
-app, rt = fast_app(hdrs=[Script(src="https://d3js.org/d3.v7.min.js"), *FastHTML_Gallery_Standard_HDRS()])
+app, rt = fast_app(hdrs=[Script(src="https://d3js.org/d3.v7.min.js")])
 
 class Timer:
     def __init__(self):
@@ -24,9 +23,8 @@ def mk_circle(count):
 def mk_click_count(count):
     return P(f"You have clicked {count} times",id="click-count")
 
-@app.get('/')
-@show_code
-def homepage(sess):
+@rt
+def index(sess):
     if 'id' not in sess: sess['id'] = str(uuid4())
     return Div(
         P("Click the circle 3 times"),

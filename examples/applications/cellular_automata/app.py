@@ -39,7 +39,7 @@ def mk_row(colors,font_size=0,size=5):
 
 def mk_button(show):
     return Button("Hide Rule" if show else "Show Rule",
-        hx_get="/applications/cellular_automata/app/show_rule?show=" + ("False" if show else "True"),
+        hx_get="show_rule?show=" + ("False" if show else "True"),
         hx_target="#rule", id="sh_rule", hx_swap_oob="outerHTML",
         hx_include="[name='rule_number']")
 
@@ -49,29 +49,20 @@ def mk_button(show):
 
 app, rt = fast_app()
 
-nav = Nav()(
-    Div(cls="container")(
-        Div(cls="grid")(
-            H1("FastHTML Gallery"),
-            Div(cls="grid")(
-                A("Back to Gallery", cls="outline", href="/", role="button" ),
-                A("Info", cls="secondary", href="/info/applications/cellular_automata", role="button"),
-                A("Code", href="/code/applications/cellular_automata", role="button")))))
 
-
-@app.get('/')
-def homepage(sess):
+@rt
+def index(sess):
     if 'id' not in sess: sess['id'] = str(uuid4())
-    return Title("Cellular Automata"),Main(nav,Div(
+    return Title("Cellular Automata"),Main(Div(
         Div(P(explanation,id="explanations")),
         Form(Group(
             Div(hx_target='this', hx_swap='outerHTML')(Label(_for="rule_number", cls="form-label")("Rule"),
-                Input(type='number', name="rule_number", id='rule_set', value="30",hx_post='/applications/cellular_automata/app/validate/rule_number')),
+                Input(type='number', name="rule_number", id='rule_set', value="30",hx_post='validate/rule_number')),
             Div(hx_target='this', hx_swap='outerHTML')(Label("Generations", cls="form-label"),
-                Input(type='number',name="generations", id='generations_set',  value="50",hx_post='/applications/cellular_automata/app/validate/generations', hx_indicator='#generationsind')),
+                Input(type='number',name="generations", id='generations_set',  value="50",hx_post='validate/generations', hx_indicator='#generationsind')),
             Div(hx_target='this', hx_swap='outerHTML')(Label("Width", cls="form-label"),
-                Input(type='number',name="width", id='width_set',  value="100", hx_post='/applications/cellular_automata/app/validate/width', hx_indicator='#widthind')), 
-            Button(cls="btn btn-active btn-primary", type="submit", hx_get="/applications/cellular_automata/app/run", 
+                Input(type='number',name="width", id='width_set',  value="100", hx_post='validate/width', hx_indicator='#widthind')), 
+            Button(cls="btn btn-active btn-primary", type="submit", hx_get="run", 
                    hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML")("Run"))),
         Group(
             Div(style="margin-left:50px")(
@@ -108,7 +99,7 @@ def get(rule_number: int, generations: int, width: int, sess):
                    Div(id="progress_bar",hx_swap_oob="outerHTML:#progress_bar"),
                 Div(id='submit-btn-container',hx_swap_oob="outerHTML:#submit-btn-container")(
                     Button(cls="btn btn-active btn-primary", type="submit", 
-                           hx_get="/applications/cellular_automata/app/run", hx_target="#grid", 
+                           hx_get="run", hx_target="#grid", 
                            hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML")("Run"),
                     *[Div(error, style='color: red;') for error in errors.values()]))
 
@@ -117,7 +108,7 @@ def get(rule_number: int, generations: int, width: int, sess):
     generator[sess['id']] = run(rule=rule_number,generations=generations,start=start)
     return Div(
         Div(style=f"width: {(width+1)*5}px",id="progress_bar",hx_swap_oob="outerHTML:#progress_bar"),
-        Div(id="next",hx_trigger="every .1s", hx_get="/applications/cellular_automata/app/next", hx_target="#grid",hx_swap="beforeend"),id="grid")
+        Div(id="next",hx_trigger="every .1s", hx_get="next", hx_target="#grid",hx_swap="beforeend"),id="grid")
 
 @rt('/next')
 def get(sess):
@@ -175,5 +166,5 @@ def inputTemplate(label, name, val, errorMsg=None, input_type='number'):
     # Generic template for replacing the input field and showing the validation message
     return Div(hx_target='this', hx_swap='outerHTML', cls=f"{errorMsg if errorMsg else 'Valid'}")(
                Label(label), # Creates label for the input field
-               Input(name=name,type=input_type,value=f'{val}',style="width: 340px;",hx_post=f'/applications/cellular_automata/app/validate/{name.lower()}'), # Creates input field
+               Input(name=name,type=input_type,value=f'{val}',style="width: 340px;",hx_post=f'validate/{name.lower()}'), # Creates input field
                Div(f'{errorMsg}', style='color: red;') if errorMsg else None) # Creates red error message below if there is an error

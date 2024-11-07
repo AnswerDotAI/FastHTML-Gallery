@@ -1,7 +1,6 @@
 from fasthtml.common import *
-from ui_examples import show_code, FastHTML_Gallery_Standard_HDRS
 
-app, rt = fast_app(hdrs=FastHTML_Gallery_Standard_HDRS())
+app, rt = fast_app()
 
 chapters = ['ch1', 'ch2', 'ch3']
 lessons = {
@@ -14,13 +13,12 @@ def mk_opts(nm, cs):
         Option(f'-- select {nm} --', disabled='', selected='', value=''),
         *map(Option, cs))
 
-@app.get('/get_lessons')
+@rt
 def get_lessons(chapter: str):
     return Select(*mk_opts('lesson', lessons[chapter]), name='lesson')
 
-@app.get('/')
-@show_code
-def homepage():
+@rt
+def index():
     chapter_dropdown = Select(
         *mk_opts('chapter', chapters),
         name='chapter',

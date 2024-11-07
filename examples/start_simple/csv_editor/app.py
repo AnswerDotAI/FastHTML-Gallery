@@ -9,14 +9,7 @@ button,input { margin: 0 1rem; }
 '''), )
 app, rt = fast_app(hdrs=hdrs)
 
-navbar = Nav()(Div(cls="container")(Div(cls="grid")(
-        H1("FastHTML Gallery"),
-        Div(cls="grid", style="justify-content: end;")(
-            A("Back to Gallery", cls="outline", href="/", role="button"),
-            A("Info", cls="secondary", href="/info/start_simple/csv_editor", role="button"),
-            A("Code", href="/code/start_simple/csv_editor", role="button")))))
-
-@rt("/get_test_file")
+@rt
 async def get_test_file():
     import httpx
     url = "https://raw.githubusercontent.com/AnswerDotAI/FastHTML-Gallery/main/applications/start_simple/csv_editor/ex_data.csv"
@@ -24,17 +17,16 @@ async def get_test_file():
     return Response(response.text, media_type="text/csv",
                         headers={'Content-Disposition': 'attachment; filename="ex_data.csv"'})
 
-@app.get("/")
-def homepage(sess):
+@rt
+def index(sess):
     if 'id' not in sess: sess['id'] = str(uuid4())
-    cts = Titled("CSV Uploader",
+    return Titled("CSV Uploader",
                  A('Download Example CSV', href="get_test_file", download="ex_data.csv"),
                  Group(Input(type="file", name="csv_file", accept=".csv"),
                        Button("Upload", hx_post="upload", hx_target="#results",
                               hx_encoding="multipart/form-data", hx_include='previous input'),
                        A('Download', href='download', type="button")),
                  Div(id="results"))
-    return navbar,cts
 
 def render_row(row):
     vals = [Td(Input(value=v, name=k, oninput="this.classList.add('edited')")) for k,v in row.items()]

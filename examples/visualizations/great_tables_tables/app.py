@@ -3,9 +3,8 @@ import polars as pl
 from great_tables import GT, html
 from great_tables.data import sza
 from fasthtml.common import *
-from ui_examples import show_code, FastHTML_Gallery_Standard_HDRS
 
-app, rt = fast_app(hdrs=FastHTML_Gallery_Standard_HDRS())
+app, rt = fast_app()
 
 @cache
 def get_sza_pivot():
@@ -34,9 +33,8 @@ def get_notstr_table(color1: str = "#663399", color2: str = "#FFA500"):
 def post(d: dict):
     return get_notstr_table(**d)
 
-@app.get("/")
-@show_code
-def homepage():
+@rt
+def index():
     return (Title("FastHTML-GT Website"),
             Titled("Great Tables shown in FastHTML", style="text-align:center"),
             Main(cls='container')(

@@ -1,12 +1,10 @@
 from fasthtml.common import *
 from fasthtml.svg import *
-from ui_examples import FastHTML_Gallery_Standard_HDRS, show_code
 
-app, rt = fast_app(hdrs=[Script(src="https://d3js.org/d3.v7.min.js"), *FastHTML_Gallery_Standard_HDRS()])
+app, rt = fast_app(hdrs=[Script(src="https://d3js.org/d3.v7.min.js")])
 
-@app.get('/')
-@show_code
-def homepage():
+@rt
+def index():
     return Div(
         P("Click and drag an SVG rectangle with D3"),
         Svg(viewBox="0 0 200 200",id="svg-box")(

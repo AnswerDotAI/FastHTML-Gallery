@@ -3,10 +3,8 @@ from fasthtml.common import *
 import numpy as np
 import pandas as pd
 import altair as alt
-from ui_examples import show_code, FastHTML_Gallery_Standard_HDRS
 
-app, rt = fast_app(hdrs=(altair_headers,*FastHTML_Gallery_Standard_HDRS()))
-
+app, rt = fast_app(hdrs=(altair_headers,))
 
 count = 0
 plotdata = []
@@ -20,17 +18,16 @@ def generate_chart():
     chart = alt.Chart(pltr).mark_line().encode(x='x', y='y').properties(width=400, height=200)
     return altair2fasthml(chart)
 
-@app.get("/")
-@show_code
-def homepage():
+@rt
+def index():
     return Title("Altair Demo"), Main(
         H1("Altair Demo"),
         Div(id="chart"),
-        Button("Increment", get=increment, hx_target="#chart", hx_swap="innerHTML", cls='uk-button uk-button-primary'),
+        Button("Increment", get=increment, hx_target="#chart", hx_swap="innerHTML"),
         style="margin: 20px"
     )
 
-@app.get("/increment")
+@rt
 def increment():
     global plotdata, count
     count += 1
@@ -39,3 +36,6 @@ def increment():
         generate_chart(),
         P(f"You have pressed the button {count} times."),
     )
+
+
+serve()

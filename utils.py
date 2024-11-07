@@ -2,21 +2,7 @@ from pathlib import Path
 from fasthtml.common import *
 from configparser import ConfigParser
 
-__all__ = ['get_module_path','get_route','create_image_cards','toggle_script','strip_parent_route','get_social_links']
-
-def get_module_path(p,base_dir):
-    return f'{base_dir}.{".".join(Path(p).parts[1:])}.app'
-
-def get_route(p,ext=None):
-    route =  f"/{'/'.join(Path(p).parts[1:])}"
-    if ext: route += f"/{ext}"
-    return route
-
-def create_image_cards(n, ps, image_card_fn):
-    return Div(
-        Div(H2(n, cls="display-4 text-primary mb-4"),
-            cls="text-center py-2 bg-light my-4"),
-        Div(*[image_card_fn(p) for p in ps], cls="row"))
+__all__ = ['toggle_script','get_social_links']
 
 def get_social_links(dir_path):
     metadata = ConfigParser()
@@ -36,17 +22,3 @@ toggle_script = Script("""
             }
         });
     }""")
-
-def strip_parent_route(text, parent_route):
-    htmx_route_methods = ['hx_get', 'hx_post', 'hx_delete', 'hx_put', 'hx_patch']
-    for method in htmx_route_methods:
-        # Pattern for string attributes
-        pattern = f'({method}=(f?[\'"]))/({parent_route})(/[^\'"]*)(\\2|\'|")'
-        replacement = r'\1\4\5'
-        text = re.sub(pattern, replacement, text)
-        
-        # Pattern for dictionary keys
-        dict_pattern = f"('{method.replace('_', '-')}': f?['\"])/({parent_route})(/[^'\"]*)"
-        dict_replacement = r'\1\3'
-        text = re.sub(dict_pattern, dict_replacement, text)
-    return text

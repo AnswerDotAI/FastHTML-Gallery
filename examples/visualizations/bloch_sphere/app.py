@@ -2,16 +2,15 @@ import numpy as np
 from fasthtml.common import *
 import plotly.graph_objects as go
 from fh_plotly import plotly2fasthtml, plotly_headers
-from ui_examples import show_code, FastHTML_Gallery_Standard_HDRS
+
 ########################
 ### FastHTML Section ###
 ########################
 
-app, rt = fast_app(hdrs=(plotly_headers,*FastHTML_Gallery_Standard_HDRS()))
+app, rt = fast_app(hdrs=(plotly_headers,))
 
-@app.get('/')
-@show_code
-def homepage():
+@rt
+def index():
     desc = """
     The Bloch Sphere is a 3D visualization of a single quantum state. 
     You can interact with the buttons (Gates) to see how the state changes. See the description below for more information on what each gate represents.
@@ -19,8 +18,8 @@ def homepage():
     hx_vals = 'js:{"gates": document.getElementById("quantum_circuit").textContent}'
     return (Title("Interactive Bloch Sphere"), 
             Main(P(desc),
-                 *[Button(gate, hx_get=f"apply_gate/{gate}", hx_target="#chart", hx_swap="innerHTML", hx_vals=hx_vals, cls='uk-button uk-button-primary', title=f"Apply {gate} gate") for gate in single_qubit_gates.keys()], 
-                 Button("Reset", hx_get="reset", hx_target="#chart", hx_swap="innerHTML", title="Reset the circuit", cls='uk-button uk-button-default'),
+                 *[Button(gate, hx_get=f"apply_gate/{gate}", hx_target="#chart", hx_swap="innerHTML", hx_vals=hx_vals, title=f"Apply {gate} gate") for gate in single_qubit_gates.keys()], 
+                 Button("Reset", hx_get="reset", hx_target="#chart", hx_swap="innerHTML", title="Reset the circuit"),
                  Div(update_state_apply_gate.__wrapped__(), id="chart"),
                  H4("Available gates"),
                  Ul(Li(Strong("H :"),"Hadamard gate. Puts the state in superposition. "),
@@ -30,7 +29,7 @@ def homepage():
                     Li(Strong("S :"),"Phase gate. Rotates around the Z-axis by 90 degrees."),
                     Li(Strong("T :"),"π/8 gate. Rotates around the Z-axis by 45 degrees."))))
 
-@app.get('/reset')
+@rt
 def reset(): return update_state_apply_gate.__wrapped__()
 
 @app.get('/apply_gate/{gate}')

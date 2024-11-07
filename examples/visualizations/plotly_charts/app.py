@@ -3,9 +3,8 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 from fh_plotly import plotly2fasthtml, plotly_headers
-from ui_examples import show_code, FastHTML_Gallery_Standard_HDRS
 
-app, rt = fast_app(hdrs=(plotly_headers,*FastHTML_Gallery_Standard_HDRS()))
+app, rt = fast_app(hdrs=(plotly_headers,))
 
 y_data = [1, 2, 3, 2]
 x_data = [3, 1, 2, 4]
@@ -34,9 +33,8 @@ def generate_3d_scatter_chart():
     fig = px.scatter_3d(df, x='x', y='y', z='z')
     return plotly2fasthtml(fig)
 
-@app.get('/')
-@show_code
-def homepage():
+@rt
+def index():
     return Div(
         H1("Plotly Interactive Charts Demo with FastHTML"),
         P("Try interacting with the charts by hovering over data points, zooming in and out, panning, rotating (3D), and more!."),

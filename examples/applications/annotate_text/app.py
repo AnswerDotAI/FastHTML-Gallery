@@ -97,18 +97,7 @@ def get(idx:int = 0):
     content = Div(cls="w-full max-w-2xl mx-auto flex flex-col max-h-full")(
         H1('LLM generated text annotation tool with FastHTML (and Tailwind)',cls="text-xl font-bold text-center text-gray-800 mb-8"),
         items[index])
-    
-    # Gallery Navigation
-    navcls = 'inline-block px-4 py-2 text-sm font-medium text-white rounded transition-colors duration-300 bg-{color}-600 hover:bg-{color}-700'
-    def navitem(txt, color, href): return A(txt, cls=navcls.format(color=color), href=href),
-    navbar = Nav(cls="bg-gray-800 shadow-md")(
-            Div(cls="container mx-auto px-4 py-3 flex justify-between items-center")(
-                H1("FastHTML Gallery", cls="text-white text-xl font-semibold"),
-                Div(cls="space-x-2")(
-                    navitem("Back to Gallery", color="white", href="/"),
-                    navitem("Info", color='blue',href="/info/applications/annotate_text"),
-                    navitem("Code", color="gray", href="/code/applications/annotate_text"))))
-    
-    return Main(navbar,content,
+
+    return Main(content,
                 cls="container mx-auto min-h-screen bg-gray-100 p-8 flex flex-col",
                 hx_target="this")
