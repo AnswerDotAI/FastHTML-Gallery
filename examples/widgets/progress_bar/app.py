@@ -12,12 +12,12 @@ def index():
     return (Div(H3("Start the job to see progress!"),id='progress_bar'),
             Button("Start Job",post=update_status, hx_target="#progress_bar"))
 
-@app.post('/job')
-def update_status():
+@rt
+def update_status(): 
     "Start job and progress bar"
     return progress_bar(percent_complete=0)
 
-@app.get('/job')
+@rt
 def update_progress(percent_complete: float):
     # Check if done
     if percent_complete >= 1: return H3("Job Complete!", id="progress_bar")
