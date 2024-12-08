@@ -3,6 +3,9 @@ data/
 ~*
 *.DS_Store
 *.sesskey
+*.ipynb
+*.db*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -1,27 +1,26 @@
 from fasthtml.common import *
 import re
-
 ################
 ### FastHTML ###
 ################
 
 app, rt = fast_app()
 
-@app.get('/')
-def homepage(): 
-    return Form(hx_post='/dynamic_user_interface/inline_validation/submit', hx_target='#submit-btn-container', hx_swap='outerHTML')(
+@rt
+def index():
+    return Form(post='submit', hx_target='#submit-btn-container', hx_swap='outerHTML')(
                 # Calls /email route to validate email
                 Div(hx_target='this', hx_swap='outerHTML')(
                     Label(_for='email')('Email Address'),
-                    Input(type='text', name='email', id='email', hx_post='/dynamic_user_interface/inline_validation/email')),
+                    Input(type='text', name='email', id='email', post='email')),
                 # Calls /cool route to validate cool
                 Div(hx_target='this', hx_swap='outerHTML')(
                     Label(_for='cool')('Is this cool?'),
-                    Input(type='text', name='cool', id='cool', hx_post='/dynamic_user_interface/inline_validation/cool')),
+                    Input(type='text', name='cool', id='cool', post='cool')),
                 # Calls /coolscale route to validate coolscale
                 Div(hx_target='this', hx_swap='outerHTML')(
                     Label(_for='CoolScale')('How cool (scale of 1 - 10)?'),
-                    Input(type='number', name='CoolScale', id='CoolScale', hx_post='/dynamic_user_interface/inline_validation/coolscale')),
+                    Input(type='number', name='CoolScale', id='CoolScale', post='coolscale')),
                 # Submits the form which calls /submit route to validate whole form
                 Div(id='submit-btn-container')(
                     Button(type='submit', id='submit-btn',)('Submit')))
@@ -29,18 +28,17 @@ def homepage():
 ### Field Validation Routing ###
 # Validates the field and generates FastHTML with appropriate validation and template function
 
-@app.post('/email')
-def contact_email(email: str): return inputTemplate('Email Address', 'email', email, validate_email(email))
+@rt
+def email(email: str): return inputTemplate('Email Address', 'email', email, validate_email(email))
 
-@app.post('/cool')
-def contact_cool(cool: str): return inputTemplate('Is this cool?', 'cool', cool, validate_cool(cool))
+@rt
+def cool(cool: str): return inputTemplate('Is this cool?', 'cool', cool, validate_cool(cool))
      
-@app.post('/coolscale')
-def contact_coolscale(CoolScale: int): return inputTemplate('How cool (scale of 1 - 10)?', 'CoolScale', CoolScale, validate_coolscale(CoolScale), input_type='number')
+@rt
+def coolscale(CoolScale: int): return inputTemplate('How cool (scale of 1 - 10)?', 'CoolScale', CoolScale, validate_coolscale(CoolScale), input_type='number')
 
-
-@app.post('/submit')
-def contact_submit(email: str, cool: str, CoolScale: int):
+@rt
+def submit(email: str, cool: str, CoolScale: int):
     # Validates all fields in the form
     errors = {'email': validate_email(email),
              'cool': validate_cool(cool),
@@ -49,7 +47,7 @@ def contact_submit(email: str, cool: str, CoolScale: int):
     errors = {k: v for k, v in errors.items() if v is not None}
     # Return Button with error message if they exist
     return Div(id='submit-btn-container')(
-        Button(type='submit', id='submit-btn', hx_post='/dynamic_user_interface/inline_validation/submit', hx_target='#submit-btn-container', hx_swap='outerHTML')('Submit'),
+        Button(type='submit', id='submit-btn', post='submit', hx_target='#submit-btn-container', hx_swap='outerHTML')('Submit'),
         *[Div(error, style='color: red;') for error in errors.values()])
 
 ########################
@@ -78,6 +76,6 @@ def inputTemplate(label, name, val, errorMsg=None, input_type='text'):
     # Generic template for replacing the input field and showing the validation message
     return Div(hx_target='this', hx_swap='outerHTML', cls=f"{errorMsg if errorMsg else 'Valid'}")(
                Label(label), # Creates label for the input field
-               Input(name=name,type=input_type,value=f'{val}',hx_post=f'/dynamic_user_interface/inline_validation/{name.lower()}'), # Creates input field
+               Input(name=name,type=input_type,value=f'{val}',post=f'{name.lower()}'), # Creates input field
                Div(f'{errorMsg}', style='color: red;') if errorMsg else None) # Creates red error message below if there is an error
 

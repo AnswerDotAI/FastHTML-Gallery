@@ -2,33 +2,39 @@
 
 This is a gallery of FastHTML components that shows common patterns in FastHTML apps. It includes minimal examples of chat bubbles, cascading dropdowns, interactive charts, and more.
 
+## Setup
+
+To install the dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Running
 
 To run the project, use the following command:
 
 ```bash
-uvicorn main:app
+python main.py
 ```
 
 ## Contributing
 
 ### Adding an Example
 
-The best way to contribute is by adding examples to the gallery.  There 2 options:
+One way to contribute is by adding examples to the gallery!
 
-1. **Easy way:**  Open an issue with a link to the app code (gist, file in a github repo, etc.), and I will add it.  I am completely fine with this, so if the full contribution way would take more time than you have do this!
-1. **Full Contribution Way:**  Open a PR with all the details needed for the site.  I can help through every step of this! 
-    + Copy a similar example directory and do a PR with all the details needed for the site
-      + **app.py**: Have a normal app, with 2 exceptions:
-          + You must have a `homepage` function that generates the main page.  You can use `app.get('/'); def homepage():` 
-          + Because the app will be submounted, `/` routes will be `/{dir_path}/` in your HTMX get/post/etc attributes.  You can see an example of this in the `cascading_dropdowns` example application.
-       + **text.md**: This is an optional markdown file.  Good for adding links to references, docs, attribution, etc.
-       + **metadata.ini**: Fill these out
-       + **img.png**:  An image of your app for the main page card
-       + **gif.gif**:  A gif of your app for the main page card (can be a copy of `img.png` if no dynamic content)
-    + Run `uvicorn main:app` in the root of this git repo and check:
-        + The main page card looks good (both in animations mode and not)
-        + Your app works.  If not, it's possible the submounting routes thing above!
+1. Create an app that servers as an example.  Make sure you can say in 1 simple sentence what the example is illustrating.
+2. Create a new folder in an appropriate directory (e.g. `examples/widgets/` or `examples/visualizations/`) for your example.
+3. Create an `app.py` file.  Things to know:
+    + You should use route names or relative paths, not absolute paths.  This is because the app will be submounted, so the routes will be prefixed with the directory path.
+    + The root route will be what is shown in the gallery
+4. Add neccesary metadata
+    + `card_thumbnail.png` and `card_thumbnail.gif` are used for the main page card.  Both are required.
+    + `metadata.ini` is used to show the examples on the main page, look at a couple existing ones for examples of what information to include.
+    + `info.md` is optional for examples, but required for apps.  This is where you can describe and provide information for how it works.  If this file exists an info page for the example will be created autoamticallyy
+5. Run the full project with `python main.py`.  Check that your example card and all pages look good and load correctly.  Click into a couple others and make sure other pages load correctly too.
+
 
 ### Other Contributions
 

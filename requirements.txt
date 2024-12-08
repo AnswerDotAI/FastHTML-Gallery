@@ -1,10 +1,16 @@
-fastcore @ git+https://github.com/isaac-flath/fastcore@testing
-python-fasthtml==0.4.4
+python-fasthtml @ git+https://github.com/AnswerDotAI/fasthtml.git
 fh-matplotlib
 fh-altair
+great_tables
 pandas
+polars
 fastsql
 plotly
 fh-plotly
 numpy
-fastcore @ git+https://github.com/isaac-flath/fastcore@testing
+fastcore
+requests
+seaborn
+fh_frankenui @ git+https://github.com/AnswerDotAI/fh-frankenui.git
+markdown2
+lxml
