@@ -6,20 +6,21 @@ from fh_frankenui.core import *
 # It creates a table in the database if it doesn't exist with columns id and title making id the primary key
 # it returns a connector object todos
 # it returns a model class Todo
-app, rt, todos, Todo= fast_app(
-    '::memory::',id=int,title=str,done=bool,due=date,pk='id',hdrs=Theme.slate.headers())
+app, rt, todos, Todo= fast_app('intermediate_todo.db',hdrs=Theme.slate.headers(),
+                               id=int,title=str,done=bool,due=date,pk='id')
 
 def tid(id): return f'todo-{id}'
 
 def mk_input(**kw):
     return  Form(DivLAligned(
-                Input(id='new-title',name='title',placeholder='New Todo', **kw),
-                Input(id='new-done',name='done',hidden=True,value=False, **kw),
-                Input(id='new-due',name='due',value=date.today(), **kw),
-                Button("Add",post=insert_todo,hx_target='#todo-list',hx_swap='innerHTML')), id='todo-input')
+                Input(id='new-title',name='title',placeholder='New Todo',  **kw),
+                Input(id='new-done', name='done',value=False, hidden=True, **kw),
+                Input(id='new-due',  name='due', value=date.today(),       **kw),
+                Button("Add",cls=ButtonT.primary, post=insert_todo,
+                       hx_target='#todo-list',hx_swap='innerHTML')), 
+                id='todo-input', cls='mb-6')
 
-def mk_todo_list():
-    return Ul(*todos(order_by='due'))
+def mk_todo_list(): return Grid(*todos(order_by='due'), cols=1)
 
 @app.delete("/delete_todo", name='delete_todo')
 async def delete_todo(id:int):
@@ -30,28 +31,27 @@ async def delete_todo(id:int):
 # this is used to customize the html representation of the Todo object
 @patch
 def __ft__(self:Todo):
-
     dd = datetime.strptime(self.due, '%Y-%m-%d').date()
     due_date = Strong(dd.strftime('%Y-%m-%d'),style= "" if date.today() <= dd else "background-color: red;")
-        
-    show = Strong(self.title, target_id='current-todo')
-
     style = Del if self.done else Strong
     
+    _targets = {'hx_target':f'#{tid(self.id)}', 'hx_swap':'outerHTML'}
+
     done = CheckboxX(checked=self.done,
                     hx_get=toggle_done.to(id=self.id).lstrip('/'),
-                    hx_target=f'#{tid(self.id)}',
-                    hx_swap='outerHTML')
-    delete = Button('delete',
-               hx_delete=delete_todo.to(id=self.id).lstrip('/'),
-               hx_target=f'#{tid(self.id)}',
-               hx_swap='outerHTML',cls=ButtonT.danger)
+                    **_targets)
+    delete = Button('delete', 
+                    hx_delete=delete_todo.to(id=self.id).lstrip('/'),
+                    **_targets)
     
-    return Card(DivLAligned(done, style(show), P(style(due_date),cls=TextFont.muted_sm),delete),id=tid(self.id))
+    return Card(DivLAligned(done, 
+                            style(Strong(self.title, target_id='current-todo')), 
+                            P(style(due_date),cls=TextFont.muted_sm),delete),
+                id=tid(self.id))
 
 @rt
 async def index():
-    return Titled('Todo List'),mk_input(),Div(mk_todo_list(),id='todo-list')
+    return Titled('Todo List',mk_input(),Div(mk_todo_list(),id='todo-list'))
 
 @rt 
 async def insert_todo(todo:Todo):
