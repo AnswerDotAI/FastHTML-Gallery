@@ -152,6 +152,7 @@ def homepage():
         'dynamic_user_interface',
         'svg',
         'start_simple',
+        'todo_series',
         'applications']]
 
     all_cards = []
