@@ -1,6 +1,6 @@
 # Intermediate Todo App (SQLite)
 
-This project is a web-based implementation of an intermediate todo app built using FastHTML, HTMX, and SQLite.
+This project is a web-based implementation of an intermediate todo app built using FastHTML, HTMX, and SQLite. This builds on the minimal todo app by adding a due date and a done field to todos. Functionality related to these new fields has been added to the app. 
 
 ## Key Technologies and Techniques
 
