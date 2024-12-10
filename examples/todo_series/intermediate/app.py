@@ -48,7 +48,6 @@ def __ft__(self:Todo):
                hx_swap='outerHTML',cls=ButtonT.danger)
     
     return Card(DivLAligned(done, style(show), P(style(due_date),cls=TextFont.muted_sm),delete),id=tid(self.id))
-    # return Li(DivLAligned(style(show, due_date), done,delete, id=tid(self.id)))
 
 @rt
 async def index():

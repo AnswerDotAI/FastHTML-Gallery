@@ -1,6 +1,6 @@
-# Minimal Todo App (SQLite)
+# Intermediate Todo App (SQLite)
 
-This project is a web-based implementation of a minimal todo app built using FastHTML, HTMX, and SQLite.
+This project is a web-based implementation of an intermediate todo app built using FastHTML, HTMX, and SQLite.
 
 ## Key Technologies and Techniques
 
@@ -23,7 +23,7 @@ The app uses FastHTML to define routes and handle todo list operations. Key rout
 
 Todo items are stored in an SQLite database:
 
-- `todos`: A table storing todo items with `id` and `title` fields.
+- `todos`: A table storing todo items with `id`, `title`, `done`, and `due`fields.
 
 ### Dynamic Content
 
@@ -42,3 +42,6 @@ HTMX is used to create a dynamic user interface:
 2. **Delete Todo**: Each todo item has a delete link to remove it from the list.
 3. **Real-time Updates**: The list updates dynamically without full page reloads.
 4. **Persistent Storage**: Todos are stored in an SQLite database for data persistence.
+5. **Due Date**: Each todo item has a due date field and the list is sorted by due date. If the item is past due the date is displayed in red.
+6. **Done**: Each todo item has a done field. Items can be marked as done and the list shows completed items crossed out.
+7. **fh-frakenui**: Simple styling is done using the fh-frakenui library.
