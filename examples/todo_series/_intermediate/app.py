@@ -1,6 +1,6 @@
 from fasthtml.common import *
 from datetime import date,datetime
-from fh_frankenui.core import *
+from monsterui.core import *
 
 # fast_app is doing a lot of work here.
 # It creates a table in the database if it doesn't exist with columns id and title making id the primary key
@@ -13,7 +13,7 @@ def tid(id): return f'todo-{id}'
 
 def mk_input(**kw):
     return  Form(DivLAligned(
-                Input(id='new-title',name='title',placeholder='New Todo',  **kw),
+                Input(id='new-title',name='title',placeholder='New Todo',required=True,  **kw),
                 Input(id='new-done', name='done',value=False, hidden=True, **kw),
                 Input(id='new-due',  name='due', value=date.today(),       **kw),
                 Button("Add",cls=ButtonT.primary, post=insert_todo,
@@ -55,7 +55,7 @@ async def index():
 
 @rt 
 async def insert_todo(todo:Todo):
-    todos.insert(todo)
+    if todo.title.strip(): todos.insert(todo)
     return mk_todo_list(),mk_input()(hx_swap_oob='true',hx_target='#todo-input',hx_swap='outerHTML')
 
 @rt 

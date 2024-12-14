@@ -1,5 +1,5 @@
 from fasthtml.common import *
-from fh_frankenui.core import *
+from monsterui.core import *
 
 app, rt = fast_app(hdrs=Theme.blue.headers())
 

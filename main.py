@@ -3,7 +3,7 @@ import configparser, os
 from pathlib import Path
 from utils import *
 from importlib import import_module
-from fh_frankenui.core import *
+from monsterui.core import *
 
 def get_route(p): return '/'.join(Path(p).parts[1:])
 def get_module_path(p,base_dir): return f'{base_dir}.{".".join(Path(p).parts[1:])}.app'
@@ -14,8 +14,7 @@ descr = 'A gallery of FastHTML components showing common patterns in FastHTML ap
 
 HLJS_THEMES = {
     'dark': 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/atom-one-dark.css',
-    'light': 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/atom-one-light.css'
-}
+    'light': 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/atom-one-light.css'}
 
 hjs = (
     # Basic highlight.js setup
@@ -62,13 +61,11 @@ hjs = (
     ''', type='module'),
 )
 
-hdrs = (
-    *hjs,
+hdrs = (*hjs,
     Script(defer=True, data_domain="gallery.fastht.ml", src="https://plausible-analytics-ce-production-dba0.up.railway.app/js/script.js"),
     *Socials(title='FastHTML Gallery', description=descr, site_name='gallery.fastht.ml', twitter_site='@isaac_flath', image=f'/social.png', url=''),
     toggle_script,
-    *Theme.blue.headers(),
-)
+    *Theme.blue.headers(),)
 
 app = FastHTML(routes=application_routes+ [Mount('/files', StaticFiles(directory='.')),], hdrs=hdrs, pico=False)
 
@@ -76,18 +73,13 @@ def NavBar(dir_path, info=True):
     nav_items = [
         Li(A("Back to Gallery", href="/")),
         Li(A("Code", href=f"/code/{dir_path.parts[1]}/{dir_path.parts[2]}")),
-        Li(A("App",  href=f"/app/{dir_path.parts[1]}/{dir_path.parts[2]}"))
-    ]
+        Li(A("App",  href=f"/app/{dir_path.parts[1]}/{dir_path.parts[2]}"))]
     
-    if info:
-        nav_items.insert(1, Li(A("Info", href=f"/info/{dir_path.parts[1]}/{dir_path.parts[2]}")))
+    if info:nav_items.insert(1, Li(A("Info", href=f"/info/{dir_path.parts[1]}/{dir_path.parts[2]}")))
         
     return NavBarContainer(
-            NavBarLSide(
-                A(H1("Fh-Gallery", cls="navbar-brand mb-0 h1"), href="/")),
-            NavBarCenter(H1(f"{dir_path.name.replace('_',' ').title()}")),
-            NavBarRSide(
-                NavBarNav(*nav_items)))
+            NavBarLSide(H1(f"{dir_path.name.replace('_',' ').title()}"), cls="hidden md:block"),
+            NavBarRSide(NavBarNav(*nav_items)))
 
 @app.get('/split/{category}/{project}')
 def split_view(category: str, project: str):
@@ -97,11 +89,9 @@ def split_view(category: str, project: str):
     return (
         NavBar(dir_path, info=info),
         Title(f"{dir_path.name} - Split View"),
-        Container(
-            Div(Div(Pre(Code(code_text, cls='language-python')), style="width: 50%; padding: 10px;"),
-                Div(Iframe(src=f"/app/{category}/{project}/",style="width: 100%; height: 100%; border: none;"),
-                    style="width: 50%; padding: 10px;"),
-                style="display: flex; height: calc(100vh - 60px);")))
+            Grid(Div(Pre(Code(code_text, cls='language-python'))),
+                Div(Iframe(src=f"/app/{category}/{project}/",style="width: 100%; height: 100%; border: none;")),
+                cols_sm=1, cols_md=1, cols_lg=2))
 
 @app.get('/code/{category}/{project}')
 def application_code(category:str, project:str):
@@ -131,17 +121,14 @@ def ImageCard(dir_path):
                 loading="lazy",
                 cls="card-img-top"), 
                 href=f"/split/{dpath}"),
-            Div(
-                P(meta['ComponentName'],        cls=(TextT.bold, TextT.large)),
+            Div(P(meta['ComponentName'],        cls=(TextT.bold, TextT.large)),
                 P(meta['ComponentDescription'], cls=(TextT.muted, TextT.large)),
-                style="height: 150px; overflow: auto;"
-                ),
+                style="height: 150px; overflow: auto;"),
             footer=DivFullySpaced(
                 A(Button("Split", cls=ButtonT.primary), href=f"/split/{dpath}"),
                 A(Button("Code", cls=ButtonT.secondary), href=f"/code/{dpath}"),
                 A(Button("App", ), href=f"/app/{dpath}"),
-                A(Button("Info"), href=f"/info/{dpath}") if text_md_exists else None,
-            ))
+                A(Button("Info"), href=f"/info/{dpath}") if text_md_exists else None))
 
 @app.get("/")
 def homepage():
@@ -151,7 +138,6 @@ def homepage():
         'visualizations',
         'dynamic_user_interface',
         'svg',
-        'start_simple',
         'todo_series',
         'applications']]
 
@@ -161,16 +147,12 @@ def homepage():
             Section(
                 H1(section.name.replace('_',' ').title(), cls='mt-6 mb-4 pb-2 text-center text-3xl font-bold border-b-2 border-gray-300'),
                 Grid(*[ImageCard(dir) for dir in section.iterdir() if dir.is_dir() and not dir.name.startswith('_')],
-                     cols_min=1, cols_sm=1, cols_md=2, cols_lg=3,
-                     ),
-                cls='pt-6'
-            )
-        )
+                     cols_min=1, cols_sm=1, cols_md=2, cols_lg=3),
+                cls='pt-6'))
 
     return (NavBarContainer(
         NavBarLSide(H1("FastHTML Gallery" )),
-        NavBarRSide(
-            Button(submit=False)("Toggle Animations", onclick="toggleAnimations()"))),
-        Container(*all_cards)
-    )
+        NavBarRSide(Button(submit=False)("Toggle Animations", onclick="toggleAnimations()"))),
+        Container(*all_cards))
+
 serve()
