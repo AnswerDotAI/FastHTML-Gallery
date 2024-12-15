@@ -23,7 +23,10 @@ def __ft__(self:Todo):
                hx_swap='outerHTML')
     return Li(show, ' | ', delete, id=tid(self.id))
 
-def mk_input(**kw): return Input(id="new-title", name="title", placeholder="New Todo", **kw)
+def mk_input(**kw):
+    return Input(
+        id="new-title", name="title", placeholder="New Todo",required=True,**kw
+    )
 
 @rt
 async def index():
@@ -34,6 +37,9 @@ async def index():
     return Title(title), Main(H1(title), card, cls='container')
 
 @rt
-async def insert_todo(todo:Todo): return todos.insert(todo), mk_input(hx_swap_oob='true')
+async def insert_todo(todo:Todo):
+    if not todo.title.strip():
+        return  mk_input(hx_swap_oob='true')
+    return todos.insert(todo), mk_input( hx_swap_oob='true')
 
 serve()
