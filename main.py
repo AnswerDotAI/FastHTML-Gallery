@@ -146,7 +146,7 @@ def homepage():
         all_cards.append(
             Section(
                 H1(section.name.replace('_',' ').title(), cls='mt-6 mb-4 pb-2 text-center text-3xl font-bold border-b-2 border-gray-300'),
-                Grid(*[ImageCard(dir) for dir in section.iterdir() if dir.is_dir() and not dir.name.startswith('_')],
+                Grid(*[ImageCard(dir) for dir in sorted(section.iterdir()) if dir.is_dir() and not dir.name.startswith('_')],
                      cols_min=1, cols_sm=1, cols_md=2, cols_lg=3),
                 cls='pt-6'))
 
