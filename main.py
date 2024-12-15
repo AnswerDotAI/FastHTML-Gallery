@@ -129,30 +129,72 @@ def ImageCard(dir_path):
                 A(Button("Code", cls=ButtonT.secondary), href=f"/code/{dpath}"),
                 A(Button("App", ), href=f"/app/{dpath}"),
                 A(Button("Info"), href=f"/info/{dpath}") if text_md_exists else None))
+directories = [Path(f"examples/{x}") for x in [
+    'dynamic_user_interface_(htmx)',
+    'visualizations',
+    'widgets',
+    'svg',
+    'todo_series',
+    'applications']]
 
 @app.get("/")
 def homepage():
     ### HEADERS ###
-    directories = [Path(f"examples/{x}") for x in [
-        'widgets',
-        'visualizations',
-        'dynamic_user_interface',
-        'svg',
-        'todo_series',
-        'applications']]
-
     all_cards = []
     for section in directories:
         all_cards.append(
-            Section(
-                H1(section.name.replace('_',' ').title(), cls='mt-6 mb-4 pb-2 text-center text-3xl font-bold border-b-2 border-gray-300'),
+            Section(Details(
+                Summary(H1(section.name.replace('_',' ').title(), cls='mt-6 mb-4 pb-2 text-center text-3xl font-bold border-b-2 border-gray-300')),
                 Grid(*[ImageCard(dir) for dir in sorted(section.iterdir()) if dir.is_dir() and not dir.name.startswith('_')],
                      cols_min=1, cols_sm=1, cols_md=2, cols_lg=3),
-                cls='pt-6'))
+                cls='pt-6', open=True)))
 
     return (NavBarContainer(
         NavBarLSide(H1("FastHTML Gallery" )),
-        NavBarRSide(Button(submit=False)("Toggle Animations", onclick="toggleAnimations()"))),
+        NavBarRSide(
+            Button(submit=False)("Toggle Animations", onclick="toggleAnimations()"),
+            A(Button("Table View"), href="/table"))),
         Container(*all_cards))
+
+
+def TableRow(dir_path):
+    metadata = configparser.ConfigParser()
+    metadata.read(dir_path/'metadata.ini')
+    meta = metadata['REQUIRED']
+    dpath = dir_path.parts[1]+'/'+dir_path.parts[2]
+    
+    text_md_exists = (dir_path/'info.md').exists()
+    return Tr(
+        Td(meta['ComponentName']),
+        Td(meta['ComponentDescription']),
+        Td(DivLAligned(
+            A(Button("Split", cls=ButtonT.primary), href=f"/split/{dpath}"),
+            A(Button("Code", cls=ButtonT.secondary), href=f"/code/{dpath}"),
+            A(Button("App"), href=f"/app/{dpath}"),
+            A(Button("Info"), href=f"/info/{dpath}") if text_md_exists else None),
+           cls='uk-table-shrink'))
+
+def SectionTable(section):
+    section_id = f"section-{section.name}"
+    return Section(Details(
+            Summary(H1(section.name.replace('_',' ').title(), 
+                   cls='mt-6 mb-4 pb-2 text-center text-3xl font-bold border-b-2 border-gray-300 cursor-pointer')),
+            Table(
+                Thead(Tr(map(Th, ("Component", "Description", "Actions")))),
+                Tbody(*[TableRow(dir) for dir in sorted(section.iterdir()) 
+                       if dir.is_dir() and not dir.name.startswith('_')]),
+                cls=(TableT.middle, TableT.divider, TableT.hover, TableT.small)),
+            # open=True,
+            id=section_id),
+        cls='py-2')
+
+@app.get("/table") 
+def table_view():
+    return (NavBarContainer(
+        NavBarLSide(H1("FastHTML Gallery Table View")),
+        NavBarRSide(
+            Button(submit=False)("Toggle Animations", onclick="toggleAnimations()"),
+            A(Button("Card View"), href="/"))),
+        Container(*[SectionTable(section) for section in directories]))
 
 serve()
