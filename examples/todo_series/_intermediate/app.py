@@ -1,6 +1,6 @@
 from fasthtml.common import *
 from datetime import date,datetime
-from fh_frankenui.core import *
+from monsterui.core import *
 
 # fast_app is doing a lot of work here.
 # It creates a table in the database if it doesn't exist with columns id and title making id the primary key
@@ -13,7 +13,7 @@ def tid(id): return f'todo-{id}'
 
 def mk_input(**kw):
     return  Form(DivLAligned(
-                Input(id='new-title',name='title',placeholder='New Todo',  **kw),
+                Input(id='new-title',name='title',placeholder='New Todo',required=True,  **kw),
                 Input(id='new-done', name='done',value=False, hidden=True, **kw),
                 Input(id='new-due',  name='due', value=date.today(),       **kw),
                 Button("Add",cls=ButtonT.primary, post=insert_todo,
@@ -43,13 +43,10 @@ def __ft__(self:Todo):
     delete = Button('delete', 
                     hx_delete=delete_todo.to(id=self.id).lstrip('/'),
                     **_targets)
-    edit = Button('edit',
-                    hx_get=edit_todo.to(id=self.id).lstrip('/'),
-                    **_targets)
     
     return Card(DivLAligned(done, 
                             style(Strong(self.title, target_id='current-todo')), 
-                            P(style(due_date),cls=TextFont.muted_sm),delete,edit),
+                            P(style(due_date),cls=TextFont.muted_sm),delete),
                 id=tid(self.id))
 
 @rt
@@ -58,22 +55,11 @@ async def index():
 
 @rt 
 async def insert_todo(todo:Todo):
-    todos.insert(todo,replace=True)
+    if todo.title.strip(): todos.insert(todo,replace=True)
     return mk_todo_list(),mk_input()(hx_swap_oob='true',hx_target='#todo-input',hx_swap='outerHTML')
 
 @rt 
 async def toggle_done(id:int):
     return todos.update(Todo(id=id, done=not todos[id].done))
 
-@rt
-async def edit_todo(id:int):
-    todo = todos.get(id)
-    return  Card(Form(DivLAligned(
-                Input(id='new-title',name='title',value=todo.title),
-                Input(id='new-done', name='done',value=todo.done,hidden=True),
-                Input(id='new-due',  name='due', value=todo.due),
-                Input(id='new-id',  name='id', value=todo.id,hidden=True),
-                Button("Save",cls=ButtonT.primary, post=insert_todo,
-                       hx_target='#todo-list',hx_swap='innerHTML')), 
-                id=tid(todo.id), cls='mb-6'))
 serve()
