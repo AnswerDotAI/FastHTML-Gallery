@@ -7,7 +7,7 @@ db = database('advanced_todo.db')
 todos,users = db.t.todos,db.t.users
 if todos not in db.t:
     users.create(dict(name=str), pk='name')
-    todos.create(id=int, title=str, done=bool, due=date, name=str, pk='id')
+    todos.create(id=int, title=str, status=str, due=date, name=str, pk='id')
 Todo,User = todos.dataclass(),users.dataclass()
 login_redir = RedirectResponse('/login', status_code=303)
 
@@ -23,9 +23,9 @@ app, rt = fast_app(hdrs=Theme.slate.headers(),before=bware)
 def tid(id): return f'todo-{id}'
 
 def mk_input(**kw):
-    return  Form(DivLAligned(
+    return  Form(Grid(min_cols=3)(
                 Input(id='new-title',name='title',placeholder='New Todo',  **kw),
-                Input(id='new-done', name='done',value=False, hidden=True, **kw),
+                Input(id='new-status', name='status',value="Not Started", hidden=True, **kw),
                 Input(id='new-due',  name='due', value=date.today(),       **kw),
                 Button("Add",cls=ButtonT.primary, post=insert_todo,
                        hx_target='#todo-list',hx_swap='innerHTML')), 
@@ -37,7 +37,15 @@ def mk_todo_list():
     def is_old(due):
         dd = datetime.strptime(due, '%Y-%m-%d').date()
         return date.today() <= dd
-    date_cards = [Card(*todos(where=f"due='{td.due}'"),header=td.due,body_cls='space-y-2',cls=CardT.default if is_old(td.due) else CardT.danger) for td in todos(select="distinct due",order_by='due')]
+    date_cards = []
+    for td in todos(select="distinct due",order_by='due',where="status != 'Archive'"):
+        new_card = [Card(*todos(where=f"due='{td.due}' and status='Not Started'"),header="Not Started",body_cls='space-y-2',cls=CardT.default if is_old(td.due) else CardT.danger, id=f'new-{td.due}')]
+        inprogress_card = [Card(*todos(where=f"due='{td.due}' and status='In Progress'"),header="In Progress",body_cls='space-y-2',cls=CardT.default if is_old(td.due) else CardT.danger, id=f'inprogress-{td.due}')]
+        done_cards = [Card(*todos(where=f"due='{td.due}' and status='Done'"),header="Done",body_cls='space-y-2',cls=CardT.default if is_old(td.due) else CardT.danger, id=f'done-{td.due}')]
+    
+        date_cards.append(Card(Grid(min_cols=3)(*new_card,*inprogress_card,*done_cards),header=td.due))
+
+    # date_cards = [Card(*todos(where=f"due='{td.due}'"),header=td.due,body_cls='space-y-2',cls=CardT.default if is_old(td.due) else CardT.danger) for td in todos(select="distinct due",order_by='due')]
     return Div(*date_cards,id='todo-dates')
 
 @app.delete("/delete_todo", name='delete_todo')
@@ -49,13 +57,9 @@ async def delete_todo(id:int):
 # this is used to customize the html representation of the Todo object
 @patch
 def __ft__(self:Todo):
-    style = Del if self.done else Strong
     
     _targets = {'hx_target':f'#{tid(self.id)}', 'hx_swap':'outerHTML'}
 
-    done = CheckboxX(checked=self.done,
-                    hx_get=toggle_done.to(id=self.id).lstrip('/'),
-                    **_targets)
     delete = Button('delete', 
                     hx_delete=delete_todo.to(id=self.id).lstrip('/'),
                     **_targets)
@@ -64,14 +68,17 @@ def __ft__(self:Todo):
                     hx_get=edit_todo.to(id=self.id).lstrip('/'),
                     **_targets)
     
-    return Card(DivLAligned(done, 
-                            style(Strong(self.title, target_id='current-todo')), 
-                            edit,delete),
-                id=tid(self.id), cls=CardT.secondary if self.done else CardT.default)
+    next_status = {"Not Started": "Start", "In Progress": "Complete", "Done": "Archive", "Archive": "Archive"}
+    status = Button(next_status[self.status],
+                    hx_post=update_status.to(id=self.id).lstrip('/'),hx_swap='delete',hx_target=f'#{tid(self.id)}')
+    
+    return Card(DivLAligned(Strong(self.title, target_id='current-todo'), 
+                            edit,delete,status),
+                id=tid(self.id))
 
 @rt
 async def index():
-    logout = Button("Logout",cls=ButtonT.primary, hx_get="/logout") 
+    logout = Button("Logout",cls=ButtonT.primary, hx_get="/logout", hx_target='body') 
     return Titled('Todo List',logout,mk_input(),Div(mk_todo_list(),id='todo-list'))
 
 @rt 
@@ -82,6 +89,14 @@ async def insert_todo(todo:Todo):
 @rt 
 async def toggle_done(id:int):
     return todos.update(Todo(id=id, done=not todos[id].done))
+
+@rt 
+async def update_status(id:int):
+    todo = todos.get(id)
+    next_status = {"Not Started": "In Progress", "In Progress": "Done", "Done": "Archive"}
+    next_target = {"Not Started": "inprogress", "In Progress": "done", "Done": "archive"}
+    print(f'beforeend:#{next_target[todo.status]}-{todo.due}')
+    return Div(todos.update(Todo(id=id, status=next_status[todo.status])))(hx_swap_oob=f'beforeend:#{next_target[todo.status]}-{todo.due}')
 
 @rt 
 async def edit_todo(id:int):
