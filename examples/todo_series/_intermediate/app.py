@@ -44,9 +44,13 @@ def __ft__(self:Todo):
                     hx_delete=delete_todo.to(id=self.id).lstrip('/'),
                     **_targets)
     
+    edit = Button('edit',
+                    hx_get=edit_todo.to(id=self.id).lstrip('/'),
+                    **_targets)
+    
     return Card(DivLAligned(done, 
                             style(Strong(self.title, target_id='current-todo')), 
-                            P(style(due_date),cls=TextFont.muted_sm),delete),
+                            P(style(due_date),cls=TextFont.muted_sm),edit,delete),
                 id=tid(self.id))
 
 @rt
@@ -62,4 +66,15 @@ async def insert_todo(todo:Todo):
 async def toggle_done(id:int):
     return todos.update(Todo(id=id, done=not todos[id].done))
 
+@rt 
+async def edit_todo(id:int):
+    todo = todos.get(id)
+    return  Card(Form(DivLAligned(
+                Input(id='new-title',name='title',value=todo.title,required=True),
+                Input(id='new-id',  name='id', value=todo.id,hidden=True),
+                Input(id='new-done', name='done',value=todo.done, hidden=True),
+                Input(id='new-due',  name='due', value=todo.due),
+                Button("Save",cls=ButtonT.primary, post=insert_todo,
+                       hx_target='#todo-list',hx_swap='innerHTML')), 
+                id='todo-input', cls='mb-6'))
 serve()

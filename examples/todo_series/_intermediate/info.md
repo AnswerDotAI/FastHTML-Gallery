@@ -45,3 +45,4 @@ HTMX is used to create a dynamic user interface:
 5. **Due Date**: Each todo item has a due date field and the list is sorted by due date. If the item is past due the date is displayed in red.
 6. **Done**: Each todo item has a done field. Items can be marked as done and the list shows completed items crossed out.
 7. **fh-frakenui**: Simple styling is done using the fh-frakenui library.
+8. **Edit Todo**: Each todo item has an edit link to edit the item. The edit form is displayed in a card and the todo list is updated with the new values.
