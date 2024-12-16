@@ -14,3 +14,5 @@ seaborn
 monsterui
 markdown2
 lxml
+markdown==3.4.1
+pytest==7.4.0

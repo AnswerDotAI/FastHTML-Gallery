@@ -1,0 +1,17 @@
+# FastHTML Gallery
+
+> A collection of FastHTML examples demonstrating various use cases and patterns.
+
+## Categories
+
+- [Widgets](categories/Widgets.md)
+
+- [Svg](categories/Svg.md)
+
+- [Todo Series](categories/Todo Series.md)
+
+- [Visualizations](categories/Visualizations.md)
+
+- [Dynamic User Interface (Htmx)](categories/Dynamic User Interface (Htmx).md)
+
+- [Applications](categories/Applications.md)
