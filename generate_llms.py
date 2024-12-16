@@ -30,10 +30,11 @@ def process_example(example_path):
         'name': metadata['name'],
         'description': metadata['description'],
         'code': code,
-        'info': info_content
+        'info': info_content,
+        'path': example_path
     }
 
-def generate_category_llms(category_path, category_name):
+def generate_category_llms(category_path, category_name, expanded=False, full=False):
     """Generate llms.txt content for a category"""
     content = [f"# {category_name}\n"]
     content.append("> A collection of FastHTML examples demonstrating various use cases and patterns.\n")
@@ -47,18 +48,27 @@ def generate_category_llms(category_path, category_name):
     # Add examples section
     content.append("## Examples\n")
     for example in examples:
-        content.append(f"- [{example['name']}](examples/{example['name']}.md): {example['description']}\n")
+        if expanded:
+            content.append(f"# {example['name']}\n\n")
+            content.append(f"> {example['description']}\n\n")
+            if full and example['info']:
+                content.append(example['info'] + "\n\n")
+            content.append("## Implementation\n\n```python\n")
+            content.append(example['code'] + "\n```\n\n")
+        else:
+            content.append(f"- [{example['name']}](examples/{example['name']}.md): {example['description']}\n")
 
-        # Create individual example markdown file
-        example_md = Path('examples') / f"{example['name']}.md"
-        example_md.parent.mkdir(exist_ok=True)
-        with open(example_md, 'w') as f:
-            f.write(f"# {example['name']}\n\n")
-            f.write(f"> {example['description']}\n\n")
-            if example['info']:
-                f.write(example['info'] + "\n\n")
-            f.write("## Implementation\n\n```python\n")
-            f.write(example['code'] + "\n```\n")
+        if not expanded:
+            # Create individual example markdown file
+            example_md = Path('examples') / f"{example['name']}.md"
+            example_md.parent.mkdir(exist_ok=True)
+            with open(example_md, 'w') as f:
+                f.write(f"# {example['name']}\n\n")
+                f.write(f"> {example['description']}\n\n")
+                if example['info']:
+                    f.write(example['info'] + "\n\n")
+                f.write("## Implementation\n\n```python\n")
+                f.write(example['code'] + "\n```\n")
 
     return '\n'.join(content)
 
@@ -67,26 +77,45 @@ def main():
     output_path = Path('llms')
     output_path.mkdir(exist_ok=True)
 
-    # Generate main llms.txt
+    # Generate main content for all versions
     main_content = ["# FastHTML Gallery\n"]
     main_content.append("> A collection of FastHTML examples demonstrating various use cases and patterns.\n")
     main_content.append("## Categories\n")
 
+    main_content_ctx = main_content.copy()
+    main_content_ctx_full = main_content.copy()
+
     for category in base_path.iterdir():
         if category.is_dir():
             category_name = category.name.replace('_', ' ').title()
-            main_content.append(f"- [{category_name}](categories/{category_name}.md)\n")
 
-            # Generate category llms.txt
+            # Standard llms.txt
+            main_content.append(f"- [{category_name}](categories/{category_name}.md)\n")
             category_content = generate_category_llms(category, category_name)
             category_md = output_path / 'categories' / f"{category_name}.md"
             category_md.parent.mkdir(exist_ok=True)
             with open(category_md, 'w') as f:
                 f.write(category_content)
 
-    # Write main llms.txt
+            # llms-ctx with basic context
+            main_content_ctx.append(f"# {category_name}\n\n")
+            category_content_ctx = generate_category_llms(category, category_name, expanded=True)
+            main_content_ctx.append(category_content_ctx + "\n")
+
+            # llms-ctx-full with complete documentation
+            main_content_ctx_full.append(f"# {category_name}\n\n")
+            category_content_ctx_full = generate_category_llms(category, category_name, expanded=True, full=True)
+            main_content_ctx_full.append(category_content_ctx_full + "\n")
+
+    # Write all versions
     with open(output_path / 'llms.txt', 'w') as f:
         f.write('\n'.join(main_content))
+
+    with open(output_path / 'llms-ctx', 'w') as f:
+        f.write('\n'.join(main_content_ctx))
+
+    with open(output_path / 'llms-ctx-full', 'w') as f:
+        f.write('\n'.join(main_content_ctx_full))
 
 if __name__ == '__main__':
     main()

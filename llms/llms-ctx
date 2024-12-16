@@ -1,0 +1,1968 @@
+# FastHTML Gallery
+
+> A collection of FastHTML examples demonstrating various use cases and patterns.
+
+## Categories
+
+# Widgets
+
+
+# Widgets
+
+> A collection of FastHTML examples demonstrating various use cases and patterns.
+
+## Examples
+
+# PDF
+
+
+> PDF Embed
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+app, rt = fast_app()
+
+@rt
+def index():
+    pdf_path = 'https://arxiv.org/pdf/1706.03762'
+    return Embed(src=pdf_path, type='application/pdf',
+                 width='100%', height='1000px')
+
+serve()
+```
+
+
+# Audio
+
+
+> An example audio app
+
+
+## Implementation
+
+```python
+
+import base64, requests
+from fasthtml.common import *
+
+app, rt = fast_app()
+
+@rt
+def index():
+    audio_path = "https://ucarecdn.com/abb35276-b3cb-4a5c-bba0-878f264e5976/AfricanFellaCumbiaDelishort.mp3"
+    return Audio(src=f"data:audio/mp4;base64,{load_audio_base64(audio_path)}", controls=True)
+
+def load_audio_base64(audio_path: str):
+    """ Convert audio file to base64. """
+    response = requests.get(audio_path)
+    response.raise_for_status()
+    return base64.b64encode(response.content).decode('ascii')
+
+```
+
+
+# Chat Bubbles
+
+
+> A chat bubble component with no external dependencies
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+
+app, rt = fast_app()
+
+@rt('/')
+def homepage():
+    return Div(*[create_chat_message(**msg, msg_num=i) for i, msg in enumerate(example_messages)])
+
+def create_chat_message(role, content, msg_num):
+    text_color = '#1F2937'
+    match role:
+        case 'system': color = '#8B5CF6'
+        case 'user': color = "#F000B8"
+        case _: color = "#37CDBE"
+
+    # msg 0 = left, msg 1 = right, msg 2 = left, etc.
+    alignment = 'flex-end' if msg_num % 2 == 1 else 'flex-start'
+
+    message = Div(Div(
+            Div(# Shows the Role
+                Strong(role.capitalize()),
+                style=f"color: {text_color}; font-size: 0.9em; letter-spacing: 0.05em;"),
+            Div(# Shows content and applies font color to stuff other than syntax highlighting
+                Style(f".marked *:not(code):not([class^='hljs']) {{ color: {text_color} !important; }}"),
+                Div(content),
+                style=f"margin-top: 0.5em; color: {text_color} !important;"),
+            # extra styling to make things look better
+            style=f"""
+                margin-bottom: 1em; padding: 1em; border-radius: 24px; background-color: {color};
+                max-width: 70%; position: relative; color: {text_color} !important; """),
+        style=f"display: flex; justify-content: {alignment};")
+
+    return message
+
+example_messages = [
+        {
+            "role": "system",
+            "content": "Hello, world!  I am a chatbot that can answer questions about the world.",
+        },
+        {
+            "role": "user",
+            "content": "I have always wondered why the sky is blue.  Can you tell me?",
+        },
+        {
+            "role": "assistant",
+            "content": "The sky is blue because of the atmosphere.  As white light passes through air molecules cause it to scatter.  Because of the wavelengths, blue light is scattered the most.",
+        },
+        {
+            "role": "user",
+            "content": "What is the meaning of life?",
+        },
+        {
+            "role": "assistant",
+            "content": "42 is the meaning of life.  It is the answer to the question of life, the universe, and everything.",
+        }
+    ]
+
+serve()
+```
+
+
+
+# Svg
+
+
+# Svg
+
+> A collection of FastHTML examples demonstrating various use cases and patterns.
+
+## Examples
+
+# Click and Drag
+
+
+> A component that shows a rectangle which can be dragged with the mouse
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+from fasthtml.svg import *
+
+app, rt = fast_app(hdrs=[Script(src="https://d3js.org/d3.v7.min.js")])
+
+@rt
+def index():
+    return Div(
+        P("Click and drag an SVG rectangle with D3"),
+        Svg(viewBox="0 0 200 200",id="svg-box")(
+            Rect(x=5,y=5,width=10,height=10,fill="red",id="rect")),
+        Script('''
+                window.onload = function() {
+                        var svg = d3.select("svg");
+                        var dragHandler = d3.drag()
+                            .on("start", function (e) {
+                                var current = d3.select(this);
+                                deltaX = current.attr("x") - e.x;
+                                deltaY = current.attr("y") - e.y;})
+                            .on("drag", function (e) {
+                                d3.select(this)
+                                    .attr("x", e.x+deltaX)
+                                    .attr("y", e.y+deltaY);});
+                        svg.select("#rect").call(dragHandler);}
+                '''))
+
+serve()
+
+```
+
+
+# Find and click
+
+
+> The component shows a circle which can be clicked. The first click starts a timer and after 10 clicks the elasped time is reported. Each click causes the circle to move.
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+from fasthtml.svg import *
+from random import randint
+from uuid import uuid4
+import time 
+
+timer = {}
+app, rt = fast_app(hdrs=[Script(src="https://d3js.org/d3.v7.min.js")])
+
+class Timer:
+    def __init__(self):
+        self.start = time.time()
+
+    def stop(self):
+        self.stop = time.time()
+        return self.stop - self.start
+
+
+def mk_circle(count):
+    return Circle(cx=randint(20,180),cy=randint(10,70),r=randint(5,15),fill="red",
+        id="circle",hx_get=f"click/{count+1}", hx_swap="outerHTML")
+
+def mk_click_count(count):
+    return P(f"You have clicked {count} times",id="click-count")
+
+@rt
+def index(sess):
+    if 'id' not in sess: sess['id'] = str(uuid4())
+    return Div(
+        P("Click the circle 3 times"),
+        mk_click_count(0),P(id="timer"),
+        Svg(viewBox="0 0 200 80",id="svg-box")(mk_circle(0)))
+
+@rt("/click/{count}")
+def click(count: int,sess):
+    et = ""
+    if count == 1: timer[sess['id']] = Timer()
+    if count == 3:
+        elapsed_time=timer[sess['id']].stop()
+        count = 0
+        et=f"Time to click 3 times: {elapsed_time:.2f} seconds"
+
+    return SvgInb(mk_circle(count)),mk_click_count(count)(hx_swap_oob="outerHTML"),P(et,id="timer",hx_swap_oob="outerHTML")
+
+
+serve()
+
+```
+
+
+# In band replacement
+
+
+> A component that shows how to do an inband swap of an SVG element
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+from fasthtml.svg import *
+
+app, rt = fast_app()
+
+def mk_shape(shape):
+    if shape == "circle":
+        return Circle(cx=15, cy=15, r=10, fill="red")(hx_get="mk/rect",hx_swap="outerHTML")
+    elif shape == "rect":
+        return Rect(x=10, y=10, width=10, height=10, fill="blue")(hx_get="mk/circle",hx_swap="outerHTML")
+
+@rt
+def index():
+    return Div(
+        P("Click the object to swap it with another shape"),
+        Svg(viewBox="0 0 150 100")(
+            mk_shape("rect")))
+
+@rt("/mk/{shape}")
+def get(shape: str):
+    return SvgInb(mk_shape(shape),)
+
+serve()
+
+```
+
+
+
+# Todo Series
+
+
+# Todo Series
+
+> A collection of FastHTML examples demonstrating various use cases and patterns.
+
+## Examples
+
+# Minimal Todo App (SQLite)
+
+
+> A minimal todo app using SQLite backend.
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+from fastsql import *
+from sqlite_minutils.db import NotFoundError
+
+app,rt,todos,Todo = fast_app(
+    'data/todos.db',
+    id=int, title=str, pk='id')
+
+def tid(id): return f'todo-{id}'
+
+
+@app.delete("/delete_todo", name='delete_todo')
+async def delete_todo(id:int): 
+    try: todos.delete(id)
+    except NotFoundError: pass # If someone else deleted it already we don't have to do anything
+
+@patch
+def __ft__(self:Todo):
+    show = Strong(self.title, target_id='current-todo')
+    delete = A('delete',
+               hx_delete=delete_todo.to(id=self.id).lstrip('/'), 
+               hx_target=f'#{tid(self.id)}',
+               hx_swap='outerHTML')
+    return Li(show, ' | ', delete, id=tid(self.id))
+
+def mk_input(**kw):
+    return Input(
+        id="new-title", name="title", placeholder="New Todo",required=True,**kw
+    )
+
+@rt
+async def index():
+    add =  Form(Group(mk_input(), Button("Add")), 
+                post="insert_todo", target_id='todo-list', hx_swap="beforeend")
+    card = Card(Ul(*todos(), id='todo-list'), header=add, footer=Div(id='current-todo')),
+    title = 'Todo list'
+    return Title(title), Main(H1(title), card, cls='container')
+
+@rt
+async def insert_todo(todo:Todo):
+    if not todo.title.strip():
+        return  mk_input(hx_swap_oob='true')
+    return todos.insert(todo), mk_input( hx_swap_oob='true')
+
+serve()
+```
+
+
+# Intermediate Todo App (SQLite)
+
+
+> An intermediate todo app using SQLite backend.
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+from datetime import date,datetime
+from monsterui.core import *
+
+# fast_app is doing a lot of work here.
+# It creates a table in the database if it doesn't exist with columns id and title making id the primary key
+# it returns a connector object todos
+# it returns a model class Todo
+app, rt, todos, Todo= fast_app('intermediate_todo.db',hdrs=Theme.slate.headers(),
+                               title=str,done=bool,due=date, id=int,pk='id')
+
+def tid(id): return f'todo-{id}'
+
+# Render all the todos ordered by todo due date
+def mk_todo_list():  return Grid(*todos(order_by='due'), cols=1)
+
+@app.delete
+async def delete_todo(id:int):
+    "Delete if it exists, if not someone else already deleted it so no action needed"
+    try: todos.delete(id)
+    except NotFoundError: pass
+    # Because there is no return, the todo will be swapped with None and removed from UI
+
+# patch is a decorator that patches the __ft__ method of the Todo class
+# this is used to customize the html representation of the Todo object
+@patch
+def __ft__(self:Todo):
+    # Set color to red if the due date is passed
+    dd = datetime.strptime(self.due, '%Y-%m-%d').date()
+    due_date = Strong(dd.strftime('%Y-%m-%d'),style= "" if date.today() <= dd else "background-color: red;") 
+
+    # Action Buttons
+    _targets = {'hx_target':f'#{tid(self.id)}', 'hx_swap':'outerHTML'}
+    done   = CheckboxX(       hx_get   =toggle_done.to(id=self.id).lstrip('/'), **_targets, checked=self.done), 
+    delete = Button('delete', hx_delete=delete_todo.to(id=self.id).lstrip('/'), **_targets)
+    edit   = Button('edit',   hx_get   =edit_todo  .to(id=self.id).lstrip('/'), **_targets)
+    
+    # Strike through todo if it is completed
+    style = Del if self.done else noop
+    
+    return Card(DivLAligned(done, 
+                            style(Strong(self.title, target_id='current-todo')), 
+                            style(P(due_date,cls=TextFont.muted_sm)),
+                            edit,
+                            delete),
+                id=tid(self.id))
+
+@rt
+async def index():
+    "Main page of the app"
+    return Titled('Todo List',mk_todo_form(),Div(mk_todo_list(),id='todo-list'))
+
+@rt 
+async def upsert_todo(todo:Todo):
+    # Create/update a todo if there is content
+    if todo.title.strip(): todos.insert(todo,replace=True)
+    # Reload main page with updated database content
+    return mk_todo_list(),mk_todo_form()(hx_swap_oob='true',hx_target='#todo-input',hx_swap='outerHTML')
+
+@rt 
+async def toggle_done(id:int):
+    "Reverses done boolean in the database and returns the todo (rendered with __ft__)"
+    return todos.update(Todo(id=id, done=not todos[id].done))
+
+
+def mk_todo_form(todo=Todo(title=None, done=False, due=date.today(), id=None), btn_text="Add"):
+    """Create a form for todo creation/editing with optional pre-filled values"""
+    inputs = [Input(id='new-title', name='title',value=todo.title, placeholder='New Todo'),
+              Input(id='new-done',  name='done', value=todo.done,  hidden=True),
+              Input(id='new-due',   name='due',  value=todo.due)]
+
+    # If there is an ID use it for editing existing row in db
+    if todo.id: inputs.append(Input(id='new-id', name='id', value=todo.id, hidden=True))
+        
+    return Form(DivLAligned(
+        *inputs,
+        Button(btn_text, cls=ButtonT.primary, post=upsert_todo,hx_target='#todo-list', hx_swap='innerHTML')),
+        id='todo-input', cls='mb-6')
+
+@rt 
+async def edit_todo(id:int): return Card(mk_todo_form(todos.get(id), btn_text="Save"))
+
+serve()
+
+```
+
+
+
+# Visualizations
+
+
+# Visualizations
+
+> A collection of FastHTML examples demonstrating various use cases and patterns.
+
+## Examples
+
+# Great-Tables Tables
+
+
+> Change the appearance of a Polars dataFrame based on selected colors using the Great Tables library.
+
+
+## Implementation
+
+```python
+
+from functools import cache
+import polars as pl
+from great_tables import GT, html
+from great_tables.data import sza
+from fasthtml.common import *
+
+app, rt = fast_app()
+
+@cache
+def get_sza_pivot():
+    # Filter and pivot the data
+    return (pl.from_pandas(sza)
+            .filter((pl.col("latitude") == "20") & (pl.col("tst") <= "1200"))
+            .select(pl.col("*").exclude("latitude"))
+            .drop_nulls()
+            .pivot(values="sza", index="month", on="tst", sort_columns=True))
+
+def get_notstr_table(color1: str = "#663399", color2: str = "#FFA500"):
+    # Create the table
+    sza_gt = (GT(get_sza_pivot(), rowname_col="month")
+                .data_color(
+                    domain=[90, 0],
+                    palette=[color1, "white", color2],
+                    na_color="white",)
+                .tab_header(
+                    title="Solar Zenith Angles from 05:30 to 12:00",
+                    subtitle=html("Average monthly values at latitude of 20&deg;N."))
+                .sub_missing(missing_text=""))
+    # Return the table by converting to raw HTML
+    return Div(NotStr(sza_gt.as_raw_html()))
+
+@app.post("/submit", name="submit")
+def post(d: dict):
+    return get_notstr_table(**d)
+
+@rt
+def index():
+    return (Title("FastHTML-GT Website"),
+            Titled("Great Tables shown in FastHTML", style="text-align:center"),
+            Main(cls='container')(
+                Form(post="submit", hx_target="#gt", hx_trigger="input")(
+                    Grid(Card(H2("Color1"), Input(type="color",id="color1", value="#663399")),
+                         Card(H2("Color2"), Input(type="color",id="color2", value="#FFA500")))),
+                Div(get_notstr_table(), id="gt")))
+
+```
+
+
+# Altair Charts
+
+
+> Interactive altair chart using the fh-altair plugin by Vincent D. Warmerdam
+
+
+## Implementation
+
+```python
+
+from fh_altair import altair2fasthml, altair_headers
+from fasthtml.common import *
+import numpy as np
+import pandas as pd
+import altair as alt
+
+app, rt = fast_app(hdrs=(altair_headers,))
+
+count = 0
+plotdata = []
+
+def generate_chart():
+    global plotdata
+    if len(plotdata) > 250:
+        plotdata = plotdata[-250:]
+
+    pltr = pd.DataFrame({'y': plotdata, 'x': range(len(plotdata))})
+    chart = alt.Chart(pltr).mark_line().encode(x='x', y='y').properties(width=400, height=200)
+    return altair2fasthml(chart)
+
+@rt
+def index():
+    return Title("Altair Demo"), Main(
+        H1("Altair Demo"),
+        Div(id="chart"),
+        Button("Increment", get=increment, hx_target="#chart", hx_swap="innerHTML"),
+        style="margin: 20px"
+    )
+
+@rt
+def increment():
+    global plotdata, count
+    count += 1
+    plotdata.append(np.random.exponential(1))
+    return Div(
+        generate_chart(),
+        P(f"You have pressed the button {count} times."),
+    )
+
+
+serve()
+
+```
+
+
+# Matplotlib Charts
+
+
+> Interactive matplotlib chart using the fh-matplotlib plugin by Vincent D. Warmerdam
+
+
+## Implementation
+
+```python
+
+from fh_matplotlib import matplotlib2fasthtml
+from fasthtml.common import *
+import numpy as np
+import matplotlib.pylab as plt
+
+app, rt = fast_app()
+
+@matplotlib2fasthtml
+def generate_chart(num_points):
+    plotdata = [np.random.exponential(1) for _ in range(num_points)]
+    plt.plot(range(len(plotdata)), plotdata)
+
+@rt
+def index():
+    return Div(
+        Div(id="chart"),
+        H3("Move the slider to change the graph"),
+        Input(
+            type="range",
+            min="1", max="10", value="1",
+            get=update_chart, hx_target="#chart",
+            name='slider')
+    )
+
+@rt
+def update_chart(slider: int):
+    return Div(
+        generate_chart(slider),
+        P(f"Number of data points: {slider}")
+    )
+
+```
+
+
+# Plotly Interactive Charts
+
+
+> Interactive Plotly chart using the fh-plotly plugin by Carlo Lepelaars that lets you zoom, pan, hover over data points and much more
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+import pandas as pd
+import numpy as np
+import plotly.express as px
+from fh_plotly import plotly2fasthtml, plotly_headers
+
+app, rt = fast_app(hdrs=(plotly_headers,))
+
+y_data = [1, 2, 3, 2]
+x_data = [3, 1, 2, 4]
+
+def generate_line_chart():
+    df = pd.DataFrame({'y': y_data, 'x': x_data})
+    fig = px.line(df, x='x', y='y')
+    return plotly2fasthtml(fig)
+
+def generate_bar_chart():
+    df = pd.DataFrame({'y': y_data, 'x': ['A', 'B', 'C','D']})
+    fig = px.bar(df, x='x', y='y')
+    return plotly2fasthtml(fig)
+
+def generate_scatter_chart():
+    df = pd.DataFrame({'y': y_data, 'x': x_data, 'size': [10, 20, 30, 40]})
+    fig = px.scatter(df, x='x', y='y', size='size')
+    return plotly2fasthtml(fig)
+
+def generate_3d_scatter_chart():
+    df = pd.DataFrame({
+        'x': [1, 2, 3, 4, 5, 6],
+        'y': [7, 8, 6, 9, 7, 8],
+        'z': [3, 5, 4, 6, 5, 7]
+    })
+    fig = px.scatter_3d(df, x='x', y='y', z='z')
+    return plotly2fasthtml(fig)
+
+@rt
+def index():
+    return Div(
+        H1("Plotly Interactive Charts Demo with FastHTML"),
+        P("Try interacting with the charts by hovering over data points, zooming in and out, panning, rotating (3D), and more!."),
+            Div(Div(Strong("Plot 1: Line Chart"),
+                    Div(generate_line_chart()),),
+                Div(Strong("Plot 2: Bar Chart"),
+                    Div(generate_bar_chart()),),
+                Div(Strong("Plot 3: Scatter Chart"),
+                    Div(generate_scatter_chart()),),
+                Div(Strong("Plot 4: 3D Scatter Chart"),
+                    Div(generate_3d_scatter_chart()),),
+                style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 20px; width: 100%; height: 800px;"
+            )
+    )
+
+serve()
+
+```
+
+
+# Bloch Sphere
+
+
+> Interactive Bloch sphere visualization using the fh-plotly plugin by Carlo Lepelaars
+
+
+## Implementation
+
+```python
+
+import numpy as np
+from fasthtml.common import *
+import plotly.graph_objects as go
+from fh_plotly import plotly2fasthtml, plotly_headers
+
+########################
+### FastHTML Section ###
+########################
+
+app, rt = fast_app(hdrs=(plotly_headers,))
+
+@rt
+def index():
+    desc = """
+    The Bloch Sphere is a 3D visualization of a single quantum state. 
+    You can interact with the buttons (Gates) to see how the state changes. See the description below for more information on what each gate represents.
+    """
+    hx_vals = 'js:{"gates": document.getElementById("quantum_circuit").textContent}'
+    return (Title("Interactive Bloch Sphere"), 
+            Main(P(desc),
+                 *[Button(gate, hx_get=f"apply_gate/{gate}", hx_target="#chart", hx_swap="innerHTML", hx_vals=hx_vals, title=f"Apply {gate} gate") for gate in single_qubit_gates.keys()], 
+                 Button("Reset", hx_get="reset", hx_target="#chart", hx_swap="innerHTML", title="Reset the circuit"),
+                 Div(update_state_apply_gate.__wrapped__(), id="chart"),
+                 H4("Available gates"),
+                 Ul(Li(Strong("H :"),"Hadamard gate. Puts the state in superposition. "),
+                    Li(Strong("X :"),"Pauli-X (NOT) gate. Rotate 180 degrees around the X-Axis."),
+                    Li(Strong("Y :"),"Pauli-Y (\"bit-flip\") gate. Rotate 180 degrees around the Y-Axis."),
+                    Li(Strong("Z :"),"Pauli-Z (\"phase-flip\") gate. Rotate 180 degrees around the Z-Axis."),
+                    Li(Strong("S :"),"Phase gate. Rotates around the Z-axis by 90 degrees."),
+                    Li(Strong("T :"),"π/8 gate. Rotates around the Z-axis by 45 degrees."))))
+
+@rt
+def reset(): return update_state_apply_gate.__wrapped__()
+
+@app.get('/apply_gate/{gate}')
+def update_state_apply_gate(gate: str=None, gates: str=None):
+    if gates is None: gates = []
+    else:
+        # Transform from circuit representation to gate names
+        gates = [g for g in gates if g in single_qubit_gates.keys()]
+        gates.append(gate)
+    # Create initial state
+    state = np.array([1, 0]) # |0> basis state
+    for gate in gates: state = single_qubit_gates[gate] @ state
+    # Create visualization
+    return Div(plot_bloch(state),
+            H4(f"Quantum Circuit: {visualize_circuit(gates)}", id="quantum_circuit"),
+            id="chart")
+
+def visualize_circuit(gates: list[str]):
+    circuit = "|0⟩-" 
+    circuit += "".join([f"[{gate}]─" for gate in gates]) + "|"
+    return circuit
+
+############################
+### Math/Quantum Section ###
+############################
+
+
+def calculate_coordinates(theta, phi):
+    x = np.sin(theta) * np.cos(phi)
+    y = np.sin(theta) * np.sin(phi)
+    z = np.cos(theta)
+    return x, y, z
+
+def create_scenes():
+    axis2ticktext = {'X': ['|-⟩', '|+⟩'], 'Y': ['|-i⟩', '|i⟩'], 'Z': ['|1⟩', '|0⟩']}
+    scenes = {}
+    for axis in ['X','Y','Z']:
+        scenes[f'{axis.lower()}axis'] = dict(title=dict(text=axis, font=dict(size=25)), 
+                range=[-1.2, 1.2], tickvals=[-1, 1], 
+                ticktext=axis2ticktext[axis],
+                tickfont=dict(size=15) )
+    return scenes
+
+def plot_bloch(state: np.array):
+    fig = go.Figure()
+
+    # State vector coordinates
+    alpha, beta = state[0], state[1]
+    theta = 2 * np.arccos(np.abs(alpha))
+    phi = np.angle(beta) - np.angle(alpha)
+    x, y, z = calculate_coordinates(theta, phi)
+
+    # Surface coordinates
+    surface_phi, surface_theta = np.mgrid[0:2*np.pi:100j, 0:np.pi:50j]
+    xs, ys, zs = calculate_coordinates(surface_theta, surface_phi)
+
+    fig.add_trace(go.Surface(x=xs, y=ys, z=zs, opacity=0.5, colorscale='Blues', showscale=False))
+
+    fig.add_trace(go.Scatter3d(x=[0, x],y=[0, y],z=[0, z], mode='lines+markers+text', marker=dict(size=10, color='green'),
+        line=dict(color='green', width=8), textposition="top center", showlegend=True,name=f"{alpha:.2f}|0⟩ + {beta:.2f}|1⟩"))
+
+    # Mark basis states
+    fig.add_trace(go.Scatter3d(x=[0, 0, 1, -1, 0, 0],y=[0, 0, 0, 0, 1, -1], z=[1, -1, 0, 0, 0, 0],
+        mode='markers', marker=dict(size=5, color='black'), hovertext=['|0⟩', '|1⟩', '|+⟩', '|-⟩', '|i⟩', '|-i⟩'],
+        showlegend=False, name="Basis states"))
+
+    # Add lines across axes
+    boundary_phi = np.linspace(0, 2 * np.pi, 100)
+    coords = [(np.cos(boundary_phi), np.sin(boundary_phi), np.zeros_like(boundary_phi)),
+              (np.zeros_like(boundary_phi), np.cos(boundary_phi), np.sin(boundary_phi)),
+              (np.cos(boundary_phi), np.zeros_like(boundary_phi), np.sin(boundary_phi)) ]
+    
+    for x, y, z in coords:
+        fig.add_trace(go.Scatter3d(x=x, y=y, z=z, mode='lines', line=dict(color='black', width=2), showlegend=False, name="Axes"))
+
+    fig.update_layout(scene=dict(**create_scenes(), aspectmode='cube',),
+                      legend=dict( font=dict(size=20), x=0.05,y=0.95, xanchor='left', yanchor='top', bgcolor='rgba(0,0,0,0)',),
+                      margin=dict(l=0, r=0, t=0, b=0))
+    
+    return plotly2fasthtml(fig)
+
+
+single_qubit_gates = {
+    # Hadamard
+    "H": np.array([[1, 1],
+                   [1, -1]]) / np.sqrt(2),
+    # Pauli matrices
+    "X": np.array([[0, 1],
+                   [1, 0]]),
+    "Y": np.array([[0, -1j],
+                   [1j, 0]]),
+    "Z": np.array([[1, 0],
+                   [0, -1]]),
+    # Phase gates
+    "S": np.array([[1, 0],
+                   [0, 1j]]),
+    "T": np.array([[1, 0],
+                   [0, np.exp(1j * np.pi / 4)]])
+}
+
+
+
+
+
+```
+
+
+# SVG plot
+
+
+> Interactive Seaborn SVG plot by Li (Lily) Cai
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+import numpy as np, seaborn as sns, matplotlib.pylab as plt
+
+app,rt = fast_app()
+data = np.random.rand(4,10)
+
+def fh_svg(func):
+  "show svg in fasthtml decorator"
+  def wrapper(*args, **kwargs):
+      func(*args, **kwargs) # calls plotting function
+      f = io.StringIO() # create a buffer to store svg data
+      plt.savefig(f, format='svg', bbox_inches='tight')
+      f.seek(0) # beginning of file
+      svg_data = f.getvalue()
+      plt.close()
+      return NotStr(svg_data)
+  return wrapper
+
+@fh_svg
+def plot_heatmap(matrix,figsize=(6,7),**kwargs):
+  plt.figure(figsize=figsize)
+  sns.heatmap(matrix, cmap='coolwarm', annot=False,**kwargs)
+
+@rt
+def index():
+  return Div(Label(H3("Heatmap Columns"), _for='n_cols'),
+             Input(type="range", min="1", max="10", value="1",
+                   get=update_heatmap, hx_target="#plot", id='n_cols'),
+             Div(id="plot"))
+
+@app.get("/update_charts")
+def update_heatmap(n_cols:int):
+  svg_plot = plot_heatmap(data[:,:n_cols])
+  return svg_plot
+
+serve()
+
+```
+
+
+
+# Show
+
+
+# Show
+
+> A collection of FastHTML examples demonstrating various use cases and patterns.
+
+## Examples
+
+
+# Dynamic User Interface (Htmx)
+
+
+# Dynamic User Interface (Htmx)
+
+> A collection of FastHTML examples demonstrating various use cases and patterns.
+
+## Examples
+
+# Inline Field Validation
+
+
+> A form with inline field validation on individual inputs with the submit aditionally validating the whole form.
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+import re
+################
+### FastHTML ###
+################
+
+app, rt = fast_app()
+
+@rt
+def index():
+    return Form(post='submit', hx_target='#submit-btn-container', hx_swap='outerHTML')(
+                # Calls /email route to validate email
+                Div(hx_target='this', hx_swap='outerHTML')(
+                    Label(_for='email')('Email Address'),
+                    Input(type='text', name='email', id='email', post='email')),
+                # Calls /cool route to validate cool
+                Div(hx_target='this', hx_swap='outerHTML')(
+                    Label(_for='cool')('Is this cool?'),
+                    Input(type='text', name='cool', id='cool', post='cool')),
+                # Calls /coolscale route to validate coolscale
+                Div(hx_target='this', hx_swap='outerHTML')(
+                    Label(_for='CoolScale')('How cool (scale of 1 - 10)?'),
+                    Input(type='number', name='CoolScale', id='CoolScale', post='coolscale')),
+                # Submits the form which calls /submit route to validate whole form
+                Div(id='submit-btn-container')(
+                    Button(type='submit', id='submit-btn',)('Submit')))
+
+### Field Validation Routing ###
+# Validates the field and generates FastHTML with appropriate validation and template function
+
+@rt
+def email(email: str): return inputTemplate('Email Address', 'email', email, validate_email(email))
+
+@rt
+def cool(cool: str): return inputTemplate('Is this cool?', 'cool', cool, validate_cool(cool))
+     
+@rt
+def coolscale(CoolScale: int): return inputTemplate('How cool (scale of 1 - 10)?', 'CoolScale', CoolScale, validate_coolscale(CoolScale), input_type='number')
+
+@rt
+def submit(email: str, cool: str, CoolScale: int):
+    # Validates all fields in the form
+    errors = {'email': validate_email(email),
+             'cool': validate_cool(cool),
+             'coolscale': validate_coolscale(CoolScale) }
+    # Removes the None values from the errors dictionary (No errors)
+    errors = {k: v for k, v in errors.items() if v is not None}
+    # Return Button with error message if they exist
+    return Div(id='submit-btn-container')(
+        Button(type='submit', id='submit-btn', post='submit', hx_target='#submit-btn-container', hx_swap='outerHTML')('Submit'),
+        *[Div(error, style='color: red;') for error in errors.values()])
+
+########################
+### Validation Logic ###
+########################
+
+def validate_email(email: str):
+    # Check if email address is a valid one
+    email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    if not re.match(email_regex, email): return "Please enter a valid email address"
+    # Check if email address is already taken (in this case only test@test.com will pass)
+    elif email != "test@test.com":  return "That email is already taken. Please enter another email (only test@test.com will pass)."
+    # If no errors, return None (default of python)
+
+def validate_cool(cool: str):
+    if cool.lower() not in ["yes", "definitely"]: return "Yes or definitely are the only correct answers"
+
+def validate_coolscale(CoolScale: int):
+    if CoolScale < 1 or CoolScale > 10: return "Please enter a number between 1 and 10"
+
+######################
+### HTML Templates ###
+######################
+
+def inputTemplate(label, name, val, errorMsg=None, input_type='text'):
+    # Generic template for replacing the input field and showing the validation message
+    return Div(hx_target='this', hx_swap='outerHTML', cls=f"{errorMsg if errorMsg else 'Valid'}")(
+               Label(label), # Creates label for the input field
+               Input(name=name,type=input_type,value=f'{val}',post=f'{name.lower()}'), # Creates input field
+               Div(f'{errorMsg}', style='color: red;') if errorMsg else None) # Creates red error message below if there is an error
+
+
+```
+
+
+# Click to Edit
+
+
+> A click to edit text component built based on a htmx documentation example.
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+
+app, rt = fast_app()
+flds = dict(firstName='First Name', lastName='Last Name', email='Email')
+
+@dataclass
+class Contact:
+    firstName:str; lastName:str; email:str; edit:bool=False
+    def __ft__(self):
+        def item(k, v):
+            val = getattr(self,v)
+            return Div(Label(Strong(k), val), Hidden(val, id=v))
+        return Form(
+            *(item(v,k) for k,v in flds.items()),
+            Button('Click To Edit'),
+            post='form', hx_swap='outerHTML')
+
+contacts = [Contact('Joe', 'Blow', 'joe@blow.com')]
+
+@rt
+def index(): return contacts[0]
+
+@rt
+def form(c:Contact):
+    def item(k,v): return Div(Label(k), Input(name=v, value=getattr(c,v)))
+    return Form(
+        *(item(v,k) for k,v in flds.items()),
+        Button('Submit', name='btn', value='submit'),
+        Button('Cancel', name='btn', value='cancel'),
+        post="contact", hx_swap='outerHTML'
+    )
+
+@rt
+def contact(c:Contact, btn:str):
+    if btn=='submit': contacts[0] = c
+    return contacts[0]
+
+
+```
+
+
+# Two Column Grid
+
+
+> A simple two column grid with inputs on the left and outputs on the right based on fasthtml-example form demo
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+
+app, rt = fast_app()
+
+@rt
+def index():
+    return Titled('Try editing fields:', 
+        Grid(Div(
+            Form(post="submit", hx_target="#result", hx_trigger="input delay:200ms")(
+                Select(Option("One"), Option("Two"), id="select"),
+                Input(value='j', id="name", placeholder="Name"),
+                Input(value='h', id="email", placeholder="Email"))),
+            Div(id="result")))
+
+@rt
+def submit(d:dict):
+    return Div(*[Div(P(Strong(k),':  ',v)) for k,v in d.items()])
+
+serve()
+```
+
+
+# Click to Load
+
+
+> Dynamically add rows to a table using HTMX.
+
+
+## Implementation
+
+```python
+
+from uuid import uuid4
+from fasthtml.common import *
+
+app, rt = fast_app()
+
+agent_num = 0
+@rt
+def add_row():
+    global agent_num
+    agent_num += 1
+    return Tr(map(Td, (
+        f"Agent Smith {agent_num}",
+        f"smith{agent_num}@matrix.com",
+        uuid4())))
+
+@rt
+def index():
+    first_row = add_row()
+    return Div(
+        H1("Click to Load"),
+        P("Dynamically add rows to a table using HTMX."),
+        Table(Tr(map(Th, ("Name", "Email", "ID"))), first_row, id='tbl'),
+        Button("Load More...", get=add_row, hx_target="#tbl", hx_swap="beforeend"),
+        style="text-align: center;")
+
+serve()
+
+```
+
+
+# Configurable Select
+
+
+> A searchable dropdown menu with a text box that allows user to add additional options to it via HTMX
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+from monsterui.core import *
+
+app, rt = fast_app(hdrs=Theme.blue.headers())
+
+@rt 
+def index(): return Container(H1('Configurable Select'), mk_form())
+
+@rt
+def mk_form(add_option:str=None, options:str='isaac,hamel,curtis'):
+    opts = options.split(',')
+    if add_option: opts.append(add_option)
+
+    return Form(
+        # fh-frankenui helper that adds both a form label and input
+        # and does proper linking with for, id, and name automatically
+        LabelInput("Add an Option", id="add_option"),
+        Button("Add"), 
+        # fh-frankenui select allows for search boxes
+        UkSelect(map(Option, opts), searchable=True), 
+        # When the "Add" button is pressed, make a new form
+        get=mk_form,
+        # Store options state in DOM
+        hx_vals={"options": ','.join(opts)}, 
+        # Replace the whole form
+        hx_swap="outerHTML")
+
+serve()
+
+```
+
+
+# Infinite Scroll
+
+
+> A table with infinite scroll over a large dataset (appending rows to the table as the user reaches the end of the table).
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+import uuid
+column_names = ('name', 'email', 'id')
+
+def generate_contact(id: int) -> Dict[str, str]:
+    return {'name': 'Agent Smith',
+            'email': f'void{str(id)}@matrix.com',
+            'id': str(uuid.uuid4())
+            }
+
+def generate_table_row(row_num: int) -> Tr:
+    contact = generate_contact(row_num)
+    return Tr(*[Td(contact[key]) for key in column_names])
+
+def generate_table_part(part_num: int = 1, size: int = 20) -> Tuple[Tr]:
+    paginated = [generate_table_row((part_num - 1) * size + i) for i in range(size)]
+    paginated[-1].attrs.update({
+        'get': f'page?idx={part_num + 1}',
+        'hx-trigger': 'revealed',
+        'hx-swap': 'afterend'})
+    return tuple(paginated)
+
+app, rt = fast_app()
+
+@rt
+def index():
+    return Titled('Infinite Scroll',
+                  Div(Table(
+                      Thead(Tr(*[Th(key) for key in column_names])),
+                      Tbody(generate_table_part(1)))))
+
+@rt
+def page(idx:int|None = 0):
+    return generate_table_part(idx)
+
+
+```
+
+
+# Progress Bar
+
+
+> A component that visually represents the completion status of a task or operation as it moves towards completion.
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+import random
+
+app, rt = fast_app()
+
+def get_progress(percent_complete: int):
+    "Simulate progress check"
+    return percent_complete + random.random()/3
+
+@rt
+def index():
+    return (Div(H3("Start the job to see progress!"),id='progress_bar'),
+            Button("Start Job",post=update_status, hx_target="#progress_bar"))
+
+@rt
+def update_status(): 
+    "Start job and progress bar"
+    return progress_bar(percent_complete=0)
+
+@rt
+def update_progress(percent_complete: float):
+    # Check if done
+    if percent_complete >= 1: return H3("Job Complete!", id="progress_bar")
+    # get progress
+    percent_complete = get_progress(percent_complete)
+    # Update progress bar
+    return progress_bar(percent_complete)
+
+def progress_bar(percent_complete: float):
+    return Progress(id="progress_bar",value=percent_complete,
+                    get=update_progress,hx_target="#progress_bar",hx_trigger="every 500ms",
+                    hx_vals=f"js:'percent_complete': '{percent_complete}'")
+
+serve()
+```
+
+
+# Custom KeyBindings
+
+
+> Custom KeyBindings to trigger a component
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import * 
+
+app, rt = fast_app()
+
+@rt
+def index():return Titled(
+    "Custom Keybindings with HTMX",
+    render_button("DO IT (Press `Shift + u`)"))
+
+@rt
+def doit(): return render_button("😀 DID IT! ")
+
+def render_button(text):
+    return Button(text, 
+                  # Auto-focus on load
+                  autofocus=True,
+                  # Activate with click or U key as long as focus is in body
+                  hx_trigger="click, keyup[key=='U'] from:body", 
+                  get=doit)
+
+serve()
+
+```
+
+
+# Web Sockets
+
+
+> A demonstration on web sockets to have a multi-user messaging/chat use
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+from collections import deque
+
+app, rt = fast_app(exts='ws')
+
+# All messages here, but only most recent 15 are stored
+messages = deque(maxlen=15)
+users = {}
+
+# Takes all the messages and renders them
+box_style = "border: 1px solid #ccc; border-radius: 10px; padding: 10px; margin: 5px 0;"
+def render_messages(messages):
+    return Div(*[Div(m, style=box_style) for m in messages], id='msg-list')
+
+# Input field is reset via hx_swap_oob after submitting a message
+def mk_input(): return Input(id='msg', placeholder="Type your message", value="", hx_swap_oob="true")
+
+@rt
+def index():
+    return Titled("Leave a message for others!"),Div(
+        Form(mk_input(), ws_send=True), # input field
+        P("Leave a message for others!"),
+        Div(render_messages(messages),id='msg-list'), # All the Messages
+        hx_ext='ws', ws_connect='ws') # Use a web socket 
+
+def on_connect(ws, send): users[id(ws)] = send
+def on_disconnect(ws):users.pop(id(ws),None)
+
+@app.ws('/ws', conn=on_connect, disconn=on_disconnect)
+async def ws(msg:str,send):
+    await send(mk_input()) # reset the input field immediately
+    messages.appendleft(msg) # New messages first
+    for u in users.values(): # Get `send` function for a user
+        await u(render_messages(messages)) # Send the message to that user
+
+serve()
+
+```
+
+
+# Cascading Dropdowns
+
+
+> A cascading dropdown component where values in second dropdown are dependent on the value in the first dropdown
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+
+app, rt = fast_app()
+
+chapters = ['ch1', 'ch2', 'ch3']
+lessons = {
+    'ch1': ['lesson1', 'lesson2', 'lesson3'],
+    'ch2': ['lesson4', 'lesson5', 'lesson6'],
+    'ch3': ['lesson7', 'lesson8', 'lesson9']}
+
+def mk_opts(nm, cs):
+    return (
+        Option(f'-- select {nm} --', disabled='', selected='', value=''),
+        *map(Option, cs))
+
+@rt
+def get_lessons(chapter: str):
+    return Select(*mk_opts('lesson', lessons[chapter]), name='lesson')
+
+@rt
+def index():
+    chapter_dropdown = Select(
+        *mk_opts('chapter', chapters),
+        name='chapter',
+        get='get_lessons', hx_target='#lessons')
+
+    return Div(
+        Div(Label("Chapter:", for_="chapter"),
+            chapter_dropdown),
+        Div(Label("Lesson:", for_="lesson"),
+            Div(Div(id='lessons')),))
+
+
+```
+
+
+# Show/Hide Button
+
+
+> A component that shows and hides content on click
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+
+app, rt = fast_app()
+
+content = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet volutpat tellus, in tincidunt magna. Vivamus congue posuere ligula a cursus. Sed efficitur tortor quis nisi mollis, eu aliquet nunc malesuada. Nulla semper lacus lacus, non sollicitudin velit mollis nec. Phasellus pharetra lobortis nisi ac eleifend. Suspendisse commodo dolor vitae efficitur lobortis. Nulla a venenatis libero, a congue nibh. Fusce ac pretium orci, in vehicula lorem. Aenean lacus ipsum, molestie quis magna id, lacinia finibus neque. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Interdum et malesuada fames ac ante ipsum primis in faucibus. Maecenas ac ex luctus, dictum erat ut, bibendum enim. Curabitur et est quis sapien consequat fringilla a sit amet purus."""
+
+def mk_button(show):
+    return Button("Hide" if show else "Show",
+        hx_get="toggle?show=" + ("False" if show else "True"),
+        hx_target="#content", id="toggle", hx_swap_oob="outerHTML")
+
+@rt
+def index():
+    return Div(mk_button(False), Div(id="content"))
+
+@rt
+def toggle(show: bool):
+    return Div(
+        Div(mk_button(show)),
+        Div(content if show else ''))
+
+```
+
+
+
+# Applications
+
+
+# Applications
+
+> A collection of FastHTML examples demonstrating various use cases and patterns.
+
+## Examples
+
+# CSV Editor
+
+
+> An app to upload csv files, edit in browser, and then download the updated file
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+from uuid import uuid4
+
+db = database('sqlite.db')
+hdrs = (Style('''
+button,input { margin: 0 1rem; }
+[role="group"] { border: 1px solid #ccc; }
+.edited { outline: 2px solid orange; }
+'''), )
+app, rt = fast_app(hdrs=hdrs)
+
+@rt
+async def get_test_file():
+    import httpx
+    url = "https://raw.githubusercontent.com/AnswerDotAI/FastHTML-Gallery/main/applications/start_simple/csv_editor/ex_data.csv"
+    response = await httpx.AsyncClient().get(url)
+    return Response(response.text, media_type="text/csv",
+                        headers={'Content-Disposition': 'attachment; filename="ex_data.csv"'})
+
+@rt
+def index(sess):
+    if 'id' not in sess: sess['id'] = str(uuid4())
+    return Titled("CSV Uploader",
+                 A('Download Example CSV', href="get_test_file", download="ex_data.csv"),
+                 Group(Input(type="file", name="csv_file", accept=".csv"),
+                       Button("Upload", hx_post="upload", hx_target="#results",
+                              hx_encoding="multipart/form-data", hx_include='previous input'),
+                       A('Download', href='download', type="button")),
+                 Div(id="results"))
+
+def render_row(row):
+    vals = [Td(Input(value=v, name=k, oninput="this.classList.add('edited')")) for k,v in row.items()]
+    vals.append(Td(Group(Button('delete', hx_delete=remove.rt(id=row['id']).lstrip('/')),
+                   Button('update', hx_post='update', hx_include="closest tr"))))
+    return Tr(*vals, hx_target='closest tr', hx_swap='outerHTML')
+
+@rt
+def download(sess):
+    tbl = db[sess['id']]
+    csv_data = [",".join(map(str, tbl.columns_dict))]
+    csv_data += [",".join(map(str, row.values())) for row in tbl()]
+    headers = {'Content-Disposition': 'attachment; filename="data.csv"'}
+    return Response("\n".join(csv_data), media_type="text/csv", headers=headers)
+
+@rt('/update')
+def post(d:dict, sess): return render_row(db[sess['id']].update(d))
+
+@app.delete('/remove')
+def remove(id:int, sess): db[sess['id']].delete(id)
+
+@rt("/upload")
+def post(csv_file: UploadFile, sess):
+    db[sess['id']].drop(ignore=True)
+    if not csv_file.filename.endswith('.csv'): return "Please upload a CSV file"
+    content = b''
+    for i, line in enumerate(csv_file.file):
+        if i >= 51: break
+        content += line
+    tbl = db.import_file(sess['id'], content, pk='id')
+    header = Tr(*map(Th, tbl.columns_dict))
+    vals = [render_row(row) for row in tbl()]
+    return (Span('First 50 rows only', style="color: red;") if i>=51 else '', Table(Thead(header), Tbody(*vals)))
+
+serve()
+
+
+```
+
+
+# Tic-Tac-Toe
+
+
+> A Tic Tac Toe game using FastHTML and Tailwind CSS by by Adedara Adeloro
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+
+style = Style("""body{
+    min-height: 100vh;
+    margin:0;
+    background-color: #1A1A1E;
+    display:grid;
+}""") # custom style to be applied globally.
+
+hdrs = (Script(src="https://cdn.tailwindcss.com") ,
+        Link(rel="stylesheet", href="/files/examples/applications/tic_tac_toe/output.css"))
+
+app, rt = fast_app(hdrs=(hdrs, style), pico=False)
+
+current_state_index = -1 #Used to navigate the current snapshot of the board
+button_states = [[None for _ in range(9)] for _ in range(9)] #2D array to store snapshots of board
+win_states = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+] #possible win streaks/states for Xs and Os
+
+winner_found_game_ended = False
+
+def check_win(player) -> bool:
+    global button_states, current_state_index, winner_found_game_ended
+    """Checks if there's a win streak present in the board. Uses the win states list to check
+       If text at all text indices are equal and its not the placeholder text ("."), change the global variable "winner_found_game_ended" to True"""
+    for cell_1, cell_2, cell_3 in win_states:
+        if (
+            button_states[current_state_index][cell_1] != None
+            and button_states[current_state_index][cell_1]
+            == button_states[current_state_index][cell_2]
+            and button_states[current_state_index][cell_2]
+            == button_states[current_state_index][cell_3]):
+            winner_found_game_ended = True
+            return f"Player {player} wins the game!"
+
+    if all(value is not None for value in button_states[current_state_index]):
+        #if the current snapshot of the board doesn't have any placeholder text and there is no winning streak
+        winner_found_game_ended = True
+        return "No Winner :("
+
+    #will keep returning this value [because its called after every button click], until a winner or none is found
+    return f'''Player {'X' if player == 'O' else 'O'}'s turn!'''
+
+
+def handle_click(index: int):
+    """This function handles what text gets sent to the button's face depending on whose turn it is uses a weird algorithm"""
+    global button_states, current_state_index
+    next_index = current_state_index + 1
+    button_states[next_index] = button_states[current_state_index][:] #make a copy of the current snapshot to add to the next snapshot
+
+    if button_states[current_state_index][index] is None:
+        if "X" not in button_states[current_state_index] or button_states[
+            current_state_index
+        ].count("X") <= button_states[current_state_index].count("O"):
+            button_states[next_index][index] = "X"
+        else:
+            button_states[next_index][index] = "O"
+    current_state_index += 1
+    return button_states[next_index][index]
+
+
+@app.get("/on_click")  # On click, call helper function to alternate between X and O
+def render_button(index:int):
+    global button_states, current_state_index
+
+    player = handle_click(index)
+    winner = check_win(player)  # function that checks if there's a winner
+
+    buttons = [Button(
+            f'''{text if text is not None else '.' }''',
+            cls="tic-button-disabled" if (text is not None) or winner_found_game_ended else "tic-button",
+            disabled=True if (text is not None) or winner_found_game_ended else False,
+            hx_get=f"on_click?index={idx}",
+            hx_target=".buttons-div", hx_swap='outerHTML')
+        for idx, text in enumerate(button_states[current_state_index])
+    ]
+    """rerenders buttons based on the next snapshot.
+       I initially made this to render only the button that gets clicked.
+       But to be able to check the winner and stop the game, I have to use the next snapshot instead
+       if you wanna see the previous implementation, it should be in one of the commits."""
+    board = Div(
+                Div(winner, cls="justify-self-center"),
+                Div(*buttons, cls="grid grid-cols-3 grid-rows-3"),
+                cls="buttons-div font-bevan text-white font-light grid justify-center")
+    return board
+
+
+# Rerenders the board if the restart button is clicked.
+# Also responsible for initial rendering of board when webpage is reloaded
+@app.get("/restart")
+def render_board():
+    global button_states, current_state_index, winner_found_game_ended
+
+    current_state_index = -1
+    button_states = [[None for _ in range(9)] for _ in range(9)]
+    winner_found_game_ended = False
+
+    # button component
+    buttons = [
+        Button(
+            ".",
+            cls="tic-button",
+            hx_get=f"on_click?index={i}",
+            hx_swap="outerHTML", hx_target=".buttons-div")
+        for i, _ in enumerate(button_states[current_state_index])
+    ]
+    return  Div(Div("Player X starts the game",cls="font-bevan text-white justify-self-center"),
+                Div(*buttons, cls="grid grid-cols-3 grid-rows-3"),
+                cls="buttons-div grid")
+
+
+@app.get("/")
+def homepage():
+    global button_states
+    return Div(
+        Div(
+            H1("Tic Tac Toe!", cls="font-bevan text-5xl text-white"),
+            P("A FastHTML app by Adedara Adeloro", cls="font-bevan text-custom-blue font-light"),
+            cls="m-14"),
+        Div(
+            render_board.__wrapped__(),  # render buttons.
+            Div(
+                Button(
+                    "Restart!",
+                    disabled=False,
+                    cls="restart-button",
+                    hx_get="restart", hx_target=".buttons-div", hx_swap="outerHTML"),
+                cls="flex flex-col items-center justify-center m-10"),
+            cls="flex flex-col items-center justify-center"),
+        cls="justify-center items-center min-h-screen bg-custom-background")
+
+
+```
+
+
+# Text-Annotator
+
+
+> An app built by Alex Volkov that demonstrates annotation use-cases and tailwind styling in FastHTML
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+import json
+import httpx
+
+# Set up the app, including daisyui and tailwind for the chat component
+tlink = Script(src="https://cdn.tailwindcss.com?plugins=typography"),
+dlink = Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/daisyui@4.11.1/dist/full.min.css")
+
+def Arrow(arrow, hx_get, id):
+    # Grey out button if you're at the end
+    if arrow == "←": ptr_evnts = "pointer-events-none opacity-50" if id == 1 else ""
+    elif arrow == "→": ptr_evnts = " pointer-events-none opacity-50" if id == total_items_length - 1 else ""
+    # CSS Styling for both arrow buttons
+    common_classes = "relative inline-flex items-center bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+    return A(Span(arrow, cls="sr-only"),
+             Span(arrow, cls="h-5 w-5", aria_hidden="true"),
+             hx_get=hx_get, hx_swap="outerHTML",
+             cls=f" {'' if arrow=='←' else '-ml-px'} rounded-{'l' if arrow=='←' else 'r'}-md {common_classes} {ptr_evnts}")
+
+def AnnotateButton(value, feedback):
+    # Different button styling if it's already marked as correct/incorrect
+    classes = '' if feedback=='correct' else 'btn-outline'
+    # Green for correct red for incorrect
+    classes += f" btn-{'success' if value=='correct' else 'error'}"
+    classes += ' mr-2' if value=='correct' else ''
+    return Button(value.capitalize(), name='feedback', value=value, cls='btn hover:text-white '+classes)
+    
+def render(Item):
+    messages = json.loads(Item.messages)
+    
+    card_header = Div(cls="border-b border-gray-200 bg-white p-4")(
+        Div(cls="flex justify-between items-center mb-4")(
+            H3(f"Sample {Item.id} out of {total_items_length}" if total_items_length else "No samples in DB", cls="text-base font-semibold leading-6 text-gray-9000"),
+            Div(cls="flex-shrink-0")(
+                Arrow("←", f"{Item.id - 2}" if Item.id > 0 else "#", Item.id),
+                Arrow("→", f"{Item.id}" if Item.id < total_items_length - 1 else "#", Item.id))),
+        Div(cls="-ml-4 -mt-4 flex flex-wrap items-center justify-between sm:flex-nowrap")(
+            Div(cls="ml-4 mt-4")(
+                P(messages[0]['content'], cls="mt-1 text-sm text-gray-500 max-h-16 overflow-y-auto whitespace-pre-wrap"))))
+    
+    card_buttons_form = Div(cls="mt-4")(
+        Form(cls="flex items-center", method="post", hx_post=f"{Item.id}", target_id=f"item_{Item.id}", hx_swap="outerHTML", hx_encoding="multipart/form-data")(
+            Input(type="text", name="notes", value=Item.notes, placeholder="Additional notes?", cls="flex-grow p-2 my-4 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-transparent"),
+            Div(cls="flex-shrink-0 ml-4")(
+                AnnotateButton('correct', Item.feedback),
+                AnnotateButton('incorrect', Item.feedback))))
+    
+    # Card component
+    card = Div(cls="  flex flex-col h-full flex-grow overflow-auto", id=f"item_{Item.id}",
+           style="min-height: calc(100vh - 6rem); max-height: calc(100vh - 16rem);")(
+                card_header,
+                Div(cls="bg-white shadow rounded-b-lg p-4 pt-0 pb-10 flex-grow overflow-scroll")(
+                    Div(messages[1]['content'], id="main_text", cls="mt-2 w-full rounded-t-lg text-sm whitespace-pre-wrap h-auto marked")),
+                card_buttons_form)
+    return card
+
+hdrs=(tlink, dlink, picolink, MarkdownJS(), HighlightJS())
+app, rt, texts_db, Item = fast_app('texts.db',hdrs=hdrs, render=render, bodykw={"data-theme":"light"},
+                                   id=int, messages=list, feedback=bool, notes=str, pk='id')
+
+
+# Get Dummy Data
+data_url = 'https://raw.githubusercontent.com/AnswerDotAI/fasthtml-example/main/annotate_text/data/dummy_data.jsonl'
+response = httpx.get(data_url)
+
+# Insert Dummy Data into Db
+for line in response.text.splitlines():
+    item = json.loads(line)
+    texts_db.insert(messages=json.dumps(item), feedback=None, notes='')
+
+# Set total_items_length after inserting dummy data
+total_items_length = len(texts_db())
+print(f"Inserted {total_items_length} items from dummy data")
+
+@rt("/{idx}")
+def post(idx: int, feedback: str = None, notes: str = None):
+    print(f"Posting feedback: {feedback} and notes: {notes} for item {idx}")
+    items = texts_db()
+    item = texts_db.get(idx)
+    
+    item.feedback, item.notes = feedback, notes
+    texts_db.update(item)
+
+    next_item = next((i for i in items if i.id > item.id), items[0])    
+    print(f"Updated item {item.id} with feedback: {feedback} and notes: {notes} moving to {next_item.id}")
+    return next_item
+
+@rt("/")
+@rt("/{idx}")
+def get(idx:int = 0):
+    items = texts_db()
+    
+    index = idx 
+    if index >= len(items): index = len(items) - 1 if items else 0
+
+    # Container for card and buttons
+    content = Div(cls="w-full max-w-2xl mx-auto flex flex-col max-h-full")(
+        H1('LLM generated text annotation tool with FastHTML (and Tailwind)',cls="text-xl font-bold text-center text-gray-800 mb-8"),
+        items[index])
+
+    return Main(content,
+                cls="container mx-auto min-h-screen bg-gray-100 p-8 flex flex-col",
+                hx_target="this")
+
+```
+
+
+# Cellular-Automata
+
+
+> A 1D Cellular Automata using FastHTML
+
+
+## Implementation
+
+```python
+
+from fasthtml.common import *
+from starlette.responses import Response
+from uuid import uuid4
+
+
+generator = {}
+bindict = {
+    (1,1,1):0,
+    (1,1,0):1,
+    (1,0,1):2,
+    (1,0,0):3,
+    (0,1,1):4,
+    (0,1,0):5,
+    (0,0,1):6,
+    (0,0,0):7}
+initial_row = [0]*50 + [1] + [0]*50
+color_map = {0:"white", 1:"black"}
+
+####################
+### HTML Widgets ###
+####################
+
+explanation = Div(
+    H1("Cellular Automata"),
+    H4("Input explanations:"),
+    Ul(Li(Strong("Rule: "),"Determines the next state of a cell based on the current state of the cell and its neighbors."),
+        Li(Strong("Generations: "),"Determines how many generations to run the automaton."),
+        Li(Strong("Width: "),"Determines the width of the grid."),))
+
+def progress_bar(percent_complete: float):
+    return Div(hx_swap_oob="innerHTML:#progress_bar")(
+            Progress(value=percent_complete))
+
+def mk_box(color,size=5):
+    return Div(cls="box", style=f"background-color:{color_map[color]};height:{size}px;width:{size}px;margin:0;display:inline-block;")
+
+def mk_row(colors,font_size=0,size=5):
+    return Div(*[mk_box(color,size) for color in colors], cls="row",style=f"font-size:{font_size}px;")
+
+def mk_button(show):
+    return Button("Hide Rule" if show else "Show Rule",
+        hx_get="show_rule?show=" + ("False" if show else "True"),
+        hx_target="#rule", id="sh_rule", hx_swap_oob="outerHTML",
+        hx_include="[name='rule_number']")
+
+########################
+### FastHTML Section ###
+########################
+
+app, rt = fast_app()
+
+
+@rt
+def index(sess):
+    if 'id' not in sess: sess['id'] = str(uuid4())
+    return Title("Cellular Automata"),Main(Div(
+        Div(P(explanation,id="explanations")),
+        Form(Group(
+            Div(hx_target='this', hx_swap='outerHTML')(Label(_for="rule_number", cls="form-label")("Rule"),
+                Input(type='number', name="rule_number", id='rule_set', value="30",hx_post='validate/rule_number')),
+            Div(hx_target='this', hx_swap='outerHTML')(Label("Generations", cls="form-label"),
+                Input(type='number',name="generations", id='generations_set',  value="50",hx_post='validate/generations', hx_indicator='#generationsind')),
+            Div(hx_target='this', hx_swap='outerHTML')(Label("Width", cls="form-label"),
+                Input(type='number',name="width", id='width_set',  value="100", hx_post='validate/width', hx_indicator='#widthind')), 
+            Button(cls="btn btn-active btn-primary", type="submit", hx_get="run", 
+                   hx_target="#grid", hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML")("Run"))),
+        Group(
+            Div(style="margin-left:50px")(
+                Div(id="progress_bar"),
+                Div(id="grid")),
+            Div(style="margin-right:50px; max-width:200px")(
+                    mk_button(False),
+                    Div(id="rule"),
+                    ))))
+
+@rt('/show_rule')
+def get(rule_number: int, show: bool):
+    rule = [int(x) for x in f'{rule_number:08b}']
+    return Div(
+        Div(mk_button(show)),
+        Div(*[Group(
+            Div(mk_row(list(k),font_size=10,size=20),style="max-width:100px"), 
+            Div(P(" -> "),style="max-width:100px"), 
+            Div(mk_box(rule[v],size=20),style="max-width:100px")) for k,v in bindict.items()] if show else '')
+    )
+
+@rt('/run')
+def get(rule_number: int, generations: int, width: int, sess):
+
+    errors = {'rule_number': validate_rule_number(rule_number),
+              'generations': validate_generations(generations),
+              'width': validate_width(width)}
+    # Removes the None values from the errors dictionary (No errors)
+    errors = {k: v for k, v in errors.items() if v is not None}
+    # Return Button with error message if they exist
+    
+    if errors:
+        return Div(Div(id="grid"),
+                   Div(id="progress_bar",hx_swap_oob="outerHTML:#progress_bar"),
+                Div(id='submit-btn-container',hx_swap_oob="outerHTML:#submit-btn-container")(
+                    Button(cls="btn btn-active btn-primary", type="submit", 
+                           hx_get="run", hx_target="#grid", 
+                           hx_include="[name='rule_number'],[name='generations'],[name='width']", hx_swap="outerHTML")("Run"),
+                    *[Div(error, style='color: red;') for error in errors.values()]))
+
+    start = [0]*(width//2) + [1] + [0]*(width//2)
+    global generator 
+    generator[sess['id']] = run(rule=rule_number,generations=generations,start=start)
+    return Div(
+        Div(style=f"width: {(width+1)*5}px",id="progress_bar",hx_swap_oob="outerHTML:#progress_bar"),
+        Div(id="next",hx_trigger="every .1s", hx_get="next", hx_target="#grid",hx_swap="beforeend"),id="grid")
+
+@rt('/next')
+def get(sess):
+    global generator
+    g,val = next(generator[sess['id']],(False,False))
+    if val: return Div(
+        progress_bar(g),
+        mk_row(val))
+    else: 
+        del generator[sess['id']]
+        return Response(status_code=286)
+
+@rt('/validate/rule_number')
+def post(rule_number: int): return inputTemplate('Rule Number', 'rule_number',rule_number, validate_rule_number(rule_number))
+
+@rt('/validate/generations')
+def post(generations: int): return inputTemplate('Generations', 'generations', generations, validate_generations(generations))
+
+@rt('/validate/width')
+def post(width: int): return inputTemplate('Width', 'width', width, validate_width(width))
+
+#########################
+### Application Logic ###
+#########################
+
+def run(rule=30, start = initial_row, generations = 100):
+    rule = [int(x) for x in f'{rule:08b}']
+    yield 0, start
+    old_row = [0] + start + [0]
+    new_row = []
+    for g in range(1,generations):
+        for i in range(1,len(old_row)-1):
+            key=tuple(old_row[i-1:i+2])
+            new_row.append(rule[bindict[key]])
+        yield (g+1)/generations,new_row
+        old_row = [0] + new_row + [0]
+        new_row = []
+
+########################
+### Validation Logic ###
+########################
+
+def validate_rule_number(rule_number: int):
+    if (rule_number < 0) or (rule_number > 255 ): return "Enter an integer between 0 and 255 (inclusive)"
+
+def validate_generations(generations: int):
+    if generations < 0: return "Enter a positive integer"
+    if generations > 200: return "Enter a number less than 200"
+
+def validate_width(width: int):
+    if width < 0: return "Enter a positive integer"
+    if width > 200: return "Enter a number less than 200"
+
+def inputTemplate(label, name, val, errorMsg=None, input_type='number'):
+    # Generic template for replacing the input field and showing the validation message
+    return Div(hx_target='this', hx_swap='outerHTML', cls=f"{errorMsg if errorMsg else 'Valid'}")(
+               Label(label), # Creates label for the input field
+               Input(name=name,type=input_type,value=f'{val}',style="width: 340px;",hx_post=f'validate/{name.lower()}'), # Creates input field
+               Div(f'{errorMsg}', style='color: red;') if errorMsg else None) # Creates red error message below if there is an error
+
+```
+
+
