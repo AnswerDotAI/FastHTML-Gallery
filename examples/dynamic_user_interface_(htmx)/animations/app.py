@@ -28,67 +28,54 @@ app, rt = fast_app(hdrs=(Style("""
 """),))
 
 
-# 1. Color Throb
-@rt("/colors")
-def colors():
-    return Div(
-        "Groovy baby, yeah!",
-        id="color-demo",
-        style=f"color: {random.choice(['red', 'blue', 'green', 'purple', 'orange'])}; transition: all 1s ease-in;",
-        hx_get="/colors",
-        hx_swap="outerHTML",
-        hx_trigger="every 1s"
-    )
+@rt
+def color_throb_demo():
+    # Each time this route is called it chooses a random color
+    random_color = random.choice(['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink'])
 
+    return P("Groovy baby, yeah!", id="color-demo",
+        # Make text random color and do a smooth transition
+        style=f"color: {random_color}; transition: all 1s ease-in;",
+        # Call this route and replace the text every 1 second
+        get=color_throb_demo, hx_swap="outerHTML", hx_trigger="every 1s")
 
 # 2. Settling Transitions
-@rt("/fade_in_demo", methods=["POST"])
+@rt
 def fade_in_demo():
-    return Button(
-        "Fade Me In",
-        id="fade-me-in",
-        class_="btn primary",
-        hx_post="/fade_in_demo",
-        hx_swap="outerHTML settle:1s"
-    )
+    return Button( "Fade Me In", id="fade-me-in", class_="btn primary",
+                  # hx_trigger defaults to click so we do not have to specify it
+                  # When the button is clicked, create a new button with a 1 second settling transition
+                  post=fade_in_demo, hx_swap="outerHTML settle:1s")
 
-# 3. Request In Flight Animation
-def submit_form():
+def in_flight_animation_demo():
+    " Create a form that changes its look on click. In this case it displays a 'Submitted!' response. "
     return Form(
         Input(name="name", style="width: 300px;", placeholder="Content field"),
         Button("Submit", class_="btn primary"),
-        hx_post="/name",
-        hx_swap="outerHTML"
-    )
+        # When the button is clicked, swap it with the handle_name reutnr value
+        post=form_completion_message, hx_swap="outerHTML")
 
-@rt("/name", methods=["POST"])
-def handle_name():
-    return Button(
-        "Submitted!",
-        class_="btn primary",
-        style="background-color: green; color: white;"
-    )
+@rt
+def form_completion_message():
+    return Button("Submitted!", class_="btn primary", 
+                  style="background-color: green; color: white;")
+
+
+# Helped function to create a section for an example
+def section(title, desc, content): return Card(H2(title), P(desc), Br(), content, Br())
 
 @rt
 def index():
     return Div(
-        H1("Text Animations"),
-        Br(),
-        H2("1. Color Throb"),
-        Div("""Change text color every second in a smooth transition."""),
-        Br(),
-        colors(),
-        Br(),
-        H2("2. Settling Transitions"),
-        Div("""Make a button disappear on click and gradually fade in."""),
-        Br(),
-        fade_in_demo(),
-        Br(),
-        Br(),
-        H2("3. Request In Flight Animation"),
-        Div("""Let a form change its look on click. In this case it displays a 'Submitted!' response."""),
-        Br(),
-        submit_form(),
-    )
+        H1("Text Animations"), Br(),
+        section("Color Throb", 
+                "Change text color every second in a smooth transition.",
+                color_throb_demo()),
+        section("Settling Transitions",
+                "Make a button disappear on click and gradually fade in.",
+                fade_in_demo()),
+        section("Request In Flight Animation",
+                "Let a form change its look on click. In this case it displays a 'Submitted!' response.",
+                in_flight_animation_demo()))
 
 serve()
