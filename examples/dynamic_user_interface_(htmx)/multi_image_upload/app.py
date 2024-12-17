@@ -7,7 +7,7 @@ app, rt = fast_app()
 def index():
     inp = Card(
         H3("Drag and drop images here"),
-        # HTMX logic for uploading multiple images
+        # HTMX for uploading multiple images
         Input(
         type="file",
         name="images",
@@ -28,12 +28,11 @@ def index():
         id="image-list",
         style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; padding: 20px;"
     )
-    return Title("Multi Image Upload"), Main(
+    return Title("Multi Image Upload"), Div(
         H1("Multi Image Upload"), 
         inp, 
         H3("👇 Uploaded images 👇", style="text-align: center;"),
         image_list, 
-        cls="container"
     )
 
 @rt
