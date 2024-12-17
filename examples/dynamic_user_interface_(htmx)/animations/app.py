@@ -2,9 +2,11 @@ import random
 from fasthtml.common import *
 
 app, rt = fast_app(hdrs=(Style("""
+    /* CSS to center content of the app */
     body { max-width: 800px; padding: 20px; width: 90%; margin: 0 auto; }
     * { text-align: center; }
         
+    /* CSS to fade in to full opacity in 1 second */
     #fade-me-in.htmx-added {
         opacity: 0;
     }
@@ -12,14 +14,10 @@ app, rt = fast_app(hdrs=(Style("""
         opacity: 1;
         transition: opacity 1s ease-out;
     }
-    form.htmx-request {
-        opacity: .5;
-        transition: opacity 300ms linear;
-    }
+
+    /* CSS to fade out to 0 opacity in 1 second */
     .fade-me-out {
         opacity: 1;
-        background-color: lightblue;
-        padding: 10px;
     }
     .fade-me-out.htmx-swapping {
         opacity: 0;
@@ -52,16 +50,17 @@ def in_flight_animation_demo():
     return Form(
         Input(name="name", style="width: 300px;", placeholder="Content field"),
         Button("Submit", class_="btn primary"),
-        # When the button is clicked, swap it with the handle_name reutnr value
+        # When the button is clicked, swap it with the button specified in form_completion_message
         post=form_completion_message, hx_swap="outerHTML")
 
 @rt
 def form_completion_message():
+    # A button with green background and white text
     return Button("Submitted!", class_="btn primary", 
                   style="background-color: green; color: white;")
 
 
-# Helped function to create a section for an example
+# Helper function to create a section for an example
 def section(title, desc, content): return Card(H2(title), P(desc), Br(), content, Br())
 
 @rt
