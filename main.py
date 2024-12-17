@@ -137,6 +137,9 @@ directories = [Path(f"examples/{x}") for x in [
     'todo_series',
     'applications']]
 
+def is_example_dir(d): 
+    return d.is_dir() and not d.name.startswith('_') and (d/'metadata.ini').exists()
+
 @app.get("/")
 def homepage():
     ### HEADERS ###
@@ -145,7 +148,7 @@ def homepage():
         all_cards.append(
             Section(Details(
                 Summary(H1(section.name.replace('_',' ').title(), cls='mt-6 mb-4 pb-2 text-center text-3xl font-bold border-b-2 border-gray-300')),
-                Grid(*[ImageCard(dir) for dir in sorted(section.iterdir()) if dir.is_dir() and not dir.name.startswith('_')],
+                Grid(*[ImageCard(dir) for dir in sorted(section.iterdir()) if is_example_dir(dir)],
                      cols_min=1, cols_sm=1, cols_md=2, cols_lg=3),
                 cls='pt-6', open=True)))
 
@@ -182,7 +185,7 @@ def SectionTable(section):
             Table(
                 Thead(Tr(map(Th, ("Component", "Description", "Actions")))),
                 Tbody(*[TableRow(dir) for dir in sorted(section.iterdir()) 
-                       if dir.is_dir() and not dir.name.startswith('_')]),
+                       if is_example_dir(dir)]),
                 cls=(TableT.middle, TableT.divider, TableT.hover, TableT.small)),
             # open=True,
             id=section_id),
