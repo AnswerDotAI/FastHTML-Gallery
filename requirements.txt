@@ -13,4 +13,5 @@ requests
 seaborn
 monsterui
 markdown2
+mistletoe
 lxml
