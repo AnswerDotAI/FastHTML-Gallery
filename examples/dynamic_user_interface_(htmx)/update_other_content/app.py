@@ -22,7 +22,7 @@ def index():
                 Label("Name", Input(name="name", type="text")),
                 Label("Email", Input(name="email", type="email")),
                 Button("Save"),
-                hx_post="/contacts",
+                hx_post="contacts",
                 hx_target="#contacts-table",
                 hx_swap="beforeend",
                 hx_on__after_request="this.reset()"
