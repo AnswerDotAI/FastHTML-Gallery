@@ -30,11 +30,7 @@ async def ImageCard(image):
     return Card(H4(image.filename), Img(src=img_data, alt=image.filename))
 
 @rt
-async def upload(request: Request):
-    # get all results from the request
-    form = await request.form()
-    # Get the images in a list
-    images = form.getlist("images")
+async def upload(images: list[UploadFile]):
     # Create a grid filled with 1 image card per image
     return Grid(*[await ImageCard(image) for image in images])
 
