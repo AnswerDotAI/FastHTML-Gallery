@@ -122,7 +122,7 @@ def ImageCard(dir_path):
                 cls="card-img-top"), 
                 href=f"/split/{dpath}"),
             Div(P(meta['ComponentName'],        cls=(TextT.bold, TextT.large)),
-                P(meta['ComponentDescription'], cls=(TextT.muted, TextT.large)),
+                render_md(P(meta['ComponentDescription'])),#, cls=(TextT.muted, TextT.large)),
                 style="height: 150px; overflow: auto;"),
             footer=DivFullySpaced(
                 A(Button("Split", cls=ButtonT.primary), href=f"/split/{dpath}"),
@@ -149,7 +149,7 @@ def homepage():
             Section(Details(
                 Summary(H1(section.name.replace('_',' ').title(), cls='mt-6 mb-4 pb-2 text-center text-3xl font-bold border-b-2 border-gray-300')),
                 Grid(*[ImageCard(dir) for dir in sorted(section.iterdir()) if is_example_dir(dir)],
-                     cols_min=1, cols_sm=1, cols_md=2, cols_lg=3),
+                     cols_min=1, cols_sm=1, cols_md=2, cols_lg=3, cols_xl=3),
                 cls='pt-6', open=True)))
 
     return (NavBarContainer(
@@ -169,7 +169,7 @@ def TableRow(dir_path):
     text_md_exists = (dir_path/'info.md').exists()
     return Tr(
         Td(meta['ComponentName']),
-        Td(meta['ComponentDescription']),
+        Td(render_md(meta['ComponentDescription'])),
         Td(DivLAligned(
             A(Button("Split", cls=ButtonT.primary), href=f"/split/{dpath}"),
             A(Button("Code", cls=ButtonT.secondary), href=f"/code/{dpath}"),
