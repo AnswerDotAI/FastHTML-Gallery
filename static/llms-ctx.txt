@@ -1,0 +1,736 @@
+<project title="FastHTML Gallery" summary="A curated collection of FastHTML applications, components, and templates demonstrating example applications using FastHTML and HTMX.">Things to remember for the FastHTML Gallery:
+
+- All examples are open source and can be freely used in your own projects.
+- Links to all examples are shown on the [Homepage](https://gallery.fastht.ml).
+- Components are designed to work with FastHTML.
+- "Widgets" are small apps demonstrating a single concept.
+- "Visualizations" show off FastHTML's ability to visualize data.
+- "Dynamic user interface" demonstrates interactive patterns using HTMX.
+- "Svg" demonstrates FastHTML's ability to render SVG.
+- "Start Simple" contains example apps in an increasing order of complexity.
+- "Applications" are full-featured apps demonstrating a complete end-to-end application.<components><doc title="Homepage" desc="Shows links to all sections."> <!doctype html>
+ <html>
+   <head>
+     <title>FastHTML page</title>
+     <meta charset="utf-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script src="https://unpkg.com/htmx.org@next/dist/htmx.min.js"></script><script src="https://cdn.jsdelivr.net/gh/answerdotai/fasthtml-js@1.0.4/fasthtml.js"></script><script src="https://cdn.jsdelivr.net/gh/answerdotai/surreal@main/surreal.js"></script><script src="https://cdn.jsdelivr.net/gh/gnat/css-scope-inline@main/script.js"></script><script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script><script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/python.min.js"></script><script src="https://cdn.jsdelivr.net/gh/arronhunt/highlightjs-copy/dist/highlightjs-copy.min.js"></script>     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/arronhunt/highlightjs-copy/dist/highlightjs-copy.min.css">
+     <style>
+        .hljs-copy-button { background-color: #2d2b57; }
+        html.dark .hljs-copy-button { background-color: #e0e0e0; color: #2d2b57; }
+    </style>
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/atom-one-dark.css" disabled id="hljs-dark-theme">
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/atom-one-light.css" disabled id="hljs-light-theme">
+<script>
+        function updateCodeTheme() {
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('hljs-dark-theme').disabled = !isDark;
+            document.getElementById('hljs-light-theme').disabled = isDark;
+        }
+        
+        // Watch for theme changes
+        new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                if (mutation.target.tagName === 'HTML' && mutation.attributeName === 'class') {
+                    updateCodeTheme();
+                }
+            });
+        }).observe(document.documentElement, { attributes: true });
+        
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', updateCodeTheme);
+    </script><script type="module">
+        hljs.configure({ ignoreUnescapedHTML: true });
+        hljs.addPlugin(new CopyButtonPlugin());
+        htmx.onLoad(hljs.highlightAll);
+    </script><script defer data-domain="gallery.fastht.ml" src="https://plausible-analytics-ce-production-dba0.up.railway.app/js/script.js"></script>     <meta property="og:image" content="https://gallery.fastht.ml/social.png">
+     <meta property="og:site_name" content="gallery.fastht.ml">
+     <meta property="og:image:type" content="image/png">
+     <meta property="og:image:width" content="1200">
+     <meta property="og:image:height" content="630">
+     <meta property="og:type" content="website">
+     <meta property="og:url" content="https://gallery.fastht.ml">
+     <meta property="og:title" content="FastHTML Gallery">
+     <meta property="og:description" content="A gallery of FastHTML components showing common patterns in FastHTML apps, including chat bubbles, cascading dropdowns, interactive charts, etc.">
+     <meta name="twitter:image" content="https://gallery.fastht.ml/social.png">
+     <meta name="twitter:card" content="summary">
+     <meta name="twitter:title" content="FastHTML Gallery">
+     <meta name="twitter:description" content="A gallery of FastHTML components showing common patterns in FastHTML apps, including chat bubbles, cascading dropdowns, interactive charts, etc.">
+     <meta name="twitter:site" content="@isaac_flath">
+<script>
+    function toggleAnimations() {
+        const images = document.querySelectorAll('.card-img-top');
+        images.forEach(img => {
+            if (img.src.endsWith('.gif')) {
+                img.src = img.getAttribute('data-png');
+            } else {
+                img.setAttribute('data-png', img.src);
+                img.src = img.src.replace('card_thumbnail.png', 'card_thumbnail.gif');
+            }
+        });
+    }</script>     <link rel="stylesheet" href="https://unpkg.com/franken-ui@1.1.0/dist/css/core.min.css">
+<script type="module" src="https://unpkg.com/franken-ui@1.1.0/dist/js/core.iife.js"></script><script type="module" src="https://cdn.jsdelivr.net/gh/answerdotai/fh-frankenui@main/fh_frankenui/icon.iife.js"></script><script src="https://cdn.tailwindcss.com"></script><script>
+        const htmlElement = document.documentElement;
+        
+            if (
+                localStorage.getItem("mode") === "dark" ||
+                (!("mode" in localStorage) &&
+                window.matchMedia("(prefers-color-scheme: dark)").matches)
+            ) {
+                htmlElement.classList.add("dark");
+            } else {
+                htmlElement.classList.remove("dark");
+            }
+        
+        htmlElement.classList.add(localStorage.getItem("theme") || "uk-theme-blue");
+    </script>   </head>
+   <body class=" bg-background text-foreground">
+     <div class=" ">
+       <div class="uk-container uk-container-expand">
+         <div uk-navbar>
+           <div class="uk-navbar-left ">
+             <h1 class="uk-h1 ">FastHTML Gallery</h1>
+           </div>
+           <div class="uk-navbar-right ">
+<button type="button" class="uk-button uk-button-default" onclick="toggleAnimations()">Toggle Animations</button>           </div>
+         </div>
+       </div>
+     </div>
+     <div class="uk-container mt-5 uk-container-xlarge">
+       <div class="uk-section pt-6">
+         <h1 class="uk-h1 mt-6 mb-4 pb-2 text-center text-3xl font-bold border-b-2 border-gray-300">Widgets</h1>
+         <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/widgets/audio"><img src="/files/examples/widgets/audio/card_thumbnail.gif" alt="Example Audio App" data-png="/files/examples/widgets/audio/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Audio</p>
+                 <p class="uk-text-muted uk-text-large">An example audio app</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/widgets/audio"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/widgets/audio"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/widgets/audio"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/widgets/pdf"><img src="/files/examples/widgets/pdf/card_thumbnail.gif" alt="PDF Embed" data-png="/files/examples/widgets/pdf/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">PDF</p>
+                 <p class="uk-text-muted uk-text-large">PDF Embed</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/widgets/pdf"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/widgets/pdf"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/widgets/pdf"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/widgets/click_to_load"><img src="/files/examples/widgets/click_to_load/card_thumbnail.gif" alt="Click to Load" data-png="/files/examples/widgets/click_to_load/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Click to Load</p>
+                 <p class="uk-text-muted uk-text-large">Dynamically add rows to a table using HTMX.</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/widgets/click_to_load"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/widgets/click_to_load"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/widgets/click_to_load"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/widgets/show_hide"><img src="/files/examples/widgets/show_hide/card_thumbnail.gif" alt="Show and Hide Content Button" data-png="/files/examples/widgets/show_hide/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Show/Hide Button</p>
+                 <p class="uk-text-muted uk-text-large">A component that shows and hides content on click</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/widgets/show_hide"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/widgets/show_hide"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/widgets/show_hide"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/widgets/chat_bubble"><img src="/files/examples/widgets/chat_bubble/card_thumbnail.gif" alt="Chat Bubbles" data-png="/files/examples/widgets/chat_bubble/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Chat Bubbles</p>
+                 <p class="uk-text-muted uk-text-large">A chat bubble component with no external dependencies</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/widgets/chat_bubble"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/widgets/chat_bubble"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/widgets/chat_bubble"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/widgets/progress_bar"><img src="/files/examples/widgets/progress_bar/card_thumbnail.gif" alt="Dynamic Progress Bar" data-png="/files/examples/widgets/progress_bar/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Progress Bar</p>
+                 <p class="uk-text-muted uk-text-large">A component that visually represents the completion status of a task or operation as it moves towards completion.</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/widgets/progress_bar"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/widgets/progress_bar"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/widgets/progress_bar"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/widgets/two_column_grid"><img src="/files/examples/widgets/two_column_grid/card_thumbnail.gif" alt="Two column simple web app with inputs on the left and outputs on the right" data-png="/files/examples/widgets/two_column_grid/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Two Column Grid</p>
+                 <p class="uk-text-muted uk-text-large">A simple two column grid with inputs on the left and outputs on the right based on fasthtml-example form demo</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/widgets/two_column_grid"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/widgets/two_column_grid"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/widgets/two_column_grid"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+       <div class="uk-section pt-6">
+         <h1 class="uk-h1 mt-6 mb-4 pb-2 text-center text-3xl font-bold border-b-2 border-gray-300">Visualizations</h1>
+         <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/visualizations/bloch_sphere"><img src="/files/examples/visualizations/bloch_sphere/card_thumbnail.gif" alt="Visualization of a bloch sphere with buttons for qubit gates" data-png="/files/examples/visualizations/bloch_sphere/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Bloch Sphere</p>
+                 <p class="uk-text-muted uk-text-large">Interactive Bloch sphere visualization using the fh-plotly plugin by Carlo Lepelaars</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/visualizations/bloch_sphere"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/visualizations/bloch_sphere"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/visualizations/bloch_sphere"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/visualizations/altair_charts"><img src="/files/examples/visualizations/altair_charts/card_thumbnail.gif" alt="Demo of Altair plugin for FastHTML" data-png="/files/examples/visualizations/altair_charts/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Altair Charts</p>
+                 <p class="uk-text-muted uk-text-large">Interactive altair chart using the fh-altair plugin by Vincent D. Warmerdam</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/visualizations/altair_charts"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/visualizations/altair_charts"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/visualizations/altair_charts"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/visualizations/great_tables_tables"><img src="/files/examples/visualizations/great_tables_tables/card_thumbnail.gif" alt="Demo of displaying a Polars dataFrame using FastHTML" data-png="/files/examples/visualizations/great_tables_tables/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Great-Tables Tables</p>
+                 <p class="uk-text-muted uk-text-large">Change the appearance of a Polars dataFrame based on selected colors using the Great Tables library.</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/visualizations/great_tables_tables"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/visualizations/great_tables_tables"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/visualizations/great_tables_tables"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/visualizations/matplotlib_charts"><img src="/files/examples/visualizations/matplotlib_charts/card_thumbnail.gif" alt="Demo of Matplotlib plugin for FastHTML" data-png="/files/examples/visualizations/matplotlib_charts/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Matplotlib Charts</p>
+                 <p class="uk-text-muted uk-text-large">Interactive matplotlib chart using the fh-matplotlib plugin by Vincent D. Warmerdam</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/visualizations/matplotlib_charts"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/visualizations/matplotlib_charts"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/visualizations/matplotlib_charts"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/visualizations/seaborn_svg"><img src="/files/examples/visualizations/seaborn_svg/card_thumbnail.gif" alt="Demo of SVG based plot (heatmap)" data-png="/files/examples/visualizations/seaborn_svg/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">SVG plot</p>
+                 <p class="uk-text-muted uk-text-large">Interactive Seaborn SVG plot by Li (Lily) Cai</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/visualizations/seaborn_svg"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/visualizations/seaborn_svg"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/visualizations/seaborn_svg"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/visualizations/plotly_charts"><img src="/files/examples/visualizations/plotly_charts/card_thumbnail.gif" alt="Demo of Plotly plugin for FastHTML showing 4 types of graphs (line, scatter, Bar, and 3D scatter)" data-png="/files/examples/visualizations/plotly_charts/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Plotly Interactive Charts</p>
+                 <p class="uk-text-muted uk-text-large">Interactive Plotly chart using the fh-plotly plugin by Carlo Lepelaars that lets you zoom, pan, hover over data points and much more</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/visualizations/plotly_charts"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/visualizations/plotly_charts"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/visualizations/plotly_charts"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+       <div class="uk-section pt-6">
+         <h1 class="uk-h1 mt-6 mb-4 pb-2 text-center text-3xl font-bold border-b-2 border-gray-300">Dynamic User Interface</h1>
+         <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/dynamic_user_interface/click_to_edit"><img src="/files/examples/dynamic_user_interface/click_to_edit/card_thumbnail.gif" alt="Click to Edit Button and 3 lines of text (First Name, Last Name, Email Address)" data-png="/files/examples/dynamic_user_interface/click_to_edit/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Click to Edit</p>
+                 <p class="uk-text-muted uk-text-large">A click to edit text component built based on a htmx documentation example.</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/dynamic_user_interface/click_to_edit"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/dynamic_user_interface/click_to_edit"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/dynamic_user_interface/click_to_edit"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/dynamic_user_interface/infinite_scroll"><img src="/files/examples/dynamic_user_interface/infinite_scroll/card_thumbnail.gif" alt="Infinite scroll over a large dataset" data-png="/files/examples/dynamic_user_interface/infinite_scroll/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Infinite Scroll</p>
+                 <p class="uk-text-muted uk-text-large">A table with infinite scroll over a large dataset (appending rows to the table as the user reaches the end of the table).</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/dynamic_user_interface/infinite_scroll"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/dynamic_user_interface/infinite_scroll"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/dynamic_user_interface/infinite_scroll"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/dynamic_user_interface/configurable_select"><img src="/files/examples/dynamic_user_interface/configurable_select/card_thumbnail.gif" alt="Dropdown that allows users to add additional options with a button via HTMX" data-png="/files/examples/dynamic_user_interface/configurable_select/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Configurable Select</p>
+                 <p class="uk-text-muted uk-text-large">A searchable dropdown menu with a text box that allows user to add additional options to it via HTMX</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/dynamic_user_interface/configurable_select"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/dynamic_user_interface/configurable_select"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/dynamic_user_interface/configurable_select"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/dynamic_user_interface/custom_keybindings"><img src="/files/examples/dynamic_user_interface/custom_keybindings/card_thumbnail.gif" alt="App demonstrating a keyboard shortcut to trigger a button press" data-png="/files/examples/dynamic_user_interface/custom_keybindings/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Custom KeyBindings</p>
+                 <p class="uk-text-muted uk-text-large">Custom KeyBindings to trigger a component</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/dynamic_user_interface/custom_keybindings"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/dynamic_user_interface/custom_keybindings"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/dynamic_user_interface/custom_keybindings"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/dynamic_user_interface/cascading_dropdowns"><img src="/files/examples/dynamic_user_interface/cascading_dropdowns/card_thumbnail.gif" alt="Cascading Dropdowns" data-png="/files/examples/dynamic_user_interface/cascading_dropdowns/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Cascading Dropdowns</p>
+                 <p class="uk-text-muted uk-text-large">A cascading dropdown component where values in second dropdown are dependent on the value in the first dropdown</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/dynamic_user_interface/cascading_dropdowns"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/dynamic_user_interface/cascading_dropdowns"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/dynamic_user_interface/cascading_dropdowns"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/dynamic_user_interface/inline_validation"><img src="/files/examples/dynamic_user_interface/inline_validation/card_thumbnail.gif" alt="Inline field validation showing error message when wrong input type was entered" data-png="/files/examples/dynamic_user_interface/inline_validation/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Inline Field Validation</p>
+                 <p class="uk-text-muted uk-text-large">A form with inline field validation on individual inputs with the submit aditionally validating the whole form.</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/dynamic_user_interface/inline_validation"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/dynamic_user_interface/inline_validation"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/dynamic_user_interface/inline_validation"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/dynamic_user_interface/web_sockets"><img src="/files/examples/dynamic_user_interface/web_sockets/card_thumbnail.gif" alt="Web Socket demonstration of chat" data-png="/files/examples/dynamic_user_interface/web_sockets/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Web Sockets</p>
+                 <p class="uk-text-muted uk-text-large">A demonstration on web sockets to have a multi-user messaging/chat use</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/dynamic_user_interface/web_sockets"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/dynamic_user_interface/web_sockets"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/dynamic_user_interface/web_sockets"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+       <div class="uk-section pt-6">
+         <h1 class="uk-h1 mt-6 mb-4 pb-2 text-center text-3xl font-bold border-b-2 border-gray-300">Svg</h1>
+         <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/svg/inb_replacement"><img src="/files/examples/svg/inb_replacement/card_thumbnail.gif" alt="Click the shape to swap it with another shape" data-png="/files/examples/svg/inb_replacement/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">In band replacement</p>
+                 <p class="uk-text-muted uk-text-large">A component that shows how to do an inband swap of an SVG element</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/svg/inb_replacement"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/svg/inb_replacement"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/svg/inb_replacement"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/svg/find_and_click"><img src="/files/examples/svg/find_and_click/card_thumbnail.gif" alt="Simple find and click game" data-png="/files/examples/svg/find_and_click/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Find and click</p>
+                 <p class="uk-text-muted uk-text-large">The component shows a circle which can be clicked. The first click starts a timer and after 10 clicks the elasped time is reported. Each click causes the circle to move.</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/svg/find_and_click"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/svg/find_and_click"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/svg/find_and_click"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/svg/click_and_drag"><img src="/files/examples/svg/click_and_drag/card_thumbnail.gif" alt="Click and Drag with D3" data-png="/files/examples/svg/click_and_drag/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Click and Drag</p>
+                 <p class="uk-text-muted uk-text-large">A component that shows a rectangle which can be dragged with the mouse</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/svg/click_and_drag"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/svg/click_and_drag"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/svg/click_and_drag"><button type="submit" class="uk-button uk-button-default">App</button></a>               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+       <div class="uk-section pt-6">
+         <h1 class="uk-h1 mt-6 mb-4 pb-2 text-center text-3xl font-bold border-b-2 border-gray-300">Start Simple</h1>
+         <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/start_simple/csv_editor"><img src="/files/examples/start_simple/csv_editor/card_thumbnail.gif" alt="CSV Editor Application" data-png="/files/examples/start_simple/csv_editor/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">CSV Editor</p>
+                 <p class="uk-text-muted uk-text-large">An app to upload csv files, edit in browser, and then download the updated file</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/start_simple/csv_editor"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/start_simple/csv_editor"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/start_simple/csv_editor"><button type="submit" class="uk-button uk-button-default">App</button></a><a href="/info/start_simple/csv_editor"><button type="submit" class="uk-button uk-button-default">Info</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/start_simple/sqlite_todo"><img src="/files/examples/start_simple/sqlite_todo/card_thumbnail.gif" alt="Minimal Todo application" data-png="/files/examples/start_simple/sqlite_todo/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Minimal Todo App (SQLite)</p>
+                 <p class="uk-text-muted uk-text-large">A minimal todo app using SQLite backend.</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/start_simple/sqlite_todo"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/start_simple/sqlite_todo"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/start_simple/sqlite_todo"><button type="submit" class="uk-button uk-button-default">App</button></a><a href="/info/start_simple/sqlite_todo"><button type="submit" class="uk-button uk-button-default">Info</button></a>               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+       <div class="uk-section pt-6">
+         <h1 class="uk-h1 mt-6 mb-4 pb-2 text-center text-3xl font-bold border-b-2 border-gray-300">Applications</h1>
+         <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/applications/annotate_text"><img src="/files/examples/applications/annotate_text/card_thumbnail.gif" alt="Text Annotator" data-png="/files/examples/applications/annotate_text/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Text-Annotator</p>
+                 <p class="uk-text-muted uk-text-large">An app built by Alex Volkov that demonstrates annotation use-cases and tailwind styling in FastHTML</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/applications/annotate_text"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/applications/annotate_text"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/applications/annotate_text"><button type="submit" class="uk-button uk-button-default">App</button></a><a href="/info/applications/annotate_text"><button type="submit" class="uk-button uk-button-default">Info</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/applications/cellular_automata"><img src="/files/examples/applications/cellular_automata/card_thumbnail.gif" alt="A 1D Cellular Automata" data-png="/files/examples/applications/cellular_automata/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Cellular-Automata</p>
+                 <p class="uk-text-muted uk-text-large">A 1D Cellular Automata using FastHTML</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/applications/cellular_automata"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/applications/cellular_automata"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/applications/cellular_automata"><button type="submit" class="uk-button uk-button-default">App</button></a><a href="/info/applications/cellular_automata"><button type="submit" class="uk-button uk-button-default">Info</button></a>               </div>
+             </div>
+           </div>
+           <div class="uk-card ">
+             <div class="uk-card-body space-y-6">
+<a href="/split/applications/tic_tac_toe"><img src="/files/examples/applications/tic_tac_toe/card_thumbnail.gif" alt="A Tic-Tac-Toe game" data-png="/files/examples/applications/tic_tac_toe/card_thumbnail.png" loading="lazy" class="card-img-top" style="width: 100%; height: 350px; object-fit: cover;"></a>               <div style="height: 150px; overflow: auto;">
+                 <p class="uk-text-bold uk-text-large">Tic-Tac-Toe</p>
+                 <p class="uk-text-muted uk-text-large">A Tic Tac Toe game using FastHTML and Tailwind CSS by by Adedara Adeloro</p>
+               </div>
+             </div>
+             <div class="uk-card-footer ">
+               <div class="uk-flex uk-flex-between uk-flex-middle uk-width-1-1">
+<a href="/split/applications/tic_tac_toe"><button type="submit" class="uk-button uk-button-primary">Split</button></a><a href="/code/applications/tic_tac_toe"><button type="submit" class="uk-button uk-button-secondary">Code</button></a><a href="/app/applications/tic_tac_toe"><button type="submit" class="uk-button uk-button-default">App</button></a><a href="/info/applications/tic_tac_toe"><button type="submit" class="uk-button uk-button-default">Info</button></a>               </div>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+   </body>
+ </html></doc><doc title="Split View Example" desc='Shows code and the full app. In this case the "click to load" widget.'> <!doctype html>
+ <html>
+   <head>
+     <title>click_to_load - Split View</title>
+     <meta charset="utf-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script src="https://unpkg.com/htmx.org@next/dist/htmx.min.js"></script><script src="https://cdn.jsdelivr.net/gh/answerdotai/fasthtml-js@1.0.4/fasthtml.js"></script><script src="https://cdn.jsdelivr.net/gh/answerdotai/surreal@main/surreal.js"></script><script src="https://cdn.jsdelivr.net/gh/gnat/css-scope-inline@main/script.js"></script><script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script><script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/python.min.js"></script><script src="https://cdn.jsdelivr.net/gh/arronhunt/highlightjs-copy/dist/highlightjs-copy.min.js"></script>     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/arronhunt/highlightjs-copy/dist/highlightjs-copy.min.css">
+     <style>
+        .hljs-copy-button { background-color: #2d2b57; }
+        html.dark .hljs-copy-button { background-color: #e0e0e0; color: #2d2b57; }
+    </style>
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/atom-one-dark.css" disabled id="hljs-dark-theme">
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/atom-one-light.css" disabled id="hljs-light-theme">
+<script>
+        function updateCodeTheme() {
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('hljs-dark-theme').disabled = !isDark;
+            document.getElementById('hljs-light-theme').disabled = isDark;
+        }
+        
+        // Watch for theme changes
+        new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                if (mutation.target.tagName === 'HTML' && mutation.attributeName === 'class') {
+                    updateCodeTheme();
+                }
+            });
+        }).observe(document.documentElement, { attributes: true });
+        
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', updateCodeTheme);
+    </script><script type="module">
+        hljs.configure({ ignoreUnescapedHTML: true });
+        hljs.addPlugin(new CopyButtonPlugin());
+        htmx.onLoad(hljs.highlightAll);
+    </script><script defer data-domain="gallery.fastht.ml" src="https://plausible-analytics-ce-production-dba0.up.railway.app/js/script.js"></script>     <meta property="og:image" content="https://gallery.fastht.ml/social.png">
+     <meta property="og:site_name" content="gallery.fastht.ml">
+     <meta property="og:image:type" content="image/png">
+     <meta property="og:image:width" content="1200">
+     <meta property="og:image:height" content="630">
+     <meta property="og:type" content="website">
+     <meta property="og:url" content="https://gallery.fastht.ml">
+     <meta property="og:title" content="FastHTML Gallery">
+     <meta property="og:description" content="A gallery of FastHTML components showing common patterns in FastHTML apps, including chat bubbles, cascading dropdowns, interactive charts, etc.">
+     <meta name="twitter:image" content="https://gallery.fastht.ml/social.png">
+     <meta name="twitter:card" content="summary">
+     <meta name="twitter:title" content="FastHTML Gallery">
+     <meta name="twitter:description" content="A gallery of FastHTML components showing common patterns in FastHTML apps, including chat bubbles, cascading dropdowns, interactive charts, etc.">
+     <meta name="twitter:site" content="@isaac_flath">
+<script>
+    function toggleAnimations() {
+        const images = document.querySelectorAll('.card-img-top');
+        images.forEach(img => {
+            if (img.src.endsWith('.gif')) {
+                img.src = img.getAttribute('data-png');
+            } else {
+                img.setAttribute('data-png', img.src);
+                img.src = img.src.replace('card_thumbnail.png', 'card_thumbnail.gif');
+            }
+        });
+    }</script>     <link rel="stylesheet" href="https://unpkg.com/franken-ui@1.1.0/dist/css/core.min.css">
+<script type="module" src="https://unpkg.com/franken-ui@1.1.0/dist/js/core.iife.js"></script><script type="module" src="https://cdn.jsdelivr.net/gh/answerdotai/fh-frankenui@main/fh_frankenui/icon.iife.js"></script><script src="https://cdn.tailwindcss.com"></script><script>
+        const htmlElement = document.documentElement;
+        
+            if (
+                localStorage.getItem("mode") === "dark" ||
+                (!("mode" in localStorage) &&
+                window.matchMedia("(prefers-color-scheme: dark)").matches)
+            ) {
+                htmlElement.classList.add("dark");
+            } else {
+                htmlElement.classList.remove("dark");
+            }
+        
+        htmlElement.classList.add(localStorage.getItem("theme") || "uk-theme-blue");
+    </script>   </head>
+   <body class=" bg-background text-foreground">
+     <div class=" ">
+       <div class="uk-container uk-container-expand">
+         <div uk-navbar>
+           <div class="uk-navbar-left ">
+<a href="/">               <h1 class="uk-h1 navbar-brand mb-0 h1">Fh-Gallery</h1>
+</a>           </div>
+           <div class="uk-navbar-center ">
+             <h1 class="uk-h1 ">Click To Load</h1>
+           </div>
+           <div class="uk-navbar-right ">
+             <nav class="uk-navbar-nav ">
+               <li>
+<a href="/">Back to Gallery</a>               </li>
+               <li>
+<a href="/code/widgets/click_to_load">Code</a>               </li>
+               <li>
+<a href="/app/widgets/click_to_load">App</a>               </li>
+             </nav>
+           </div>
+         </div>
+       </div>
+     </div>
+     <div class="uk-container mt-5 uk-container-xlarge">
+       <div style="display: flex; height: calc(100vh - 60px);">
+         <div style="width: 50%; padding: 10px;">
+<pre><code class="language-python">from uuid import uuid4
+from fasthtml.common import *
+
+app, rt = fast_app()
+
+agent_num = 0
+@rt
+def add_row():
+    global agent_num
+    agent_num += 1
+    return Tr(map(Td, (
+        f&quot;Agent Smith {agent_num}&quot;,
+        f&quot;smith{agent_num}@matrix.com&quot;,
+        uuid4())))
+
+@rt
+def index():
+    first_row = add_row()
+    return Div(
+        H1(&quot;Click to Load&quot;),
+        P(&quot;Dynamically add rows to a table using HTMX.&quot;),
+        Table(Tr(map(Th, (&quot;Name&quot;, &quot;Email&quot;, &quot;ID&quot;))), first_row, id=&#x27;tbl&#x27;),
+        Button(&quot;Load More...&quot;, get=add_row, hx_target=&quot;#tbl&quot;, hx_swap=&quot;beforeend&quot;),
+        style=&quot;text-align: center;&quot;)
+
+serve()</code></pre>         </div>
+         <div style="width: 50%; padding: 10px;">
+<iframe src="/app/widgets/click_to_load/" style="width: 100%; height: 100%; border: none;"></iframe>         </div>
+       </div>
+     </div>
+   </body>
+ </html></doc><doc title="Code Example" desc='Only shows code of the app. In this case code for the "progress bar" widget.'> <!doctype html>
+ <html>
+   <head>
+     <title>progress_bar - Code</title>
+     <meta charset="utf-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script src="https://unpkg.com/htmx.org@next/dist/htmx.min.js"></script><script src="https://cdn.jsdelivr.net/gh/answerdotai/fasthtml-js@1.0.4/fasthtml.js"></script><script src="https://cdn.jsdelivr.net/gh/answerdotai/surreal@main/surreal.js"></script><script src="https://cdn.jsdelivr.net/gh/gnat/css-scope-inline@main/script.js"></script><script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js"></script><script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/python.min.js"></script><script src="https://cdn.jsdelivr.net/gh/arronhunt/highlightjs-copy/dist/highlightjs-copy.min.js"></script>     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/arronhunt/highlightjs-copy/dist/highlightjs-copy.min.css">
+     <style>
+        .hljs-copy-button { background-color: #2d2b57; }
+        html.dark .hljs-copy-button { background-color: #e0e0e0; color: #2d2b57; }
+    </style>
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/atom-one-dark.css" disabled id="hljs-dark-theme">
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/atom-one-light.css" disabled id="hljs-light-theme">
+<script>
+        function updateCodeTheme() {
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('hljs-dark-theme').disabled = !isDark;
+            document.getElementById('hljs-light-theme').disabled = isDark;
+        }
+        
+        // Watch for theme changes
+        new MutationObserver(mutations => {
+            mutations.forEach(mutation => {
+                if (mutation.target.tagName === 'HTML' && mutation.attributeName === 'class') {
+                    updateCodeTheme();
+                }
+            });
+        }).observe(document.documentElement, { attributes: true });
+        
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', updateCodeTheme);
+    </script><script type="module">
+        hljs.configure({ ignoreUnescapedHTML: true });
+        hljs.addPlugin(new CopyButtonPlugin());
+        htmx.onLoad(hljs.highlightAll);
+    </script><script defer data-domain="gallery.fastht.ml" src="https://plausible-analytics-ce-production-dba0.up.railway.app/js/script.js"></script>     <meta property="og:image" content="https://gallery.fastht.ml/social.png">
+     <meta property="og:site_name" content="gallery.fastht.ml">
+     <meta property="og:image:type" content="image/png">
+     <meta property="og:image:width" content="1200">
+     <meta property="og:image:height" content="630">
+     <meta property="og:type" content="website">
+     <meta property="og:url" content="https://gallery.fastht.ml">
+     <meta property="og:title" content="FastHTML Gallery">
+     <meta property="og:description" content="A gallery of FastHTML components showing common patterns in FastHTML apps, including chat bubbles, cascading dropdowns, interactive charts, etc.">
+     <meta name="twitter:image" content="https://gallery.fastht.ml/social.png">
+     <meta name="twitter:card" content="summary">
+     <meta name="twitter:title" content="FastHTML Gallery">
+     <meta name="twitter:description" content="A gallery of FastHTML components showing common patterns in FastHTML apps, including chat bubbles, cascading dropdowns, interactive charts, etc.">
+     <meta name="twitter:site" content="@isaac_flath">
+<script>
+    function toggleAnimations() {
+        const images = document.querySelectorAll('.card-img-top');
+        images.forEach(img => {
+            if (img.src.endsWith('.gif')) {
+                img.src = img.getAttribute('data-png');
+            } else {
+                img.setAttribute('data-png', img.src);
+                img.src = img.src.replace('card_thumbnail.png', 'card_thumbnail.gif');
+            }
+        });
+    }</script>     <link rel="stylesheet" href="https://unpkg.com/franken-ui@1.1.0/dist/css/core.min.css">
+<script type="module" src="https://unpkg.com/franken-ui@1.1.0/dist/js/core.iife.js"></script><script type="module" src="https://cdn.jsdelivr.net/gh/answerdotai/fh-frankenui@main/fh_frankenui/icon.iife.js"></script><script src="https://cdn.tailwindcss.com"></script><script>
+        const htmlElement = document.documentElement;
+        
+            if (
+                localStorage.getItem("mode") === "dark" ||
+                (!("mode" in localStorage) &&
+                window.matchMedia("(prefers-color-scheme: dark)").matches)
+            ) {
+                htmlElement.classList.add("dark");
+            } else {
+                htmlElement.classList.remove("dark");
+            }
+        
+        htmlElement.classList.add(localStorage.getItem("theme") || "uk-theme-blue");
+    </script>   </head>
+   <body class=" bg-background text-foreground">
+     <div class=" ">
+       <div class="uk-container uk-container-expand">
+         <div uk-navbar>
+           <div class="uk-navbar-left ">
+<a href="/">               <h1 class="uk-h1 navbar-brand mb-0 h1">Fh-Gallery</h1>
+</a>           </div>
+           <div class="uk-navbar-center ">
+             <h1 class="uk-h1 ">Progress Bar</h1>
+           </div>
+           <div class="uk-navbar-right ">
+             <nav class="uk-navbar-nav ">
+               <li>
+<a href="/">Back to Gallery</a>               </li>
+               <li>
+<a href="/code/widgets/progress_bar">Code</a>               </li>
+               <li>
+<a href="/app/widgets/progress_bar">App</a>               </li>
+             </nav>
+           </div>
+         </div>
+       </div>
+     </div>
+     <div class="uk-container mt-5 uk-container-xlarge">
+<pre><code class="language-python">from fasthtml.common import *
+import random
+
+app, rt = fast_app()
+
+def get_progress(percent_complete: int):
+    &quot;Simulate progress check&quot;
+    return percent_complete + random.random()/3
+
+@rt
+def index():
+    return (Div(H3(&quot;Start the job to see progress!&quot;),id=&#x27;progress_bar&#x27;),
+            Button(&quot;Start Job&quot;,post=update_status, hx_target=&quot;#progress_bar&quot;))
+
+@rt
+def update_status(): 
+    &quot;Start job and progress bar&quot;
+    return progress_bar(percent_complete=0)
+
+@rt
+def update_progress(percent_complete: float):
+    # Check if done
+    if percent_complete &gt;= 1: return H3(&quot;Job Complete!&quot;, id=&quot;progress_bar&quot;)
+    # get progress
+    percent_complete = get_progress(percent_complete)
+    # Update progress bar
+    return progress_bar(percent_complete)
+
+def progress_bar(percent_complete: float):
+    return Progress(id=&quot;progress_bar&quot;,value=percent_complete,
+                    get=update_progress,hx_target=&quot;#progress_bar&quot;,hx_trigger=&quot;every 500ms&quot;,
+                    hx_vals=f&quot;js:&#x27;percent_complete&#x27;: &#x27;{percent_complete}&#x27;&quot;)
+
+serve()</code></pre>     </div>
+   </body>
+ </html></doc><doc title="App Example" desc='Only shows the app. In this case the "progress bar" widget.'></doc><doc title="Info Example" desc='Some larger apps have a "info" section that provides a writeup about the app with links to explanations of its components. In this case a writeup for the "sqlite todo" app.'>Internal Server Error</doc></components></project>

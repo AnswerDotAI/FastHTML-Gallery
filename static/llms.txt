@@ -1,0 +1,23 @@
+# FastHTML Gallery
+
+> A curated collection of FastHTML applications, components, and templates demonstrating example applications using FastHTML and HTMX.
+
+Things to remember for the FastHTML Gallery:
+
+- All examples are open source and can be freely used in your own projects.
+- Links to all examples are shown on the [Homepage](https://gallery.fastht.ml).
+- Components are designed to work with FastHTML.
+- "Widgets" are small apps demonstrating a single concept.
+- "Visualizations" show off FastHTML's ability to visualize data.
+- "Dynamic user interface" demonstrates interactive patterns using HTMX.
+- "Svg" demonstrates FastHTML's ability to render SVG.
+- "Start Simple" contains example apps in an increasing order of complexity.
+- "Applications" are full-featured apps demonstrating a complete end-to-end application.
+
+## Components
+
+- [Homepage](https://gallery.fastht.ml/): Shows links to all sections.
+- [Split View Example](https://gallery.fastht.ml/split/widgets/click_to_load): Shows code and the full app. In this case the "click to load" widget.
+- [Code Example](https://gallery.fastht.ml/code/widgets/progress_bar): Only shows code of the app. In this case code for the "progress bar" widget.
+- [App Example](https://gallery.fastht.ml/app/widgets/progress_bar): Only shows the app. In this case the "progress bar" widget.
+- [Info Example](https://gallery.fastht.ml/info/start_simple/sqlite_todo): Some larger apps have a "info" section that provides a writeup about the app with links to explanations of its components. In this case a writeup for the "sqlite todo" app.
