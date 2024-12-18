@@ -1,6 +1,6 @@
 from fasthtml.common import *
 from datetime import date,datetime
-from monsterui.core import *
+from monsterui.all import *
 
 # fast_app is doing a lot of work here.
 # It creates a table in the database if it doesn't exist with columns id and title making id the primary key

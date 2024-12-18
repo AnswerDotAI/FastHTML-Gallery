@@ -3,7 +3,7 @@ import configparser, os
 from pathlib import Path
 from utils import *
 from importlib import import_module
-from monsterui.core import *
+from monsterui.all import *
 
 def get_route(p): return '/'.join(Path(p).parts[1:])
 def get_module_path(p,base_dir): return f'{base_dir}.{".".join(Path(p).parts[1:])}.app'
