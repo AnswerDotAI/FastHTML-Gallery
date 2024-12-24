@@ -1,6 +1,6 @@
 from fasthtml.common import *
 from fastsql import *
-from sqlite_minutils.db import NotFoundError
+from apswutils.db import NotFoundError
 
 app,rt,todos,Todo = fast_app(
     'data/todos.db',
