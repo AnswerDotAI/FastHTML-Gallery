@@ -1,4 +1,5 @@
 python-fasthtml
+sqlite_minutils
 fh-matplotlib
 fh-altair
 great_tables
