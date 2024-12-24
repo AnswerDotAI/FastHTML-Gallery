@@ -29,6 +29,6 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add nbs/llms-ctx.txt nbs/apilist.txt
+          git add llms.txt llms_ctx.txt
           git commit -m "Auto-update API lists and context files" || echo "No changes to commit"
           git push
