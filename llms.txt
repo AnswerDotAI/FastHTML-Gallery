@@ -1,0 +1,49 @@
+# FastHTML Gallery Examples
+
+> FastHTML Gallery bring minimal examples of FastHTML apps to allow you to get started with FastHTML more easily
+
+
+## Applications
+- Annotate Text(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/applications/annotate_text/app.py)
+- Cellular Automata(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/applications/cellular_automata/app.py)
+- Csv Editor(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/applications/csv_editor/app.py)
+- Tic Tac Toe(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/applications/tic_tac_toe/app.py)
+
+## Dynamic User Interface (Htmx)
+- Animations(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/animations/app.py)
+- Cascading Dropdowns(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/cascading_dropdowns/app.py)
+- Click To Edit(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/click_to_edit/app.py)
+- Click To Load(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/click_to_load/app.py)
+- Configurable Select(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/configurable_select/app.py)
+- Custom Keybindings(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/custom_keybindings/app.py)
+- Infinite Scroll(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/infinite_scroll/app.py)
+- Inline Validation(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/inline_validation/app.py)
+- Loading Indicator(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/loading_indicator/app.py)
+- Multi Image Upload(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/multi_image_upload/app.py)
+- Progress Bar(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/progress_bar/app.py)
+- Show Hide(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/show_hide/app.py)
+- Two Column Grid(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/two_column_grid/app.py)
+- Update Other Content(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/update_other_content/app.py)
+- Web Sockets(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/web_sockets/app.py)
+
+## Svg
+- Click And Drag(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/svg/click_and_drag/app.py)
+- Find And Click(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/svg/find_and_click/app.py)
+- Inb Replacement(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/svg/inb_replacement/app.py)
+
+## Todo Series
+- Beginner(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/todo_series/beginner/app.py)
+- Intermediate(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/todo_series/intermediate/app.py)
+
+## Visualizations
+- Altair Charts(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/visualizations/altair_charts/app.py)
+- Bloch Sphere(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/visualizations/bloch_sphere/app.py)
+- Great Tables Tables(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/visualizations/great_tables_tables/app.py)
+- Matplotlib Charts(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/visualizations/matplotlib_charts/app.py)
+- Plotly Charts(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/visualizations/plotly_charts/app.py)
+- Seaborn Svg(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/visualizations/seaborn_svg/app.py)
+
+## Widgets
+- Audio(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/widgets/audio/app.py)
+- Chat Bubble(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/widgets/chat_bubble/app.py)
+- Pdf(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/widgets/pdf/app.py)
