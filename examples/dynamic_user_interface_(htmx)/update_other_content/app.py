@@ -7,28 +7,27 @@ def mk_row(name, email):
 
 @rt
 def index():
-    return Div(
-            H2("Contacts"),
-            Table(
-                Thead(Tr(Th("Name"), Th("Email"))),
-                Tbody(
-                    Tr(Td("Audrey"), Td("mommy@example.com")),
-                    Tr(Td("Uma"), Td("kid@example.com")),
-                    Tr(Td("Daniel"), Td("daddy@example.com"))), 
-                id="contacts-table",
-                cls="table"),
-            H2("Add a Contact"),
-            Form(
-                Label("Name", Input(name="name", type="text")),
-                Label("Email", Input(name="email", type="email")),
-                Button("Save"),
-                hx_post="contacts",
-                hx_target="#contacts-table",
-                hx_swap="beforeend",
-                hx_on__after_request="this.reset()"
-            ),
-            id="table-and-form"
-        )
+    return Div(H2("Contacts"),
+        Table(
+            Thead(Tr(map(Th, ("Name",   "Email")))),
+            Tbody(
+                mk_row("Audrey", "mommy@example.com"),
+                mk_row("Uma"   , "kid@example.com"),
+                mk_row("Daniel", "daddy@example.com")), 
+            id="contacts-table"),
+        H2("Add a Contact"),
+        Form(
+            Label("Name",  Input(name="name",  type="text")),
+            Label("Email", Input(name="email", type="email")),
+            Button("Save"),
+            # When button is clicked run contacts route/function
+            post=contacts,
+            # Send the results of contacts to #contacts-table
+            hx_target="#contacts-table",
+            # Add the new row to the end of the target
+            hx_swap="beforeend",
+            # Reset the form
+            hx_on__after_request="this.reset()"))
 
 @rt
 def contacts(name:str,email:str):

@@ -69,13 +69,14 @@ hdrs = (*hjs,
 
 app = FastHTML(routes=application_routes+ [Mount('/files', StaticFiles(directory='.')),], hdrs=hdrs, pico=False)
 
-def NavBar(dir_path, info=True):
+def NavBar(dir_path, info=True, active=''):
     nav_items = [
         Li(A("Back to Gallery", href="/")),
-        Li(A("Code", href=f"/code/{dir_path.parts[1]}/{dir_path.parts[2]}")),
-        Li(A("App",  href=f"/app/{dir_path.parts[1]}/{dir_path.parts[2]}"))]
+        Li(A("Split", href=f"/split/{dir_path.parts[1]}/{dir_path.parts[2]}"), cls='uk-active' if active == 'split' else ''),
+        Li(A("Code", href=f"/code/{dir_path.parts[1]}/{dir_path.parts[2]}"), cls='uk-active' if active == 'code' else ''),
+        Li(A("App",  href=f"/app/{dir_path.parts[1]}/{dir_path.parts[2]}"), cls='uk-active' if active == 'app' else '')]
     
-    if info:nav_items.insert(1, Li(A("Info", href=f"/info/{dir_path.parts[1]}/{dir_path.parts[2]}")))
+    if info:nav_items.insert(1, Li(A("Info", href=f"/info/{dir_path.parts[1]}/{dir_path.parts[2]}"), cls='uk-active' if active == 'info' else ''))
         
     return NavBarContainer(
             NavBarLSide(H1(f"{dir_path.name.replace('_',' ').title()}"), cls="hidden md:block"),
@@ -87,7 +88,7 @@ def split_view(category: str, project: str):
     code_text = (dir_path/'app.py').read_text().strip()
     info = (dir_path/'info.md').exists()
     return (
-        NavBar(dir_path, info=info),
+        NavBar(dir_path, info=info, active='split'),
         Title(f"{dir_path.name} - Split View"),
             Grid(Div(Pre(Code(code_text, cls='language-python'))),
                 Div(Iframe(src=f"/app/{category}/{project}/",style="width: 100%; height: 100%; border: none;")),
@@ -98,13 +99,13 @@ def application_code(category:str, project:str):
     dir_path = Path('examples')/category/project
     code_text = (dir_path/'app.py').read_text().strip()
     info = (dir_path/'info.md').exists()
-    return  (NavBar(dir_path, info=info), Title(f"{dir_path.name} - Code"), Container(Pre(Code(code_text, cls='language-python'))))
+    return  (NavBar(dir_path, info=info, active='code'), Title(f"{dir_path.name} - Code"), Container(Pre(Code(code_text, cls='language-python'))))
     
 @app.get('/info/{category}/{project}')
 def application_info(category:str, project:str):
     dir_path = Path('examples')/category/project
     md_text = (dir_path/'info.md').read_text()
-    return (NavBar(dir_path), Title(f"{dir_path.name} - Info"), Container(render_md(md_text)))
+    return (NavBar(dir_path, info=True, active='info'), Title(f"{dir_path.name} - Info"), Container(render_md(md_text)))
 
 def ImageCard(dir_path):
     metadata = configparser.ConfigParser()
