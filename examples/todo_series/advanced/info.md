@@ -43,5 +43,9 @@ HTMX is used to create a dynamic user interface:
 3. **Real-time Updates**: The list updates dynamically without full page reloads.
 4. **Persistent Storage**: Todos are stored in an SQLite database for data persistence.
 5. **Due Date**: Each todo item has a due date field and the list is sorted by due date. If the item is past due the date is displayed in red.
-6. **Done**: Each todo item has a done field. Items can be marked as done and the list shows completed items crossed out.
 7. **fh-frakenui**: Simple styling is done using the fh-frakenui library.
+8. **Edit Todo**: Each todo item has an edit link to edit the item. The edit form is displayed in a card and the todo list is updated with the new values.
+9. **Sortable**: The todo list is sortable by dragging and dropping the items. The sortable.js library is used to handle the sorting.
+10. **Kanban**: The todo list is displayed in a kanban board with three columns: "Not Started", "In Progress", and "Done". The kanban board is updated dynamically when the status of a todo is changed.
+11. **Archive**: Todos that are finished can be archived and moved to an archive list. The archive list is displayed at the bottom of the page and collapsable.
+12. **Users**: The app allows people to create users and only shows todos for the currently logged in user.
