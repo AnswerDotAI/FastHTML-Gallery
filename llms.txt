@@ -16,6 +16,7 @@
 - Click To Load(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/click_to_load/app.py)
 - Configurable Select(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/configurable_select/app.py)
 - Custom Keybindings(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/custom_keybindings/app.py)
+- Delete Row(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/delete_row/app.py)
 - Infinite Scroll(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/infinite_scroll/app.py)
 - Inline Validation(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/inline_validation/app.py)
 - Loading Indicator(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/loading_indicator/app.py)
