@@ -17,7 +17,7 @@ class Contact:
         # By defining this, a `Contact` will show up as a table row automatically
         return Tr(
             *map(Td, (self.name, self.email, self.status)),
-            Td(Button('Delete', cls="btn danger", 
+            Td(Button('Delete', 
                       hx_delete=delete.to(id=self.id).lstrip('/'),
                       # Give a confirmation prompt before deleting
                       hx_confirm="Are you sure?", 
