@@ -122,8 +122,8 @@ def ImageCard(dir_path):
                 loading="lazy",
                 cls="card-img-top"), 
                 href=f"/split/{dpath}"),
-            Div(P(meta['ComponentName'],        cls=(TextT.bold, TextT.large)),
-                render_md(P(meta['ComponentDescription'])),#, cls=(TextT.muted, TextT.large)),
+            Div(P(meta['ComponentName'],        cls=(TextT.bold, TextT.lg)),
+                render_md(P(meta['ComponentDescription'])),#, cls=(TextT.muted, TextT.lg)),
                 style="height: 150px; overflow: auto;"),
             footer=DivFullySpaced(
                 A(Button("Split", cls=ButtonT.primary), href=f"/split/{dpath}"),
