@@ -1,64 +1,53 @@
-
 from fasthtml.common import *
 
 app, rt = fast_app()
 
+# This represents the data we are rendering
+# The data could original from a database, or any other datastore
 @dataclass
 class Contact:
+    # Data points
     id: int
     name: str
     email: str
     status: str
 
     def __ft__(self):
+        # __ft__ method is used by FastHTML to render an item in the UI
+        # By defining this, a `Contact` will show up as a table row automatically
         return Tr(
-            Td(self.name),
-            Td(self.email),
-            Td(self.status),
-            Td(
-                Button(
-                    'Delete',
-                    cls="btn danger",
-
-                    hx_delete=delete.to(id=self.id).lstrip('/'),
-                    # hx_delete=f"{}/delete/{self.id}"
-                )
-            ),
-            id=f"row-{self.id}"
-        )
+            *map(Td, (self.name, self.email, self.status)),
+            Td(Button('Delete', cls="btn danger", 
+                      hx_delete=delete.to(id=self.id).lstrip('/'),
+                      # Give a confirmation prompt before deleting
+                      hx_confirm="Are you sure?", 
+                      # Target the closest row (The one you clicked on)
+                      hx_target="closest tr", 
+                      # Swap out the row with nothing (removes the row)
+                      hx_swap="outerHTML")))
 
 # Sample data
-SAMPLE_DATA = [
-    Contact(1, "Angie MacDowell", "angie@macdowell.org", "Active"),
-    Contact(2, "John Doe", "john@doe.com", "Inactive"),
-    Contact(3, "Jane Smith", "jane@smith.com", "Active"),
-]
-contacts = SAMPLE_DATA
+# Often this would come from a database
+contacts = [{'id':1, 'name': "Bob Deer",  'email': "bob@deer.org",  'status': "Active"  },
+            {'id':2, 'name': "Jon Doe",   'email': "Jon@doe.com",   'status': "Inactive"},
+            {'id':3, 'name': "Jane Smith",'email': "jane@smith.com",'status': "Active"  }]
 
-# Main Table
 @rt
-def index():
-    # Repopulating the contacts after refresh
-    contacts = SAMPLE_DATA
+def index(sess):
+    # Save a copy of contacts in your session
+    # This is the demo doesn't conflict with other users
+    sess['contacts'] = contacts
+    # Create initial table
     return Table(
-        Thead(
-            Tr(
-                Th("Name"), Th("Email"), Th("Status"), Th("")
-            )
-        ),
-        Tbody(
-            *(c for c in contacts),
-            hx_confirm="Are you sure?",
-            hx_target="closest tr",
-            hx_swap="outerHTML swap:1s"
-        ),
-        cls="table delete-row-example"
-    )
+        Thead(Tr(*map(Th, ["Name", "Email", "Status", ""]))),
+        # A `Contact` object is rendered as a row automatically using the `__ft__` method 
+        Tbody(*(Contact(**x) for x in sess['contacts'])))
 
 
-# Delete Route
-@app.delete("/delete", name='delete')
-def delete(id: int):
-    global contacts
-    contacts = [c for c in contacts if c.id != id]
-    return ''  # Return empty content to remove the row
+@app.delete
+def delete(id: int, sess):
+    sess['contacts'] = [c for c in sess['contacts'] if c['id'] != id]
+    # Return nothing to the HTMX request to swap in nothing (removes the row)
+
+
+serve()
