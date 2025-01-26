@@ -1,12 +1,3 @@
-# /// script
-# requires-python = ">=3.12"
-# dependencies = [
-#   "python-fasthtml",
-#   "plotly",
-#   "pandas",
-# ]
-# ///
-
 import plotly.express as px
 from fasthtml.common import *
 
