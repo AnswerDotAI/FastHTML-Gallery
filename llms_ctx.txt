@@ -761,8 +761,8 @@ class Contact:
                       hx_confirm="Are you sure?", 
                       # Target the closest row (The one you clicked on)
                       hx_target="closest tr", 
-                      # Swap out the row with nothing (removes the row)
-                      hx_swap="outerHTML")))
+                      # Removes the row with htmx
+                      hx_swap="delete")))
 
 # Sample data
 # Often this would come from a database
@@ -781,12 +781,9 @@ def index(sess):
         # A `Contact` object is rendered as a row automatically using the `__ft__` method 
         Tbody(*(Contact(**x) for x in sess['contacts'])))
 
-
 @app.delete
 def delete(id: int, sess):
     sess['contacts'] = [c for c in sess['contacts'] if c['id'] != id]
-    # Return nothing to the HTMX request to swap in nothing (removes the row)
-
 
 serve()
 
