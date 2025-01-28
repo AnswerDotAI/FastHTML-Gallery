@@ -89,6 +89,7 @@ def mk_todo_form(todo=_default_todo):
 # Index page
 @rt
 async def index(sess):
+    sess['user_name'] = unqid()
     return Container(mk_todo_form(), Divider(),
                      Div(mk_todo_list(sess['user_name']),id='todo-list'),
                      Details(Summary(H1("Archived Todos")),mk_archive_list()))

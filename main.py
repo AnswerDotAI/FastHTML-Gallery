@@ -187,7 +187,7 @@ def SectionTable(section):
                 Thead(Tr(map(Th, ("Component", "Description", "Actions")))),
                 Tbody(*[TableRow(dir) for dir in sorted(section.iterdir()) 
                        if is_example_dir(dir)]),
-                cls=(TableT.middle, TableT.divider, TableT.hover, TableT.small)),
+                cls=(TableT.middle, TableT.divider, TableT.hover, TableT.sm)),
             # open=True,
             id=section_id),
         cls='py-2')
