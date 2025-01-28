@@ -33,9 +33,9 @@
 - Inb Replacement(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/svg/inb_replacement/app.py)
 
 ## Todo Series
+-  Kanban(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/todo_series/_kanban/app.py)
 - Beginner(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/todo_series/beginner/app.py)
 - Intermediate(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/todo_series/intermediate/app.py)
-- Kanban(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/todo_series/kanban/app.py)
 
 ## Visualizations
 - Altair Charts(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/visualizations/altair_charts/app.py)
