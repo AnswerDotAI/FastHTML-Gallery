@@ -32,7 +32,7 @@ app, rt = fast_app(
 def index():
     return Div(
         H1("Observable Plot Demo", cls="text-4xl font-bold"),
-        P("This FastHTML example renders an ", A("Observable Plot", href="https://observablehq.com/@observablehq/plot", target="_blank", cls="visited:text-purple-600 underline"), " chart. The data is randomly generated on the server and is fetched on initial page load. You can also click the button to fetch new random data from the server. Try opening the browser tab and viewing the Network tab to see the data reponse for each http request.", cls="my-4"),
+        P("This FastHTML example renders an ", A("Observable Plot", href="https://observablehq.com/@observablehq/plot", target="_blank", cls="visited:text-purple-600 underline"), " chart. The data is randomly generated on the server and is fetched on initial page load. You can also click the button to fetch new random data from the server. Try opening the browser developer tools and viewing the Network tab to see the data reponse for each http request.", cls="my-4"),
         Button("Refresh Data", hx_get="get_data", hx_target="#data-store", cls="cursor-pointer rounded-md bg-slate-600 px-3.5 py-2.5 my-2 text-sm font-semibold text-white shadow-xs hover:bg-slate-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-600"),
         # Store for the JSON chart data
         Div(id="data-store", hx_get="get_data", hx_trigger="load", cls="hidden"),
