@@ -1,6 +1,7 @@
 from fasthtml.common import APIRouter, uvicorn, FastHTMLWithLiveReload
+
+# Async steaming chat with OpenAI and LlamaIndex
 # add Routers https://docs.fastht.ml/ref/handlers.html#apirouter
-# Markdown support https://docs.fastht.ml/tutorials/quickstart_for_web_devs.html#rendering-markdown
 # Markdown support for daisy ui chat https://isaac-flath.github.io/website/posts/boots/FasthtmlTutorial.html
 
 from fasthtml.common import Div, Span, Body, P, Form, Input, Button, Script, Link, Label, Nav, Title, Template, Style, serve
@@ -41,6 +42,21 @@ def render_md(md):
 
 # Chat  bubble with markdown
 def ChatMessageMd(msg_idx:int, msg:str, **kwargs):    
+    def ChatMessageMd(msg_idx: int, msg: str, **kwargs):
+        """
+        Generates a chat message component in HTML format.
+
+        Args:
+            msg_idx (int): The index of the message.
+            msg (str): The message content.
+            **kwargs: Additional keyword arguments to be passed to the HTML component.
+
+        Returns:
+            Div: An HTML Div element representing the chat message.
+
+        Raises:
+            AssertionError: If msg_idx is None.
+        """
     assert msg_idx is not None, "Message index is missing"    
     Msg = msg
     role = Msg.role.value
@@ -82,13 +98,49 @@ def SpanMd(msg, **kwargs):
 
 
 # On socket disconnect clear user chat data
-async def on_disconnect(send, session):
+async def on_disconnect(session):
+    """
+    Handles the disconnection event for a user session.
+
+    This function is called when a user disconnects from the chat. It retrieves
+    the session ID from the session dictionary and removes the corresponding
+    user data from the global user_data dictionary.
+
+    Args:
+        send (function): A function to send messages or data.
+        session (dict): A dictionary containing session information, including
+                        the session ID.
+
+    """
     session_id = session.get('session_id', "no-session-id" )
     user_data.pop(session_id, None) # clear user data    
 
 #  Socket connection
 @r_chat.ws('/wscon',  disconn = on_disconnect)
 async def ws(data, send,  session):
+    """
+    WebSocket handler for processing chat messages.
+    This function handles incoming WebSocket messages, processes them, and sends appropriate responses back to the client.
+    Args:
+        data (dict): The data received from the WebSocket, expected to contain a 'msg' key with the user's message.
+        send (callable): The function to send data back to the WebSocket client.
+        session (dict): The session data for the current WebSocket connection.
+    Workflow:
+    1. Checks if the OpenAI API key is set. If not, sends an error message to the client.
+    2. Validates the received data. If no data is received, sends an error message to the client.
+    3. Extracts the user's message from the data. If the message is empty, sends an error message to the client.
+    4. Retrieves the user's chat history from the session and appends the new user message.
+    5. Sends the user's message to the client to update the UI.
+    6. Clears the input field on the client side.
+    7. Starts a loader animation on the client side.
+    8. Sends the user's message to the chat model and starts streaming the response.
+    9. Clears the loader animation.
+    10. Sends an empty assistant message to the client to prepare for the response.
+    11. Processes the streaming response from the chat model, sending each chunk to the client.
+    12. Sends the final chunk of the response to the client.
+    13. Replaces the temporary assistant message with the final complete message.
+    14. Updates the user's chat history in the global store.
+    """
     
     if not api_key_set:
         print(">>>> OpenAI API key is not set ! ")
@@ -173,10 +225,20 @@ async def ws(data, send,  session):
     # check-in user messages to global store
     user_data[session_id] = data_messages
 
-
 def entry_form(apikey:str=""):
+    """
+    Generates an HTML form for entering an Open AI API key.
+    This function creates a form that prompts the user to enter their Open AI API key.
+    The form includes a label, input field, and a submit button. The input field is 
+    required and has custom validation messages. The form is styled using various CSS 
+    classes and includes a tooltip with a link to obtain the API key.
+    Args:
+        apikey (str): The default value for the API key input field. Defaults to an empty string.
+    Returns:
+        Div: An HTML Div element containing the form.
+    """
     return Div(
-        P("This demo requires Open AI API key to run. Enter your API key here "),
+        P("This demo requires Open AI API key to run. Enter your API key here (it is only saved for this session). "),
         Form(
             Div(
                 Label(
@@ -241,13 +303,25 @@ def Loader():
 
 @r_chat.post("/set_api_key")
 async def set_api_key(apikey: str):
+    """
+    Sets the OpenAI API key and initializes the OpenAIAgent with the provided key.
+    This function attempts to create an instance of OpenAIAgent using the provided API key.
+    It then queries the agent with a predefined prompt to ensure the agent is working correctly.
+    If successful, it sets a global flag indicating the API key has been set.
+    Args:
+        apikey (str): The OpenAI API key to be used for authentication.
+    Returns:
+        str: A message indicating whether the API key was set successfully or an error occurred.
+    Raises:
+        Exception: If there is an error during the initialization of the OpenAIAgent or querying the agent.
+    """
     global agent, api_key_set
     agent = OpenAIAgent.from_tools(llm=OpenAI(model="gpt-4o", api_key=apikey))
     
     hello = ""
     
     try:
-       hello = agent.query("You are witty and cheerful assitant, say hello") 
+       hello = agent.query("Instructions: You are witty and cheerful assitant.  Say hello") 
        print(f"Hello from OpenAI: {hello}")    
            
     except Exception as e:
@@ -261,6 +335,17 @@ async def set_api_key(apikey: str):
 # Chat page
 @r_chat("/", name="chat")
 def get(session):  # noqa: F811
+    """
+    Generates the HTML structure for the streaming chat application.
+    This function initializes the session with a unique session ID if it doesn't already exist,
+    retrieves the chat messages for the current session, and constructs the HTML layout for the
+    chat application using various components such as the title, navbar, chat message section,
+    notification, loader, and follow-up input area.
+    Args:
+        session (dict): A dictionary representing the current session.
+    Returns:
+        tuple: A tuple containing the Title and Body components of the HTML structure.
+    """
     
     # check session id
     session_id = session.setdefault('session_id', str(uuid.uuid4()))
