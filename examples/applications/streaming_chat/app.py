@@ -42,21 +42,20 @@ def render_md(md):
 
 # Chat  bubble with markdown
 def ChatMessageMd(msg_idx:int, msg:str, **kwargs):    
-    def ChatMessageMd(msg_idx: int, msg: str, **kwargs):
-        """
-        Generates a chat message component in HTML format.
+    """
+    Generates a chat message component in HTML format.
 
-        Args:
-            msg_idx (int): The index of the message.
-            msg (str): The message content.
-            **kwargs: Additional keyword arguments to be passed to the HTML component.
+    Args:
+        msg_idx (int): The index of the message.
+        msg (str): The message content.
+        **kwargs: Additional keyword arguments to be passed to the HTML component.
 
-        Returns:
-            Div: An HTML Div element representing the chat message.
+    Returns:
+        Div: An HTML Div element representing the chat message.
 
-        Raises:
-            AssertionError: If msg_idx is None.
-        """
+    Raises:
+        AssertionError: If msg_idx is None.
+    """
     assert msg_idx is not None, "Message index is missing"    
     Msg = msg
     role = Msg.role.value
