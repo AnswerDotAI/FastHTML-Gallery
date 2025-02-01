@@ -42,6 +42,7 @@
 - Bloch Sphere(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/visualizations/bloch_sphere/app.py)
 - Great Tables Tables(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/visualizations/great_tables_tables/app.py)
 - Matplotlib Charts(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/visualizations/matplotlib_charts/app.py)
+- Observable Plot(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/visualizations/observable_plot/app.py)
 - Plotly Charts(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/visualizations/plotly_charts/app.py)
 - Plotly Selections(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/visualizations/plotly_selections/app.py)
 - Seaborn Svg(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/visualizations/seaborn_svg/app.py)
