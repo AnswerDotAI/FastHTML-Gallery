@@ -12,60 +12,10 @@ application_routes = [Mount(f"/app/{get_route(root)}", import_module(get_module_
 
 descr = 'A gallery of FastHTML components showing common patterns in FastHTML apps, including chat bubbles, cascading dropdowns, interactive charts, etc.'
 
-HLJS_THEMES = {
-    'dark': 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/atom-one-dark.css',
-    'light': 'https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/atom-one-light.css'}
-
-hjs = (
-    # Basic highlight.js setup
-    Script(src='https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/highlight.min.js'),
-    Script(src='https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/languages/python.min.js'),
-    
-    # Copy button setup
-    Script(src='https://cdn.jsdelivr.net/gh/arronhunt/highlightjs-copy/dist/highlightjs-copy.min.js'),
-    Link(rel='stylesheet', href='https://cdn.jsdelivr.net/gh/arronhunt/highlightjs-copy/dist/highlightjs-copy.min.css'),
-    Style('''
-        .hljs-copy-button { background-color: #2d2b57; }
-        html.dark .hljs-copy-button { background-color: #e0e0e0; color: #2d2b57; }
-    '''),
-    
-    # Theme stylesheets
-    Link(rel='stylesheet', href=HLJS_THEMES['dark'], id='hljs-dark-theme', disabled=True),
-    Link(rel='stylesheet', href=HLJS_THEMES['light'], id='hljs-light-theme', disabled=True),
-    
-    # Theme switching logic
-    Script('''
-        function updateCodeTheme() {
-            const isDark = document.documentElement.classList.contains('dark');
-            document.getElementById('hljs-dark-theme').disabled = !isDark;
-            document.getElementById('hljs-light-theme').disabled = isDark;
-        }
-        
-        // Watch for theme changes
-        new MutationObserver(mutations => {
-            mutations.forEach(mutation => {
-                if (mutation.target.tagName === 'HTML' && mutation.attributeName === 'class') {
-                    updateCodeTheme();
-                }
-            });
-        }).observe(document.documentElement, { attributes: true });
-        
-        // Initial setup
-        document.addEventListener('DOMContentLoaded', updateCodeTheme);
-    '''),
-    # Highlight.js initialization
-    Script('''
-        hljs.configure({ ignoreUnescapedHTML: true });
-        hljs.addPlugin(new CopyButtonPlugin());
-        htmx.onLoad(hljs.highlightAll);
-    ''', type='module'),
-)
-
-hdrs = (*hjs,
-    #Script(defer=True, data_domain="gallery.fastht.ml", src="https://plausible-analytics-ce-production-dba0.up.railway.app/js/script.js"),
+hdrs = (
     *Socials(title='FastHTML Gallery', description=descr, site_name='gallery.fastht.ml', twitter_site='@isaac_flath', image=f'/social.png', url=''),
     toggle_script,
-    *Theme.blue.headers(),)
+    *Theme.blue.headers(highlightjs=True),)
 
 app = FastHTML(routes=application_routes+ [Mount('/files', StaticFiles(directory='.')),], hdrs=hdrs, pico=False)
 
