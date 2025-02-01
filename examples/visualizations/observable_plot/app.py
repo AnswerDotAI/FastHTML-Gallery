@@ -25,11 +25,12 @@ app, rt = fast_app(
 @rt
 def index():
     return Div(
-        H1(A("Observable", href="https://observablehq.com/@observablehq/plot", target="_blank"), " Plot Demo"),
-        P("The data is randomly generated on the server and is fetched on initial page load."),
-        P("Try opening the browser developer tools and viewing the Network tab to see the data reponse for each http request."),
-        # On bytton click it sends a get request to the `get_data` route and puts the response in the `data-store` div 
-        Button("Fetch New Data", get=get_data, hx_target="#data-store", cls='btn btn-primary'),
+        Section(
+            H1(A("Observable", href="https://observablehq.com/@observablehq/plot", target="_blank"), " Plot Demo"),
+            P("The data is randomly generated on the server and is fetched on initial page load."),
+            P("Try opening the browser developer tools and viewing the Network tab to see the data reponse for each http request."),
+            # On bytton click it sends a get request to the `get_data` route and puts the response in the `data-store` div 
+            Button("Fetch New Data", get=get_data, hx_target="#data-store")),
         # Store for the JSON chart data
         Div(id="data-store", get=get_data, hx_trigger="load", hidden=True),
         # Plot container
