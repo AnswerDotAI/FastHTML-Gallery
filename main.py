@@ -10,12 +10,14 @@ def get_module_path(p,base_dir): return f'{base_dir}.{".".join(Path(p).parts[1:]
 
 application_routes = [Mount(f"/app/{get_route(root)}", import_module(get_module_path(root,'examples')).app) for root, dirs, files in os.walk('examples') if 'app.py' in files]
 
+site_title = 'FastHTML Gallery'
 descr = 'A gallery of FastHTML components showing common patterns in FastHTML apps, including chat bubbles, cascading dropdowns, interactive charts, etc.'
 
 hdrs = (
-    *Socials(title='FastHTML Gallery', description=descr, site_name='gallery.fastht.ml', twitter_site='@isaac_flath', image=f'/social.png', url=''),
+    *Socials(title=site_title, description=descr, site_name='gallery.fastht.ml', twitter_site='@isaac_flath', image=f'/social.png', url=''),
     toggle_script,
-    *Theme.blue.headers(highlightjs=True),)
+    *Theme.blue.headers(highlightjs=True),
+    Link(rel='icon', type='image/x-ico', href="/files/gallery.ico"))
 
 app = FastHTML(routes=application_routes+ [Mount('/files', StaticFiles(directory='.')),], hdrs=hdrs, pico=False)
 
@@ -103,11 +105,12 @@ def homepage():
                      cols_min=1, cols_sm=1, cols_md=2, cols_lg=3, cols_xl=3),
                 cls='pt-6', open=True)))
 
-    return (NavBarContainer(
-        NavBarLSide(H1("FastHTML Gallery" )),
+    return (Title(site_title),
+        NavBarContainer(
+        NavBarLSide(H1(site_title)),
         NavBarRSide(
             Button(submit=False)("Toggle Animations", onclick="toggleAnimations()"),
-            A(Button("Table View"), href="/table"))),
+            A(Button("Table View"), href="/table"),)),
         Container(*all_cards))
 
 
@@ -144,7 +147,8 @@ def SectionTable(section):
 
 @app.get("/table") 
 def table_view():
-    return (NavBarContainer(
+    return (Title(site_title),
+        NavBarContainer(
         NavBarLSide(H1("FastHTML Gallery Table View")),
         NavBarRSide(
             Button(submit=False)("Toggle Animations", onclick="toggleAnimations()"),
