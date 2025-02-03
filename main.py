@@ -12,6 +12,8 @@ application_routes = [Mount(f"/app/{get_route(root)}", import_module(get_module_
 
 site_title = 'FastHTML Gallery'
 descr = 'A gallery of FastHTML components showing common patterns in FastHTML apps, including chat bubbles, cascading dropdowns, interactive charts, etc.'
+ghub_link = A(UkIcon("github"), title="FastHTML Gallery on Github",
+                 href="https://github.com/AnswerDotAI/FastHTML-Gallery"),
 
 hdrs = (
     *Socials(title=site_title, description=descr, site_name='gallery.fastht.ml', twitter_site='@isaac_flath', image=f'/social.png', url=''),
@@ -110,7 +112,8 @@ def homepage():
         NavBarLSide(H1(site_title)),
         NavBarRSide(
             Button(submit=False)("Toggle Animations", onclick="toggleAnimations()"),
-            A(Button("Table View"), href="/table"),)),
+            A(Button("Table View"), href="/table"),
+            ghub_link)),
         Container(*all_cards))
 
 
@@ -152,7 +155,8 @@ def table_view():
         NavBarLSide(H1("FastHTML Gallery Table View")),
         NavBarRSide(
             Button(submit=False)("Toggle Animations", onclick="toggleAnimations()"),
-            A(Button("Card View"), href="/"))),
+            A(Button("Card View"), href="/"),
+            ghub_link)),
         Container(*[SectionTable(section) for section in directories]))
 
 serve()
