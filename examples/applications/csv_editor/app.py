@@ -12,7 +12,7 @@ app, rt = fast_app(hdrs=hdrs)
 @rt
 async def get_test_file():
     import httpx
-    url = "https://raw.githubusercontent.com/AnswerDotAI/FastHTML-Gallery/main/applications/start_simple/csv_editor/ex_data.csv"
+    url = "https://raw.githubusercontent.com/AnswerDotAI/FastHTML-Gallery/refs/heads/main/examples/applications/csv_editor/ex_data.csv"
     response = await httpx.AsyncClient().get(url)
     return Response(response.text, media_type="text/csv",
                         headers={'Content-Disposition': 'attachment; filename="ex_data.csv"'})
@@ -30,7 +30,7 @@ def index(sess):
 
 def render_row(row):
     vals = [Td(Input(value=v, name=k, oninput="this.classList.add('edited')")) for k,v in row.items()]
-    vals.append(Td(Group(Button('delete', hx_delete=remove.rt(id=row['id']).lstrip('/')),
+    vals.append(Td(Group(Button('delete', hx_delete=remove.to(id=row['id']).lstrip('/')),
                    Button('update', hx_post='update', hx_include="closest tr"))))
     return Tr(*vals, hx_target='closest tr', hx_swap='outerHTML')
 
