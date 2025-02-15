@@ -17,7 +17,7 @@ def mk_form(add_option:str=None, options:str='isaac,hamel,curtis'):
         LabelInput("Add an Option", id="add_option"),
         Button("Add"), 
         # fh-frankenui select allows for search boxes
-        UkSelect(map(Option, opts), searchable=True), 
+        Select(map(Option, opts), searchable=True), 
         # When the "Add" button is pressed, make a new form
         get=mk_form,
         # Store options state in DOM
