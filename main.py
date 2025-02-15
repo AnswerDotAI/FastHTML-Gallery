@@ -38,9 +38,12 @@ def NavBar(dir_path, info=True, active=''):
 
 @app.get('/split/{category}/{project}')
 def split_view(category: str, project: str):
-    dir_path = Path('examples')/category/project
-    code_text = (dir_path/'app.py').read_text().strip()
-    info = (dir_path/'info.md').exists()
+    try:
+        dir_path = Path('examples')/category/project
+        code_text = (dir_path/'app.py').read_text().strip()
+        info = (dir_path/'info.md').exists()
+    except:
+        return Response(status_code=404)
     return (
         NavBar(dir_path, info=info, active='split'),
         Title(f"{dir_path.name} - Split View"),
@@ -50,15 +53,21 @@ def split_view(category: str, project: str):
 
 @app.get('/code/{category}/{project}')
 def application_code(category:str, project:str):
-    dir_path = Path('examples')/category/project
-    code_text = (dir_path/'app.py').read_text().strip()
-    info = (dir_path/'info.md').exists()
+    try:
+        dir_path = Path('examples')/category/project
+        code_text = (dir_path/'app.py').read_text().strip()
+        info = (dir_path/'info.md').exists()
+    except:
+        return Response(status_code=404)
     return  (NavBar(dir_path, info=info, active='code'), Title(f"{dir_path.name} - Code"), Container(Pre(Code(code_text, cls='language-python'))))
     
 @app.get('/info/{category}/{project}')
 def application_info(category:str, project:str):
-    dir_path = Path('examples')/category/project
-    md_text = (dir_path/'info.md').read_text()
+    try:
+        dir_path = Path('examples')/category/project
+        md_text = (dir_path/'info.md').read_text()
+    except:
+        return Response(status_code=404)
     return (NavBar(dir_path, info=True, active='info'), Title(f"{dir_path.name} - Info"), Container(render_md(md_text)))
 
 def ImageCard(dir_path):

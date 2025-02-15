@@ -40,7 +40,7 @@ def __ft__(self:Todo):
     
     return Card(DivLAligned(done, 
                             style(Strong(self.title, target_id='current-todo')), 
-                            style(P(due_date,cls=TextFont.muted_sm)),
+                            style(P(due_date,cls=TextPresets.muted_sm)),
                             edit,
                             delete),
                 id=tid(self.id))
