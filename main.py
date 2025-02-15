@@ -23,29 +23,25 @@ hdrs = (
 
 app = FastHTML(routes=application_routes+ [Mount('/files', StaticFiles(directory='.')),], hdrs=hdrs, pico=False)
 
-def NavBar(dir_path, info=True, active=''):
+def GalleryNavBar(dir_path, info=True, active=''):
     nav_items = [
-        Li(A("Back to Gallery", href="/")),
-        Li(A("Split", href=f"/split/{dir_path.parts[1]}/{dir_path.parts[2]}"), cls='uk-active' if active == 'split' else ''),
-        Li(A("Code", href=f"/code/{dir_path.parts[1]}/{dir_path.parts[2]}"), cls='uk-active' if active == 'code' else ''),
-        Li(A("App",  href=f"/app/{dir_path.parts[1]}/{dir_path.parts[2]}"), cls='uk-active' if active == 'app' else '')]
+        A("Back to Gallery", href="/"),
+        A("Split", href=f"/split/{dir_path.parts[1]}/{dir_path.parts[2]}", cls='uk-active' if active == 'split' else ''),
+        A("Code", href=f"/code/{dir_path.parts[1]}/{dir_path.parts[2]}", cls='uk-active' if active == 'code' else ''),
+        A("App",  href=f"/app/{dir_path.parts[1]}/{dir_path.parts[2]}", cls='uk-active' if active == 'app' else '')]
     
-    if info:nav_items.insert(1, Li(A("Info", href=f"/info/{dir_path.parts[1]}/{dir_path.parts[2]}"), cls='uk-active' if active == 'info' else ''))
+    if info: nav_items.insert(1, A("Info", href=f"/info/{dir_path.parts[1]}/{dir_path.parts[2]}", cls='uk-active' if active == 'info' else ''))
         
-    return NavBarContainer(
-            NavBarLSide(H1(f"{dir_path.name.replace('_',' ').title()}"), cls="hidden md:block"),
-            NavBarRSide(NavBarNav(*nav_items)))
+    return NavBar(*nav_items, brand=H1(f"{dir_path.name.replace('_',' ').title()}"), cls='mb-6')
 
 @app.get('/split/{category}/{project}')
 def split_view(category: str, project: str):
-    try:
-        dir_path = Path('examples')/category/project
-        code_text = (dir_path/'app.py').read_text().strip()
-        info = (dir_path/'info.md').exists()
-    except:
-        return Response(status_code=404)
-    return (
-        NavBar(dir_path, info=info, active='split'),
+    dir_path = Path('examples')/category/project
+    code_text = (dir_path/'app.py').read_text().strip()
+    info = (dir_path/'info.md').exists()
+    return Container(
+        GalleryNavBar(dir_path, info=info, active='split'),
+
         Title(f"{dir_path.name} - Split View"),
             Grid(Div(Pre(Code(code_text, cls='language-python'))),
                 Div(Iframe(src=f"/app/{category}/{project}/",style="width: 100%; height: 100%; border: none;")),
@@ -53,22 +49,16 @@ def split_view(category: str, project: str):
 
 @app.get('/code/{category}/{project}')
 def application_code(category:str, project:str):
-    try:
-        dir_path = Path('examples')/category/project
-        code_text = (dir_path/'app.py').read_text().strip()
-        info = (dir_path/'info.md').exists()
-    except:
-        return Response(status_code=404)
-    return  (NavBar(dir_path, info=info, active='code'), Title(f"{dir_path.name} - Code"), Container(Pre(Code(code_text, cls='language-python'))))
+    dir_path = Path('examples')/category/project
+    code_text = (dir_path/'app.py').read_text().strip()
+    info = (dir_path/'info.md').exists()
+    return  Container(GalleryNavBar(dir_path, info=info, active='code'), Title(f"{dir_path.name} - Code"), Container(Pre(Code(code_text, cls='language-python'))))
     
 @app.get('/info/{category}/{project}')
 def application_info(category:str, project:str):
-    try:
-        dir_path = Path('examples')/category/project
-        md_text = (dir_path/'info.md').read_text()
-    except:
-        return Response(status_code=404)
-    return (NavBar(dir_path, info=True, active='info'), Title(f"{dir_path.name} - Info"), Container(render_md(md_text)))
+    dir_path = Path('examples')/category/project
+    md_text = (dir_path/'info.md').read_text()
+    return Container(GalleryNavBar(dir_path, info=True, active='info'), Title(f"{dir_path.name} - Info"), Container(render_md(md_text)))
 
 def ImageCard(dir_path):
     metadata = configparser.ConfigParser()
@@ -106,7 +96,6 @@ def is_example_dir(d):
 
 @app.get("/")
 def homepage():
-    ### HEADERS ###
     all_cards = []
     for section in directories:
         all_cards.append(
@@ -116,15 +105,13 @@ def homepage():
                      cols_min=1, cols_sm=1, cols_md=2, cols_lg=3, cols_xl=3),
                 cls='pt-6', open=True)))
 
-    return (Title(site_title),
-        NavBarContainer(
-        NavBarLSide(H1(site_title)),
-        NavBarRSide(
-            Button(submit=False)("Toggle Animations", onclick="toggleAnimations()"),
-            A(Button("Table View"), href="/table"),
-            ghub_link)),
+    return Container(NavBar(
+        # Right side items
+        Button("Toggle Animations", onclick="toggleAnimations()", cls=ButtonT.ghost),
+        A("Table View", href="/table"),
+        # Brand/title on left
+        brand=DivLAligned(H1("FastHTML Gallery"), UkIcon('rocket',height=30,width=30))),
         Container(*all_cards))
-
 
 def TableRow(dir_path):
     metadata = configparser.ConfigParser()
@@ -159,13 +146,11 @@ def SectionTable(section):
 
 @app.get("/table") 
 def table_view():
-    return (Title(site_title),
-        NavBarContainer(
-        NavBarLSide(H1("FastHTML Gallery Table View")),
-        NavBarRSide(
-            Button(submit=False)("Toggle Animations", onclick="toggleAnimations()"),
-            A(Button("Card View"), href="/"),
-            ghub_link)),
+    return Container(NavBar(
+        # Right side items
+        Button("Toggle Animations", onclick="toggleAnimations()", cls=ButtonT.ghost),
+        A("Card View", href="/"),
+        # Brand/title on left
+        brand=DivLAligned(H1("FastHTML Gallery Table View"), UkIcon('rocket',height=30,width=30))),
         Container(*[SectionTable(section) for section in directories]))
-
 serve()
