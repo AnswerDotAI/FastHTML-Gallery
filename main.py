@@ -41,6 +41,7 @@ def split_view(category: str, project: str):
     info = (dir_path/'info.md').exists()
     return Container(
         GalleryNavBar(dir_path, info=info, active='split'),
+
         Title(f"{dir_path.name} - Split View"),
             Grid(Div(Pre(Code(code_text, cls='language-python'))),
                 Div(Iframe(src=f"/app/{category}/{project}/",style="width: 100%; height: 100%; border: none;")),
