@@ -11,6 +11,7 @@
 
 ## Dynamic User Interface (Htmx)
 - Animations(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/animations/app.py)
+- Bulk Update(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/bulk_update/app.py)
 - Cascading Dropdowns(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/cascading_dropdowns/app.py)
 - Click To Edit(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/click_to_edit/app.py)
 - Click To Load(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/click_to_load/app.py)
@@ -33,7 +34,6 @@
 - Inb Replacement(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/svg/inb_replacement/app.py)
 
 ## Todo Series
--  Kanban(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/todo_series/_kanban/app.py)
 - Beginner(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/todo_series/beginner/app.py)
 - Intermediate(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/todo_series/intermediate/app.py)
 
