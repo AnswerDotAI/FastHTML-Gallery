@@ -4,6 +4,7 @@ from pathlib import Path
 from utils import *
 from importlib import import_module
 from monsterui.all import *
+from starlette.responses import HTMLResponse
 
 def get_route(p): return '/'.join(Path(p).parts[1:])
 def get_module_path(p,base_dir): return f'{base_dir}.{".".join(Path(p).parts[1:])}.app'
@@ -21,7 +22,16 @@ hdrs = (
     *Theme.blue.headers(highlightjs=True),
     Link(rel='icon', type='image/x-ico', href="/files/gallery.ico"))
 
-app = FastHTML(routes=application_routes+ [Mount('/files', StaticFiles(directory='.')),], hdrs=hdrs, pico=False)
+def HTML_404_PAGE():
+    return Container(
+        H1("404 Not Found"),
+        P("The page you are looking for does not exist."),
+        A("Back to Gallery", href="/", cls=AT.primary))
+
+app = FastHTML(
+    exception_handlers={404: HTML_404_PAGE},
+    routes=application_routes+ [Mount('/files', StaticFiles(directory='.')),], hdrs=hdrs, pico=False)
+
 
 def GalleryNavBar(dir_path, info=True, active=''):
     nav_items = [
@@ -36,9 +46,12 @@ def GalleryNavBar(dir_path, info=True, active=''):
 
 @app.get('/split/{category}/{project}')
 def split_view(category: str, project: str):
-    dir_path = Path('examples')/category/project
-    code_text = (dir_path/'app.py').read_text().strip()
-    info = (dir_path/'info.md').exists()
+    try:
+        dir_path = Path('examples')/category/project
+        code_text = (dir_path/'app.py').read_text().strip()
+        info = (dir_path/'info.md').exists()
+    except:
+        return Response(status_code=404)
     return Container(
         GalleryNavBar(dir_path, info=info, active='split'),
 
@@ -49,15 +62,21 @@ def split_view(category: str, project: str):
 
 @app.get('/code/{category}/{project}')
 def application_code(category:str, project:str):
-    dir_path = Path('examples')/category/project
-    code_text = (dir_path/'app.py').read_text().strip()
-    info = (dir_path/'info.md').exists()
+    try:
+        dir_path = Path('examples')/category/project
+        code_text = (dir_path/'app.py').read_text().strip()
+        info = (dir_path/'info.md').exists()
+    except:
+        return Response(status_code=404)
     return  Container(GalleryNavBar(dir_path, info=info, active='code'), Title(f"{dir_path.name} - Code"), Container(Pre(Code(code_text, cls='language-python'))))
     
 @app.get('/info/{category}/{project}')
 def application_info(category:str, project:str):
-    dir_path = Path('examples')/category/project
-    md_text = (dir_path/'info.md').read_text()
+    try:
+        dir_path = Path('examples')/category/project
+        md_text = (dir_path/'info.md').read_text()
+    except:
+        return Response(status_code=404)
     return Container(GalleryNavBar(dir_path, info=True, active='info'), Title(f"{dir_path.name} - Info"), Container(render_md(md_text)))
 
 def ImageCard(dir_path):
