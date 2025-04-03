@@ -493,6 +493,9 @@ def homepage():
   </example>
 </category>
 <category name="Dynamic User Interface (Htmx)">
+  <example name="Active Search">
+404: Not Found
+  </example>
   <example name="Animations">
 import random
 from fasthtml.common import *
