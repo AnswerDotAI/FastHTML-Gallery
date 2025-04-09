@@ -530,8 +530,8 @@ def show_contacts(contacts: list[dict]):
     return [Tr(*[Td(contact[col]) for col in keys]) for contact in contacts]
 
 # POST request to handle search
-@rt("/search")
-def post(search: str = None):
+@rt
+def search(search: str = None):
     # Default search term is empty string, which shows all contacts
     # If a search term is provided, it is converted to lowercase
     search_term = search.lower() if search else ""
@@ -548,7 +548,6 @@ def post(search: str = None):
 def index():
     return Titled("Active Search",
                   Div(
-
                       H3("Search Contacts"),
                       # HTMX for searching contacts
                       Input(
@@ -559,7 +558,7 @@ def index():
                           # Input is of a form type
                           class_="form-control",
                           # A POST request to '/search' is called when the user types
-                          hx_post="/search",
+                          post=search,
                           # Search is delayed by 500ms to delay the search until the user has stopped typing
                           # 'changed' is to ensure that no new search are triggered when the 
                           # user doesn't change the input of pastes the same value.
