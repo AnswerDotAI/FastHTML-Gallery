@@ -10,6 +10,7 @@
 - Tic Tac Toe(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/applications/tic_tac_toe/app.py)
 
 ## Dynamic User Interface (Htmx)
+- Active Search(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/active_search/app.py)
 - Animations(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/animations/app.py)
 - Bulk Update(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/bulk_update/app.py)
 - Cascading Dropdowns(https://github.com/AnswerDotAI/fasthtml-gallery/blob/main/examples/dynamic_user_interface_(htmx)/cascading_dropdowns/app.py)
